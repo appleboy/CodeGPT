@@ -23,6 +23,17 @@ var (
 	cfgFile string
 )
 
+func init() {
+	cobra.OnInitialize(initConfig)
+
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.codegpt.yaml)")
+	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(configCmd)
+
+	// hide completion command
+	rootCmd.CompletionOptions.HiddenDefaultCmd = true
+}
+
 func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -63,16 +74,6 @@ func initConfig() {
 }
 
 func Execute(ctx context.Context) {
-	cobra.OnInitialize(initConfig)
-
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.codegpt.yaml)")
-
-	rootCmd.AddCommand(versionCmd)
-	rootCmd.AddCommand(configCmd)
-
-	// hide completion command
-	rootCmd.CompletionOptions.HiddenDefaultCmd = true
-
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

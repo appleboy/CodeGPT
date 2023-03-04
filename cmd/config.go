@@ -1,15 +1,18 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
+	"log"
+	"strings"
 
+	"github.com/appleboy/com/array"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
+var availableKeys = []string{"openai.api_key", "openai.model", "output.lang"}
+
 func init() {
-	configCmd.PersistentFlags().StringP("api_key", "k", "sk-...", "openai api key")
+	configCmd.PersistentFlags().StringP("api_key", "k", "", "openai api key")
 	configCmd.PersistentFlags().StringP("model", "m", "text-davinci-002", "openai model")
 	configCmd.PersistentFlags().StringP("lang", "l", "en", "summarizing language uses English by default")
 	viper.BindPFlag("openai.api_key", configCmd.PersistentFlags().Lookup("api_key"))
@@ -23,10 +26,16 @@ var configCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 		if args[0] != "set" {
-			fmt.Println("config set key value. ex: config set openai.api_key sk-...")
-			os.Exit(1)
+			log.Fatal("config set key value. ex: config set openai.api_key sk-...")
 		}
+
+		if !array.InSlice(args[1], availableKeys) {
+			log.Fatal("available key list:", strings.Join(availableKeys, ", "))
+		}
+
 		viper.Set(args[1], args[2])
-		viper.WriteConfig()
+		if err := viper.WriteConfig(); err != nil {
+			log.Fatal(err)
+		}
 	},
 }
