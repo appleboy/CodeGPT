@@ -27,8 +27,6 @@ var configCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		viper.Set(args[1], args[2])
-		fmt.Println("api key:", viper.Get("openai.api_key"))
-		fmt.Println("model:", viper.Get("openai.model"))
 		viper.WriteConfig()
 	},
 }
