@@ -19,7 +19,7 @@ func init() {
 
 var configCmd = &cobra.Command{
 	Use:   "config",
-	Short: "add openai config",
+	Short: "Add openai config (openai.api_key, openai.model ...)",
 	Args:  cobra.MinimumNArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 		if args[0] != "set" {
