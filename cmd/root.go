@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/appleboy/com/file"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -32,10 +33,17 @@ func initConfig() {
 		cobra.CheckErr(err)
 
 		// Search config in home directory with name ".cobra" (without extension).
-		viper.AddConfigPath(home)
+		configFolder := path.Join(home, ".config", "codegpt")
+		viper.AddConfigPath(configFolder)
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".codegpt")
-		cfgFile = path.Join(home, ".codegpt.yaml")
+		cfgFile = path.Join(configFolder, ".codegpt.yaml")
+
+		if !file.IsDir(configFolder) {
+			if err := os.MkdirAll(configFolder, os.ModePerm); err != nil {
+				log.Fatal(err)
+			}
+		}
 	}
 
 	viper.AutomaticEnv()
