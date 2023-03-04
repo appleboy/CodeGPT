@@ -58,12 +58,9 @@ func Execute(ctx context.Context) {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.codegpt.yaml)")
-	rootCmd.PersistentFlags().StringP("api_key", "k", "sk-...", "openai api key")
-	rootCmd.PersistentFlags().StringP("model", "m", "text-davinci-002", "openai model")
-	viper.BindPFlag("openai.api_key", rootCmd.PersistentFlags().Lookup("api_key"))
-	viper.BindPFlag("openai.model", rootCmd.PersistentFlags().Lookup("model"))
 
 	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(configCmd)
 
 	// hide completion command
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
