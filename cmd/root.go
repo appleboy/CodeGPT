@@ -20,7 +20,6 @@ var rootCmd = &cobra.Command{
 // Used for flags.
 var (
 	cfgFile string
-	version string = "0.0.1"
 )
 
 func initConfig() {
@@ -55,19 +54,19 @@ func initConfig() {
 	}
 }
 
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Print the version number of CodeGPT",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("version:", version)
-	},
-}
-
 func Execute(ctx context.Context) {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.codegpt.yaml)")
+	rootCmd.PersistentFlags().StringP("api_key", "k", "sk-...", "openai api key")
+	rootCmd.PersistentFlags().StringP("model", "m", "text-davinci-002", "openai model")
+	viper.BindPFlag("openai.api_key", rootCmd.PersistentFlags().Lookup("api_key"))
+	viper.BindPFlag("openai.model", rootCmd.PersistentFlags().Lookup("model"))
+
 	rootCmd.AddCommand(versionCmd)
+
+	// hide completion command
+	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
