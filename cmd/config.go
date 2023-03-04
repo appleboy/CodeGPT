@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"strings"
 
@@ -37,5 +38,6 @@ var configCmd = &cobra.Command{
 		if err := viper.WriteConfig(); err != nil {
 			log.Fatal(err)
 		}
+		fmt.Println("you can see the config file:", viper.ConfigFileUsed())
 	},
 }

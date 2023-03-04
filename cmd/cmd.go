@@ -38,6 +38,13 @@ func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
+		if !file.IsFile(cfgFile) {
+			// Config file not found; ignore error if desired
+			_, err := os.Create(cfgFile)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
 	} else {
 		// Find home directory.
 		home, err := os.UserHomeDir()
