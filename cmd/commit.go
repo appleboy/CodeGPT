@@ -98,7 +98,7 @@ var commitCmd = &cobra.Command{
 			}
 			message = summarize
 		} else {
-			message = strings.TrimSpace(summarizeTitle) + "\n\n" + summarizeDiff
+			message = strings.TrimSpace(summarizeTitle) + "\n\n" + strings.TrimSpace(summarizeDiff)
 		}
 
 		err = os.WriteFile(viper.GetString("output.file"), []byte(message), 0o644)
