@@ -3,6 +3,7 @@ package cmd
 import (
 	"log"
 	"os"
+	"strings"
 
 	"github.com/appleboy/CodeGPT/git"
 	"github.com/appleboy/CodeGPT/openai"
@@ -97,7 +98,7 @@ var commitCmd = &cobra.Command{
 			}
 			message = summarize
 		} else {
-			message = summarizeTitle + summarizeDiff
+			message = strings.TrimSpace(summarizeTitle) + "\n\n" + summarizeDiff
 		}
 
 		err = os.WriteFile(viper.GetString("output.file"), []byte(message), 0o644)
