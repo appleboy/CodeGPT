@@ -29,6 +29,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.codegpt.yaml)")
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(configCmd)
+	rootCmd.AddCommand(commitCmd)
 
 	// hide completion command
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
