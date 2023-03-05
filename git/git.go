@@ -26,7 +26,7 @@ func excludeFiles() []string {
 func diffNames() *exec.Cmd {
 	args := []string{
 		"diff",
-		// "--staged",
+		"--staged",
 		"--name-only",
 	}
 

@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/appleboy/CodeGPT/git"
+	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/util"
 
 	"github.com/spf13/cobra"
@@ -18,10 +19,22 @@ var commitCmd = &cobra.Command{
 		if !util.IsCommandAvailable("git") {
 			log.Fatal("To use CodeGPT, you must have git on your PATH")
 		}
+
 		diff, err := git.Diff()
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(diff)
+
+		out, err := prompt.GetTemplate(
+			prompt.SummarizeCommitTemplate,
+			prompt.Data{
+				"file_diffs": diff,
+			},
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Print(out)
 	},
 }
