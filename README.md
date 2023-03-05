@@ -13,3 +13,4 @@ A CLI written in [Golang](https://go.dev) that writes your git commit messages f
 ## Reference
 
 * [OpenAI Chat completions documentation](https://platform.openai.com/docs/guides/chat).
+* [Introducing ChatGPT and Whisper APIs](https://openai.com/blog/introducing-chatgpt-and-whisper-apis)
