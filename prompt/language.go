@@ -1,9 +1,9 @@
 package prompt
 
-var defaultLanguage = "English"
+var DefaultLanguage = "English"
 
 var languageMaps = map[string]string{
-	"en":    defaultLanguage,
+	"en":    DefaultLanguage,
 	"zh-tw": "Traditional Chinese",
 	"zh-cn": "Simplified Chinese",
 	"ja":    "Japanese",
@@ -12,7 +12,7 @@ var languageMaps = map[string]string{
 func GetLanguage(lang string) string {
 	v, ok := languageMaps[lang]
 	if !ok {
-		return defaultLanguage
+		return DefaultLanguage
 	}
 	return v
 }
