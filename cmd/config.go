@@ -14,7 +14,7 @@ var availableKeys = []string{"openai.api_key", "openai.model", "openai.org_id", 
 
 func init() {
 	configCmd.PersistentFlags().StringP("api_key", "k", "", "openai api key")
-	configCmd.PersistentFlags().StringP("model", "m", "text-davinci-002", "openai model")
+	configCmd.PersistentFlags().StringP("model", "m", "gpt-3.5-turbo", "openai model")
 	configCmd.PersistentFlags().StringP("lang", "l", "en", "summarizing language uses English by default")
 	configCmd.PersistentFlags().StringP("org_id", "o", "", "openai requesting organization")
 	viper.BindPFlag("openai.org_id", configCmd.PersistentFlags().Lookup("org_id"))
