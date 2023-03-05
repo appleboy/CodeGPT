@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/appleboy/CodeGPT/git"
 	"github.com/appleboy/CodeGPT/openai"
@@ -100,7 +100,7 @@ var commitCmd = &cobra.Command{
 			message = summarizeTitle + summarizeDiff
 		}
 
-		err = ioutil.WriteFile(viper.GetString("output.file"), []byte(message), 0o644)
+		err = os.WriteFile(viper.GetString("output.file"), []byte(message), 0o644)
 		if err != nil {
 			log.Fatal(err)
 		}
