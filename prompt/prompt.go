@@ -22,9 +22,9 @@ func init() {
 }
 
 const (
-	SummarizeFileDiffTemplate = "summarize_file_diff.tpl"
-	SummarizeTitleTemplate    = "summarize_title.tpl"
-	TranslationTemplate       = "translation.tpl"
+	SummarizeFileDiffTemplate = "summarize_file_diff.tmpl"
+	SummarizeTitleTemplate    = "summarize_title.tmpl"
+	TranslationTemplate       = "translation.tmpl"
 )
 
 var (
