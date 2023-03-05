@@ -34,6 +34,16 @@ var commitCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
+		client, err := openai.New(
+			viper.GetString("openai.api_key"),
+			viper.GetString("openai.model"),
+			viper.GetString("openai.org_id"),
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Get summarize comment from diff datas
 		out, err := prompt.GetTemplate(
 			prompt.SummarizeFileDiffTemplate,
 			prompt.Data{
@@ -44,16 +54,22 @@ var commitCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		client, err := openai.New(
-			viper.GetString("openai.api_key"),
-			viper.GetString("openai.model"),
-			viper.GetString("openai.org_id"),
+		summarizeDiff, err := client.Completion(cmd.Context(), out)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		out, err = prompt.GetTemplate(
+			prompt.SummarizeTitleTemplate,
+			prompt.Data{
+				"summary_points": summarizeDiff,
+			},
 		)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		resp, err := client.Completion(cmd.Context(), out)
+		summarizeTitle, err := client.Completion(cmd.Context(), out)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -62,18 +78,19 @@ var commitCmd = &cobra.Command{
 			prompt.TranslationTemplate,
 			prompt.Data{
 				"output_language": prompt.GetLanguage(viper.GetString("output.lang")),
-				"commit_message":  resp,
+				"commit_title":    summarizeTitle,
+				"commit_message":  summarizeDiff,
 			},
 		)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		resp, err = client.Completion(cmd.Context(), out)
+		message, err := client.Completion(cmd.Context(), out)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Println(resp)
+		fmt.Println(message)
 	},
 }

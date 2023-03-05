@@ -6,6 +6,8 @@ Now, translate the following message into {{ .output_language }}.
 GIT COMMIT MESSAGE:
 
 ###
+{{ .commit_title }}
+
 {{ .commit_message }}
 ###
 

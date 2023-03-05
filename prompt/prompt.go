@@ -23,6 +23,7 @@ func init() {
 
 const (
 	SummarizeFileDiffTemplate = "summarize_file_diff.tpl"
+	SummarizeTitleTemplate    = "summarize_title.tpl"
 	TranslationTemplate       = "translation.tpl"
 )
 
