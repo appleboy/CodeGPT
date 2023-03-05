@@ -82,7 +82,7 @@ func initConfig() {
 }
 
 func Execute(ctx context.Context) {
-	if err := rootCmd.Execute(); err != nil {
+	if _, err := rootCmd.ExecuteContextC(ctx); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}

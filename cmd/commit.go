@@ -5,10 +5,12 @@ import (
 	"log"
 
 	"github.com/appleboy/CodeGPT/git"
+	"github.com/appleboy/CodeGPT/openai"
 	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/util"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var commitCmd = &cobra.Command{
@@ -35,6 +37,15 @@ var commitCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		fmt.Print(out)
+		client, err := openai.New(viper.GetString("openai.api_key"))
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		resp, err := client.CreateChatCompletion(cmd.Context(), out)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(resp.Choices[0].Message.Content)
 	},
 }

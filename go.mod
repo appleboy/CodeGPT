@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/appleboy/com v0.1.6
+	github.com/sashabaranov/go-openai v1.4.1
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
 )
