@@ -16,8 +16,8 @@ import (
 func init() {
 	commitCmd.PersistentFlags().StringP("model", "m", "gpt-3.5-turbo", "openai model")
 	commitCmd.PersistentFlags().StringP("lang", "l", "en", "summarizing language uses English by default")
-	viper.BindPFlag("openai.model", commitCmd.PersistentFlags().Lookup("model"))
-	viper.BindPFlag("output.lang", commitCmd.PersistentFlags().Lookup("lang"))
+	_ = viper.BindPFlag("openai.model", commitCmd.PersistentFlags().Lookup("model"))
+	_ = viper.BindPFlag("output.lang", commitCmd.PersistentFlags().Lookup("lang"))
 }
 
 var commitCmd = &cobra.Command{
