@@ -1,8 +1,8 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/appleboy/com/array"
@@ -27,19 +27,20 @@ var configCmd = &cobra.Command{
 	Use:   "config",
 	Short: "Add openai config (openai.api_key, openai.model ...)",
 	Args:  cobra.MinimumNArgs(3),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if args[0] != "set" {
-			log.Fatal("config set key value. ex: config set openai.api_key sk-...")
+			return errors.New("config set key value. ex: config set openai.api_key sk-...")
 		}
 
 		if !array.InSlice(args[1], availableKeys) {
-			log.Fatal("available key list:", strings.Join(availableKeys, ", "))
+			return errors.New("available key list: " + strings.Join(availableKeys, ", "))
 		}
 
 		viper.Set(args[1], args[2])
 		if err := viper.WriteConfig(); err != nil {
-			log.Fatal(err)
+			return err
 		}
 		fmt.Println("you can see the config file:", viper.ConfigFileUsed())
+		return nil
 	},
 }

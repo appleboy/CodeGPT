@@ -55,6 +55,19 @@ func diffFiles() *exec.Cmd {
 	)
 }
 
+func hookPath() *exec.Cmd {
+	args := []string{
+		"rev-parse",
+		"--git-path",
+		"hooks",
+	}
+
+	return exec.Command(
+		"git",
+		args...,
+	)
+}
+
 // Diff compares the differences between two sets of data.
 // It returns a string representing the differences and an error.
 // If there are no differences, it returns an empty string and an error.
@@ -73,4 +86,10 @@ func Diff() (string, error) {
 	}
 
 	return string(output), nil
+}
+
+// Hook to show git hook path
+func Hook() (string, error) {
+	output, err := hookPath().Output()
+	return string(output), err
 }

@@ -30,6 +30,7 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(configCmd)
 	rootCmd.AddCommand(commitCmd)
+	rootCmd.AddCommand(hookCmd)
 
 	// hide completion command
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
@@ -83,7 +84,6 @@ func initConfig() {
 
 func Execute(ctx context.Context) {
 	if _, err := rootCmd.ExecuteContextC(ctx); err != nil {
-		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
