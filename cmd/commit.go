@@ -46,10 +46,10 @@ var commitCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		resp, err := client.CreateChatCompletion(cmd.Context(), out)
+		resp, err := client.Completion(cmd.Context(), out)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(resp.Choices[0].Message.Content)
+		fmt.Println(resp)
 	},
 }
