@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"fmt"
+	"io/ioutil"
 	"log"
 
 	"github.com/appleboy/CodeGPT/git"
@@ -14,16 +14,20 @@ import (
 )
 
 func init() {
+	commitCmd.PersistentFlags().StringP("file", "f", ".git/COMMIT_EDITMSG", "commit message file")
 	commitCmd.PersistentFlags().StringP("model", "m", "gpt-3.5-turbo", "openai model")
 	commitCmd.PersistentFlags().StringP("lang", "l", "en", "summarizing language uses English by default")
 	_ = viper.BindPFlag("openai.model", commitCmd.PersistentFlags().Lookup("model"))
 	_ = viper.BindPFlag("output.lang", commitCmd.PersistentFlags().Lookup("lang"))
+	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
 
 var commitCmd = &cobra.Command{
 	Use:   "commit",
 	Short: "Auto generate commit message",
 	Run: func(cmd *cobra.Command, args []string) {
+		var message string
+
 		// check git command exist
 		if !util.IsCommandAvailable("git") {
 			log.Fatal("To use CodeGPT, you must have git on your PATH")
@@ -44,9 +48,9 @@ var commitCmd = &cobra.Command{
 		}
 
 		// Get summarize comment from diff datas
-		out, err := prompt.GetTemplate(
+		out, err := util.GetTemplate(
 			prompt.SummarizeFileDiffTemplate,
-			prompt.Data{
+			util.Data{
 				"file_diffs": diff,
 			},
 		)
@@ -59,9 +63,9 @@ var commitCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		out, err = prompt.GetTemplate(
+		out, err = util.GetTemplate(
 			prompt.SummarizeTitleTemplate,
-			prompt.Data{
+			util.Data{
 				"summary_points": summarizeDiff,
 			},
 		)
@@ -74,23 +78,31 @@ var commitCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		out, err = prompt.GetTemplate(
-			prompt.TranslationTemplate,
-			prompt.Data{
-				"output_language": prompt.GetLanguage(viper.GetString("output.lang")),
-				"commit_title":    summarizeTitle,
-				"commit_message":  summarizeDiff,
-			},
-		)
+		if prompt.GetLanguage(viper.GetString("output.lang")) != prompt.DefaultLanguage {
+			out, err = util.GetTemplate(
+				prompt.TranslationTemplate,
+				util.Data{
+					"output_language": prompt.GetLanguage(viper.GetString("output.lang")),
+					"commit_title":    summarizeTitle,
+					"commit_message":  summarizeDiff,
+				},
+			)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			summarize, err := client.Completion(cmd.Context(), out)
+			if err != nil {
+				log.Fatal(err)
+			}
+			message = summarize
+		} else {
+			message = summarizeTitle + summarizeDiff
+		}
+
+		err = ioutil.WriteFile(viper.GetString("output.file"), []byte(message), 0o644)
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		message, err := client.Completion(cmd.Context(), out)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		fmt.Println(message)
 	},
 }
