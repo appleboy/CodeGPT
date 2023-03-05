@@ -13,6 +13,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+func init() {
+	commitCmd.PersistentFlags().StringP("model", "m", "gpt-3.5-turbo", "openai model")
+	commitCmd.PersistentFlags().StringP("lang", "l", "en", "summarizing language uses English by default")
+	viper.BindPFlag("openai.model", commitCmd.PersistentFlags().Lookup("model"))
+	viper.BindPFlag("output.lang", commitCmd.PersistentFlags().Lookup("lang"))
+}
+
 var commitCmd = &cobra.Command{
 	Use:   "commit",
 	Short: "Auto generate commit message",
@@ -28,7 +35,7 @@ var commitCmd = &cobra.Command{
 		}
 
 		out, err := prompt.GetTemplate(
-			prompt.SummarizeCommitTemplate,
+			prompt.SummarizeFileDiffTemplate,
 			prompt.Data{
 				"file_diffs": diff,
 			},

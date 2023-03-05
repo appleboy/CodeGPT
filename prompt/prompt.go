@@ -22,8 +22,8 @@ func init() {
 }
 
 const (
-	SummarizeCommitTemplate = "summarize_commit.tpl"
-	TranslationTemplate     = "translation.tpl"
+	SummarizeFileDiffTemplate = "summarize_file_diff.tpl"
+	TranslationTemplate       = "translation.tpl"
 )
 
 var (
