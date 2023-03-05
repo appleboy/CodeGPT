@@ -50,6 +50,23 @@ var commitCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		out, err = prompt.GetTemplate(
+			prompt.TranslationTemplate,
+			prompt.Data{
+				"output_language": prompt.GetLanguage(viper.GetString("output.lang")),
+				"commit_message":  resp,
+			},
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		resp, err = client.Completion(cmd.Context(), out)
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		fmt.Println(resp)
 	},
 }

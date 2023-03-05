@@ -23,6 +23,7 @@ func init() {
 
 const (
 	SummarizeCommitTemplate = "summarize_commit.tpl"
+	TranslationTemplate     = "translation.tpl"
 )
 
 var (
