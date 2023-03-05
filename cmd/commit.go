@@ -37,7 +37,10 @@ var commitCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		client, err := openai.New(viper.GetString("openai.api_key"))
+		client, err := openai.New(
+			viper.GetString("openai.api_key"),
+			viper.GetString("openai.org_id"),
+		)
 		if err != nil {
 			log.Fatal(err)
 		}

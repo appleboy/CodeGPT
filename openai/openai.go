@@ -34,12 +34,17 @@ func (c *Client) CreateChatCompletion(
 }
 
 // New for initialize OpenAI client interface.
-func New(token string) (*Client, error) {
+func New(token, orgID string) (*Client, error) {
 	if token == "" {
 		return nil, errors.New("missing api key")
 	}
 
+	cfg := openai.DefaultConfig(token)
+	if orgID != "" {
+		cfg.OrgID = orgID
+	}
+
 	return &Client{
-		client: openai.NewClient(token),
+		client: openai.NewClientWithConfig(cfg),
 	}, nil
 }

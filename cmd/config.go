@@ -10,12 +10,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-var availableKeys = []string{"openai.api_key", "openai.model", "output.lang"}
+var availableKeys = []string{"openai.api_key", "openai.model", "openai.org_id", "output.lang"}
 
 func init() {
 	configCmd.PersistentFlags().StringP("api_key", "k", "", "openai api key")
 	configCmd.PersistentFlags().StringP("model", "m", "text-davinci-002", "openai model")
 	configCmd.PersistentFlags().StringP("lang", "l", "en", "summarizing language uses English by default")
+	configCmd.PersistentFlags().StringP("org_id", "o", "", "openai requesting organization")
+	viper.BindPFlag("openai.org_id", configCmd.PersistentFlags().Lookup("org_id"))
 	viper.BindPFlag("openai.api_key", configCmd.PersistentFlags().Lookup("api_key"))
 	viper.BindPFlag("openai.model", configCmd.PersistentFlags().Lookup("model"))
 	viper.BindPFlag("output.lang", configCmd.PersistentFlags().Lookup("lang"))
