@@ -7,10 +7,12 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
+// Clint for OpenAI client interface
 type Client struct {
 	client *openai.Client
 }
 
+// CreateChatCompletion — API call to Create a completion for the chat message.
 func (c *Client) CreateChatCompletion(
 	ctx context.Context,
 	content string,
@@ -31,6 +33,7 @@ func (c *Client) CreateChatCompletion(
 	)
 }
 
+// New for initialize OpenAI client interface.
 func New(token string) (*Client, error) {
 	if token == "" {
 		return nil, errors.New("missing api key")

@@ -12,6 +12,7 @@ import (
 //go:embed templates/*
 var files embed.FS
 
+// Data define a custom type for the template data.
 type Data map[string]interface{}
 
 func init() {
@@ -29,6 +30,7 @@ var (
 	templatesDir = "templates"
 )
 
+// GetTemplate returns the parsed template as a string.
 func GetTemplate(name string, data map[string]interface{}) (string, error) {
 	t, ok := templates[name]
 	if !ok {
@@ -44,6 +46,7 @@ func GetTemplate(name string, data map[string]interface{}) (string, error) {
 	return tpl.String(), nil
 }
 
+// loadTemplates loads all the templates found in the templates directory.
 func loadTemplates() error {
 	if templates == nil {
 		templates = make(map[string]*template.Template)

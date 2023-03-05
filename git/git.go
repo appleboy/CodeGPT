@@ -55,6 +55,9 @@ func diffFiles() *exec.Cmd {
 	)
 }
 
+// Diff compares the differences between two sets of data.
+// It returns a string representing the differences and an error.
+// If there are no differences, it returns an empty string and an error.
 func Diff() (string, error) {
 	output, err := diffNames().Output()
 	if err != nil {
