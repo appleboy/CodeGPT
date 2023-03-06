@@ -58,7 +58,7 @@ builds:
   flags:
   - -trimpath
   ldflags:
-  - -s -w
+  - -s -w -X 'github.com/appleboy/CodeGPT/cmd.Version={{ GORELEASER_CURRENT_TAG }}' -X 'github.com/appleboy/CodeGPT/cmd.Commit=$(COMMIT)'
   binary: >-
     {{ .ProjectName }}-
     {{- if .IsSnapshot }}{{ .Branch }}-
