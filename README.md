@@ -47,7 +47,7 @@ version: v0.0.2 commit: 500ae35
 
 Please set up your OpenAI API Key first. You can create a new API Key from the [OpenAI Platform](https://platform.openai.com/account/api-keys).
 
-> Note: If you haven't already, you'll have to create an account and set up billing.
+![register](./images/register.png)
 
 ```sh
 codegpt config set openai.api_key sk-xxxxxxx
