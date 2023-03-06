@@ -2,13 +2,20 @@ GO ?= go
 EXECUTABLE := codegpt
 GOFILES := $(shell find . -type f -name "*.go")
 TAGS ?=
-LDFLAGS ?= -X 'main.Version=$(VERSION)'
+LDFLAGS ?= -X 'github.com/appleboy/CodeGPT/cmd.Version=$(VERSION)' -X 'github.com/appleboy/CodeGPT/cmd.Commit=$(COMMIT)'
 
 ifneq ($(shell uname), Darwin)
 	EXTLDFLAGS = -extldflags "-static" $(null)
 else
 	EXTLDFLAGS =
 endif
+
+ifneq ($(DRONE_TAG),)
+	VERSION ?= $(DRONE_TAG)
+else
+	VERSION ?= $(shell git describe --tags --always || git rev-parse --short HEAD)
+endif
+COMMIT ?= $(shell git rev-parse --short HEAD)
 
 build: $(EXECUTABLE)
 

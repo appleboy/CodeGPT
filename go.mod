@@ -4,13 +4,13 @@ go 1.20
 
 require (
 	github.com/appleboy/com v0.1.6
+	github.com/fatih/color v1.14.1
 	github.com/sashabaranov/go-openai v1.4.1
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
 )
 
 require (
-	github.com/fatih/color v1.14.1 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect

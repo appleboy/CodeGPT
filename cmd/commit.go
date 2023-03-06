@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"log"
+	"errors"
 	"os"
 	"strings"
 
@@ -27,17 +27,17 @@ func init() {
 var commitCmd = &cobra.Command{
 	Use:   "commit",
 	Short: "Auto generate commit message",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		var message string
 
 		// check git command exist
 		if !util.IsCommandAvailable("git") {
-			log.Fatal("To use CodeGPT, you must have git on your PATH")
+			return errors.New("To use CodeGPT, you must have git on your PATH")
 		}
 
 		diff, err := git.Diff()
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		color.Green("Summarize the commit message use " + viper.GetString("openai.model") + " model")
@@ -48,7 +48,7 @@ var commitCmd = &cobra.Command{
 			viper.GetString("openai.org_id"),
 		)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		// Get summarize comment from diff datas
@@ -59,13 +59,13 @@ var commitCmd = &cobra.Command{
 			},
 		)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		color.Cyan("We are trying to summarize a git diff")
 		summarizeDiff, err := client.Completion(cmd.Context(), out)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		out, err = util.GetTemplate(
@@ -75,13 +75,13 @@ var commitCmd = &cobra.Command{
 			},
 		)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		color.Cyan("We are trying to summarize a title for pull request")
 		summarizeTitle, err := client.Completion(cmd.Context(), out)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		if prompt.GetLanguage(viper.GetString("output.lang")) != prompt.DefaultLanguage {
@@ -94,23 +94,26 @@ var commitCmd = &cobra.Command{
 				},
 			)
 			if err != nil {
-				log.Fatal(err)
+				return err
 			}
 
 			color.Cyan("We are trying to translate a git commit message to " + prompt.GetLanguage(viper.GetString("output.lang")) + "language")
 			summarize, err := client.Completion(cmd.Context(), out)
 			if err != nil {
-				log.Fatal(err)
+				return err
 			}
 			message = summarize
 		} else {
 			message = strings.TrimSpace(summarizeTitle) + "\n\n" + strings.TrimSpace(summarizeDiff)
 		}
-
+		color.Yellow("================Commit Summary====================")
+		color.Yellow("\n" + message + "\n\n")
+		color.Yellow("==================================================")
 		color.Cyan("Write the commit message to " + viper.GetString("output.file") + " file")
 		err = os.WriteFile(viper.GetString("output.file"), []byte(message), 0o644)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
+		return nil
 	},
 }
