@@ -10,6 +10,7 @@ import (
 	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/util"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -39,6 +40,8 @@ var commitCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
+		color.Green("Summarize the commit message use " + viper.GetString("openai.model") + " model")
+
 		client, err := openai.New(
 			viper.GetString("openai.api_key"),
 			viper.GetString("openai.model"),
@@ -59,6 +62,7 @@ var commitCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
+		color.Cyan("We are trying to summarize a git diff")
 		summarizeDiff, err := client.Completion(cmd.Context(), out)
 		if err != nil {
 			log.Fatal(err)
@@ -74,6 +78,7 @@ var commitCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
+		color.Cyan("We are trying to summarize a title for pull request")
 		summarizeTitle, err := client.Completion(cmd.Context(), out)
 		if err != nil {
 			log.Fatal(err)
@@ -92,6 +97,7 @@ var commitCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 
+			color.Cyan("We are trying to translate a git commit message to " + prompt.GetLanguage(viper.GetString("output.lang")) + "language")
 			summarize, err := client.Completion(cmd.Context(), out)
 			if err != nil {
 				log.Fatal(err)
@@ -101,6 +107,7 @@ var commitCmd = &cobra.Command{
 			message = strings.TrimSpace(summarizeTitle) + "\n\n" + strings.TrimSpace(summarizeDiff)
 		}
 
+		color.Cyan("Write the commit message to " + viper.GetString("output.file") + " file")
 		err = os.WriteFile(viper.GetString("output.file"), []byte(message), 0o644)
 		if err != nil {
 			log.Fatal(err)
