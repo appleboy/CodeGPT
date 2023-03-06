@@ -15,19 +15,19 @@ The pre-compiled binaries can be downloaded from [release page](https://github.c
 On linux AMD64
 
 ```sh
-wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.1/CodeGPT-0.0.2-linux-amd64 -O codegpt
+wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.2/CodeGPT-0.0.2-linux-amd64 -O codegpt
 ```
 
 On macOS (Intel amd64)
 
 ```sh
-wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.1/CodeGPT-0.0.2-darwin-amd64 -O codegpt
+wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.2/CodeGPT-0.0.2-darwin-amd64 -O codegpt
 ```
 
 On macOS (Apple arm64)
 
 ```sh
-wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.1/CodeGPT-0.0.2-darwin-arm64 -O codegpt
+wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.2/CodeGPT-0.0.2-darwin-arm64 -O codegpt
 ```
 
 On Windows (AMD64)
