@@ -19,8 +19,8 @@ func init() {
 	commitCmd.PersistentFlags().StringP("file", "f", ".git/COMMIT_EDITMSG", "commit message file")
 	commitCmd.PersistentFlags().StringP("model", "m", "gpt-3.5-turbo", "openai model")
 	commitCmd.PersistentFlags().StringP("lang", "l", "en", "summarizing language uses English by default")
-	_ = viper.BindPFlag("openai.model", commitCmd.PersistentFlags().Lookup("model"))
-	_ = viper.BindPFlag("output.lang", commitCmd.PersistentFlags().Lookup("lang"))
+	_ = viper.BindPFlag("commit.model", commitCmd.PersistentFlags().Lookup("model"))
+	_ = viper.BindPFlag("commit.lang", commitCmd.PersistentFlags().Lookup("lang"))
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
 
@@ -42,6 +42,10 @@ var commitCmd = &cobra.Command{
 
 		color.Green("Summarize the commit message use " + viper.GetString("openai.model") + " model")
 
+		if prompt.GetLanguage(viper.GetString("commit.lang")) != prompt.DefaultLanguage {
+			viper.Set("output.lang", viper.GetString("commit.lang"))
+		}
+
 		client, err := openai.New(
 			viper.GetString("openai.api_key"),
 			viper.GetString("openai.model"),
@@ -52,7 +56,6 @@ var commitCmd = &cobra.Command{
 			return err
 		}
 
-		// Get summarize comment from diff datas
 		out, err := util.GetTemplate(
 			prompt.SummarizeFileDiffTemplate,
 			util.Data{
@@ -63,6 +66,7 @@ var commitCmd = &cobra.Command{
 			return err
 		}
 
+		// Get summarize comment from diff datas
 		color.Cyan("We are trying to summarize a git diff")
 		summarizeDiff, err := client.Completion(cmd.Context(), out)
 		if err != nil {
@@ -79,6 +83,7 @@ var commitCmd = &cobra.Command{
 			return err
 		}
 
+		// Get summarize title from diff datas
 		color.Cyan("We are trying to summarize a title for pull request")
 		summarizeTitle, err := client.Completion(cmd.Context(), out)
 		if err != nil {
@@ -98,6 +103,7 @@ var commitCmd = &cobra.Command{
 				return err
 			}
 
+			// translate a git commit message
 			color.Cyan("We are trying to translate a git commit message to " + prompt.GetLanguage(viper.GetString("output.lang")) + "language")
 			summarize, err := client.Completion(cmd.Context(), out)
 			if err != nil {
@@ -107,10 +113,14 @@ var commitCmd = &cobra.Command{
 		} else {
 			message = strings.TrimSpace(summarizeTitle) + "\n\n" + strings.TrimSpace(summarizeDiff)
 		}
+
+		// Output commit summary data from AI
 		color.Yellow("================Commit Summary====================")
 		color.Yellow("\n" + message + "\n\n")
 		color.Yellow("==================================================")
 		color.Cyan("Write the commit message to " + viper.GetString("output.file") + " file")
+
+		// write commit message to git staging file
 		err = os.WriteFile(viper.GetString("output.file"), []byte(message), 0o644)
 		if err != nil {
 			return err

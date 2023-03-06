@@ -10,6 +10,8 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
+var DefaultModel = openai.GPT3Dot5Turbo
+
 var modelMaps = map[string]string{
 	"gpt-3.5-turbo":         openai.GPT3Dot5Turbo,
 	"gpt-3.5-turbo-0301":    openai.GPT3Dot5Turbo0301,
@@ -25,6 +27,14 @@ var modelMaps = map[string]string{
 	"curie":                 openai.GPT3Curie,
 	"ada":                   openai.GPT3Ada,
 	"babbage":               openai.GPT3Babbage,
+}
+
+func GetModel(model string) string {
+	v, ok := modelMaps[model]
+	if !ok {
+		return DefaultModel
+	}
+	return v
 }
 
 // Clint for OpenAI client interface
