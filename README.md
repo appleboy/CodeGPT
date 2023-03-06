@@ -57,6 +57,8 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 
 ## Usage
 
+There are two ways to generate commit message from `codegpt` command. The first is `CLI mode` and the second is `Git Hook`.
+
 ### CLI mode
 
 You can call `codegpt` directly to generate a commit message for your staged changes:
