@@ -3,6 +3,9 @@ package openai
 import (
 	"context"
 	"errors"
+	"net/http"
+	"net/url"
+	"time"
 
 	openai "github.com/sashabaranov/go-openai"
 )
@@ -94,7 +97,7 @@ func (c *Client) Completion(
 }
 
 // New for initialize OpenAI client interface.
-func New(token, model, orgID string) (*Client, error) {
+func New(token, model, orgID, proxyURL string) (*Client, error) {
 	instance := &Client{}
 	if token == "" {
 		return nil, errors.New("missing api key")
@@ -110,6 +113,18 @@ func New(token, model, orgID string) (*Client, error) {
 	if orgID != "" {
 		cfg.OrgID = orgID
 	}
+
+	if proxyURL != "" {
+		httpClient := &http.Client{
+			Timeout: time.Second * 10,
+		}
+		proxy, _ := url.Parse(proxyURL)
+		httpClient.Transport = &http.Transport{
+			Proxy: http.ProxyURL(proxy),
+		}
+		cfg.HTTPClient = httpClient
+	}
+
 	instance.client = openai.NewClientWithConfig(cfg)
 
 	return instance, nil
