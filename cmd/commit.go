@@ -15,12 +15,15 @@ import (
 	"github.com/spf13/viper"
 )
 
+var (
+	commitLang  string
+	commitModel string
+)
+
 func init() {
 	commitCmd.PersistentFlags().StringP("file", "f", ".git/COMMIT_EDITMSG", "commit message file")
-	commitCmd.PersistentFlags().StringP("model", "m", "gpt-3.5-turbo", "openai model")
-	commitCmd.PersistentFlags().StringP("lang", "l", "en", "summarizing language uses English by default")
-	_ = viper.BindPFlag("commit.model", commitCmd.PersistentFlags().Lookup("model"))
-	_ = viper.BindPFlag("commit.lang", commitCmd.PersistentFlags().Lookup("lang"))
+	commitCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-3.5-turbo", "select openai model")
+	commitCmd.PersistentFlags().StringVar(&commitLang, "lang", "en", "summarizing language uses English by default")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
 
@@ -40,12 +43,17 @@ var commitCmd = &cobra.Command{
 			return err
 		}
 
-		color.Green("Summarize the commit message use " + viper.GetString("openai.model") + " model")
-
-		if prompt.GetLanguage(viper.GetString("commit.lang")) != prompt.DefaultLanguage {
-			viper.Set("output.lang", viper.GetString("commit.lang"))
+		// check default language
+		if prompt.GetLanguage(commitLang) != prompt.DefaultLanguage {
+			viper.Set("output.lang", commitLang)
 		}
 
+		// check default model
+		if openai.GetModel(commitModel) != openai.DefaultModel {
+			viper.Set("openai.model", commitModel)
+		}
+
+		color.Green("Summarize the commit message use " + viper.GetString("openai.model") + " model")
 		client, err := openai.New(
 			viper.GetString("openai.api_key"),
 			viper.GetString("openai.model"),
@@ -104,7 +112,7 @@ var commitCmd = &cobra.Command{
 			}
 
 			// translate a git commit message
-			color.Cyan("We are trying to translate a git commit message to " + prompt.GetLanguage(viper.GetString("output.lang")) + "language")
+			color.Cyan("We are trying to translate a git commit message to " + prompt.GetLanguage(viper.GetString("output.lang")) + " language")
 			summarize, err := client.Completion(cmd.Context(), out)
 			if err != nil {
 				return err
