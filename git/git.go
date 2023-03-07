@@ -4,6 +4,8 @@ import (
 	"errors"
 	"log"
 	"os/exec"
+
+	"github.com/spf13/viper"
 )
 
 var excludeFromDiff = []string{
@@ -45,6 +47,7 @@ func diffFiles() *exec.Cmd {
 		"--ignore-all-space",
 		"--diff-algorithm=minimal",
 		"--function-context",
+		"--unified=" + viper.GetString("git.diff.context"),
 	}
 
 	args = append(args, excludeFiles()...)
