@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/appleboy/com/array"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -42,7 +42,7 @@ var configCmd = &cobra.Command{
 		if err := viper.WriteConfig(); err != nil {
 			return err
 		}
-		fmt.Println("you can see the config file:", viper.ConfigFileUsed())
+		color.Green("you can see the config file: %s", viper.ConfigFileUsed())
 		return nil
 	},
 }

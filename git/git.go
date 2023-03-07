@@ -77,7 +77,7 @@ func Diff() (string, error) {
 		log.Fatal(err)
 	}
 	if string(output) == "" {
-		return "", errors.New("nothing output")
+		return "", errors.New("please add your staged changes using git add <files...>")
 	}
 
 	output, err = diffFiles().Output()
