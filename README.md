@@ -141,7 +141,7 @@ git commit
 `codegpt` will generate the commit message for you and pass it back to Git. Git will open it with the configured editor for you to review/edit it. Then save and close the editor to commit!
 
 ```sh
-$ git commimt
+$ git commit
 Summarize the commit message use gpt-3.5-turbo model
 We are trying to summarize a git diff
 We are trying to summarize a title for pull request
