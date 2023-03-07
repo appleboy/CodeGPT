@@ -53,7 +53,12 @@ Please first create your OpenAI API Key. The [OpenAI Platform](https://platform.
 codegpt config set openai.api_key sk-xxxxxxx
 ```
 
-This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/codegpt/.codegpt.yaml).
+This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/codegpt/.codegpt.yaml). The following options are available.
+
+* **openai.org_id**: Identifier for this organization sometimes used in API requests. see [organization settings](https://platform.openai.com/account/org-settings).
+* **openai.model**: default model is `gpt-3.5-turbo`, you can change to `text-davinci-003` or [other available model list](https://github.com/appleboy/CodeGPT/blob/a75ed831ce30c5c593613b9c0792954586d7f399/openai/openai.go#L16-L29).
+* **openai.lang**: default language is `en` and available languages `zh-tw`, `zh-tw`, `ja`.
+* **openai.proxy**: set http client proxy.
 
 ## Usage
 
