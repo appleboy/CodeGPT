@@ -6,7 +6,7 @@
 
 ![cover](./images/cover.png)
 
-A CLI written in [Golang](https://go.dev) that writes your git commit messages for you with ChatGPT AI (`gpt-3.5-turbo` model) and install a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks) automatically.
+A CLI written in [Go](https://go.dev) language that writes git commit messages for you using ChatGPT AI (gpt-3.5-turbo model) and automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
 
 ## Installation
 
@@ -36,7 +36,7 @@ On Windows (AMD64)
 wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.4/CodeGPT-0.0.4-windows-amd64.exe -O codegpt.exe
 ```
 
-Change the binary permission to `755` and move to system bin directory. Try the `codegpt` command as below
+Change the binary permissions to `755` and copy the binary to the system bin directory. Use the `codegpt` command as shown below.
 
 ```sh
 $ codegpt version
@@ -45,7 +45,7 @@ version: v0.0.4 commit: 359a48a
 
 ## Setup
 
-Please set up your OpenAI API Key first. You can create a new API Key from the [OpenAI Platform](https://platform.openai.com/account/api-keys).
+Please first create your OpenAI API Key. The [OpenAI Platform](https://platform.openai.com/account/api-keys) allows you to generate a new API Key.
 
 ![register](./images/register.png)
 
@@ -57,7 +57,7 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 
 ## Usage
 
-There are two ways to generate commit message from `codegpt` command. The first is `CLI mode` and the second is `Git Hook`.
+There are two methods for generating a commit message using the `codegpt` command. The first is CLI mode, and the second is Git Hook.
 
 ### CLI mode
 
@@ -68,7 +68,7 @@ git add <files...>
 codegpt commit
 ```
 
-You will see the commit message as below
+The commit message is shown below.
 
 ```sh
 Summarize the commit message use gpt-3.5-turbo model
@@ -87,13 +87,13 @@ Add OpenAI integration and CLI usage instructions
 Write the commit message to .git/COMMIT_EDITMSG file
 ```
 
-or translate all given git commit message to another language (`Traditional Chinese`, `Simplified Chinese` or `Japanese`)
+or translate all git commit messages into a different language (`Traditional Chinese`, `Simplified Chinese` or `Japanese`)
 
 ```sh
 codegpt commit --lang zh-tw
 ```
 
-See the following result:
+Consider the following outcome:
 
 ```sh
 Summarize the commit message use gpt-3.5-turbo model
@@ -113,11 +113,11 @@ Write the commit message to .git/COMMIT_EDITMSG file
 
 ### Git hook
 
-You can also integrate `codegpt` with Git via the prepare-commit-msg hook. This lets you use Git like you normally would, and edit the commit message before committing.
+You can also use the prepare-commit-msg hook to integrate `codegpt` with Git. This allows you to use Git normally and edit the commit message before committing.
 
 #### Install
 
-In the Git repository you want to install the hook in:
+You want to install the hook in the Git repository:
 
 ```sh
 codegpt hook install
@@ -125,20 +125,20 @@ codegpt hook install
 
 #### Uninstall
 
-In the Git repository you want to uninstall the hook from:
+You want to remove the hook from the Git repository:
 
 ```sh
 codegpt hook uninstall
 ```
 
-After installtation, stage your files and commit:
+Stage your files and commit after installation:
 
 ```sh
 git add <files...>
 git commit
 ```
 
-`codegpt` will generate the commit message for you and pass it back to Git. Git will open it with the configured editor for you to review/edit it. Then save and close the editor to commit!
+`codegpt` will generate the commit message for you and pass it back to Git. Git will open it with the configured editor for you to review/edit it. Then, to commit, save and close the editor!
 
 ```sh
 $ git commit
