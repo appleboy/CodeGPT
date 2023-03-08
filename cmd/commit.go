@@ -55,10 +55,10 @@ var commitCmd = &cobra.Command{
 
 		color.Green("Summarize the commit message use " + viper.GetString("openai.model") + " model")
 		client, err := openai.New(
-			viper.GetString("openai.api_key"),
-			viper.GetString("openai.model"),
-			viper.GetString("openai.org_id"),
-			viper.GetString("openai.proxy"),
+			openai.WithToken(viper.GetString("openai.api_key")),
+			openai.WithModel(viper.GetString("openai.model")),
+			openai.WithOrgID(viper.GetString("openai.org_id")),
+			openai.WithProxyURL(viper.GetString("openai.proxy")),
 		)
 		if err != nil {
 			return err

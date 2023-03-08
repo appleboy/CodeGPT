@@ -107,35 +107,43 @@ func (c *Client) Completion(
 }
 
 // New for initialize OpenAI client interface.
-func New(token, model, orgID, proxyURL string) (*Client, error) {
+func New(opts ...Option) (*Client, error) {
+	cfg := &config{}
+
+	// Loop through each option
+	for _, o := range opts {
+		// Call the option giving the instantiated
+		o.apply(cfg)
+	}
+
 	instance := &Client{}
-	if token == "" {
+	if cfg.token == "" {
 		return nil, errors.New("missing api key")
 	}
 
-	v, ok := modelMaps[model]
+	v, ok := modelMaps[cfg.model]
 	if !ok {
 		return nil, errors.New("missing model")
 	}
 	instance.model = v
 
-	cfg := openai.DefaultConfig(token)
-	if orgID != "" {
-		cfg.OrgID = orgID
+	c := openai.DefaultConfig(cfg.token)
+	if cfg.orgID != "" {
+		c.OrgID = cfg.orgID
 	}
 
-	if proxyURL != "" {
+	if cfg.proxyURL != "" {
 		httpClient := &http.Client{
 			Timeout: time.Second * 10,
 		}
-		proxy, _ := url.Parse(proxyURL)
+		proxy, _ := url.Parse(cfg.proxyURL)
 		httpClient.Transport = &http.Transport{
 			Proxy: http.ProxyURL(proxy),
 		}
-		cfg.HTTPClient = httpClient
+		c.HTTPClient = httpClient
 	}
 
-	instance.client = openai.NewClientWithConfig(cfg)
+	instance.client = openai.NewClientWithConfig(c)
 
 	return instance, nil
 }

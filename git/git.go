@@ -45,6 +45,7 @@ func diffFiles() *exec.Cmd {
 		"--ignore-all-space",
 		"--diff-algorithm=minimal",
 		"--function-context",
+		"--unified=1",
 	}
 
 	args = append(args, excludeFiles()...)
