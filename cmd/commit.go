@@ -153,6 +153,13 @@ var commitCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
+
+		// git commit automatically
+		output, err := g.Commit(message)
+		if err != nil {
+			return err
+		}
+		color.Cyan(output)
 		return nil
 	},
 }

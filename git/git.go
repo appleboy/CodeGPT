@@ -2,7 +2,6 @@ package git
 
 import (
 	"errors"
-	"log"
 	"os/exec"
 )
 
@@ -70,13 +69,35 @@ func (c *Command) hookPath() *exec.Cmd {
 	)
 }
 
+func (c *Command) commit(val string) *exec.Cmd {
+	args := []string{
+		"commit",
+		"-m",
+		val,
+	}
+
+	return exec.Command(
+		"git",
+		args...,
+	)
+}
+
+func (c *Command) Commit(val string) (string, error) {
+	output, err := c.commit(val).Output()
+	if err != nil {
+		return "", err
+	}
+
+	return string(output), nil
+}
+
 // Diff compares the differences between two sets of data.
 // It returns a string representing the differences and an error.
 // If there are no differences, it returns an empty string and an error.
 func (c *Command) DiffFiles() (string, error) {
 	output, err := c.diffNames().Output()
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 	if string(output) == "" {
 		return "", errors.New("please add your staged changes using git add <files...>")
@@ -84,7 +105,7 @@ func (c *Command) DiffFiles() (string, error) {
 
 	output, err = c.diffFiles().Output()
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
 	return string(output), nil
