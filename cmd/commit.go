@@ -18,10 +18,14 @@ import (
 var (
 	commitLang  string
 	commitModel string
+
+	// disbale auot commit in Hook mode
+	disableAutoCommit bool
 )
 
 func init() {
 	commitCmd.PersistentFlags().StringP("file", "f", ".git/COMMIT_EDITMSG", "commit message file")
+	commitCmd.PersistentFlags().BoolVar(&disableAutoCommit, "disbaleCommit", false, "disable auto commit message")
 	commitCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-3.5-turbo", "select openai model")
 	commitCmd.PersistentFlags().StringVar(&commitLang, "lang", "en", "summarizing language uses English by default")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
@@ -152,6 +156,10 @@ var commitCmd = &cobra.Command{
 		err = os.WriteFile(viper.GetString("output.file"), []byte(message), 0o644)
 		if err != nil {
 			return err
+		}
+
+		if disableAutoCommit {
+			return nil
 		}
 
 		// git commit automatically
