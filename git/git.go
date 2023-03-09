@@ -72,7 +72,7 @@ func (c *Command) hookPath() *exec.Cmd {
 func (c *Command) commit(val string) *exec.Cmd {
 	args := []string{
 		"commit",
-		"-m",
+		"--file",
 		val,
 	}
 

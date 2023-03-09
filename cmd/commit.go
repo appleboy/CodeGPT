@@ -144,10 +144,10 @@ var commitCmd = &cobra.Command{
 
 		// Output commit summary data from AI
 		color.Yellow("================Commit Summary====================")
-		color.Yellow("\n" + message + "\n\n")
+		color.Yellow("\n" + strings.TrimSpace(message) + "\n\n")
 		color.Yellow("==================================================")
-		color.Cyan("Write the commit message to " + viper.GetString("output.file") + " file")
 
+		color.Cyan("Write the commit message to " + viper.GetString("output.file") + " file")
 		// write commit message to git staging file
 		err = os.WriteFile(viper.GetString("output.file"), []byte(message), 0o644)
 		if err != nil {
@@ -155,11 +155,12 @@ var commitCmd = &cobra.Command{
 		}
 
 		// git commit automatically
-		output, err := g.Commit(message)
+		color.Cyan("Git record changes to the repository")
+		output, err := g.Commit(viper.GetString("output.file"))
 		if err != nil {
 			return err
 		}
-		color.Cyan(output)
+		color.Yellow(output)
 		return nil
 	},
 }
