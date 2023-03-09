@@ -14,7 +14,11 @@ var excludeFromDiff = []string{
 	"go.sum",
 }
 
-func excludeFiles() []string {
+type Command struct {
+	ignoreLists []string
+}
+
+func (c *Command) excludeFiles() []string {
 	newFileLists := []string{}
 	for _, f := range excludeFromDiff {
 		newFileLists = append(newFileLists, ":(exclude)"+f)
@@ -23,14 +27,14 @@ func excludeFiles() []string {
 	return newFileLists
 }
 
-func diffNames() *exec.Cmd {
+func (c *Command) diffNames() *exec.Cmd {
 	args := []string{
 		"diff",
 		"--staged",
 		"--name-only",
 	}
 
-	args = append(args, excludeFiles()...)
+	args = append(args, c.excludeFiles()...)
 
 	return exec.Command(
 		"git",
@@ -38,17 +42,16 @@ func diffNames() *exec.Cmd {
 	)
 }
 
-func diffFiles() *exec.Cmd {
+func (c *Command) diffFiles() *exec.Cmd {
 	args := []string{
 		"diff",
 		"--staged",
 		"--ignore-all-space",
 		"--diff-algorithm=minimal",
 		"--function-context",
-		"--unified=1",
 	}
 
-	args = append(args, excludeFiles()...)
+	args = append(args, c.excludeFiles()...)
 
 	return exec.Command(
 		"git",
@@ -56,7 +59,7 @@ func diffFiles() *exec.Cmd {
 	)
 }
 
-func hookPath() *exec.Cmd {
+func (c *Command) hookPath() *exec.Cmd {
 	args := []string{
 		"rev-parse",
 		"--git-path",
@@ -72,8 +75,8 @@ func hookPath() *exec.Cmd {
 // Diff compares the differences between two sets of data.
 // It returns a string representing the differences and an error.
 // If there are no differences, it returns an empty string and an error.
-func Diff() (string, error) {
-	output, err := diffNames().Output()
+func (c *Command) DiffFiles() (string, error) {
+	output, err := c.diffNames().Output()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,7 +84,7 @@ func Diff() (string, error) {
 		return "", errors.New("please add your staged changes using git add <files...>")
 	}
 
-	output, err = diffFiles().Output()
+	output, err = c.diffFiles().Output()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -90,7 +93,11 @@ func Diff() (string, error) {
 }
 
 // Hook to show git hook path
-func Hook() (string, error) {
-	output, err := hookPath().Output()
+func (c *Command) HookPath() (string, error) {
+	output, err := c.hookPath().Output()
 	return string(output), err
+}
+
+func New() *Command {
+	return &Command{}
 }

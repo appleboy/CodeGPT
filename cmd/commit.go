@@ -38,7 +38,8 @@ var commitCmd = &cobra.Command{
 			return errors.New("To use CodeGPT, you must have git on your PATH")
 		}
 
-		diff, err := git.Diff()
+		g := git.New()
+		diff, err := g.DiffFiles()
 		if err != nil {
 			return err
 		}
