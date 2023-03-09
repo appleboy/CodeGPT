@@ -70,7 +70,7 @@ You can call `codegpt` directly to generate a commit message for your staged cha
 
 ```sh
 git add <files...>
-codegpt commit
+codegpt commit --preview
 ```
 
 The commit message is shown below.
@@ -81,12 +81,10 @@ We are trying to summarize a git diff
 We are trying to summarize a title for pull request
 ================Commit Summary====================
 
-Add OpenAI integration and CLI usage instructions
+feat: Add preview flag and remove disableCommit flag in commit command and template file.
 
-- Add download links for pre-compiled binaries for various platforms
-- Add instructions for setting up OpenAI API key
-- Add CLI usage instructions for generating commit messages with `codegpt`
-- Add references to OpenAI Chat completions documentation and introducing ChatGPT and Whisper APIs
+- Add a `preview` flag to the `commit` command
+- Remove the `disbaleCommit` flag from the `prepare-commit-msg` template file
 
 ==================================================
 Write the commit message to .git/COMMIT_EDITMSG file
@@ -95,7 +93,7 @@ Write the commit message to .git/COMMIT_EDITMSG file
 or translate all git commit messages into a different language (`Traditional Chinese`, `Simplified Chinese` or `Japanese`)
 
 ```sh
-codegpt commit --lang zh-tw
+codegpt commit --lang zh-tw --preview
 ```
 
 Consider the following outcome:
@@ -104,13 +102,13 @@ Consider the following outcome:
 Summarize the commit message use gpt-3.5-turbo model
 We are trying to summarize a git diff
 We are trying to summarize a title for pull request
-We are trying to translate a git commit message to Traditional Chineselanguage
+We are trying to translate a git commit message to Traditional Chinese language
 ================Commit Summary====================
-增加發布頁面改進和CLI模式說明。
 
-- 在發布頁面上增加了不同系統的預編譯二進制文件。
-- 提供設置OpenAI API密鑰的說明。
-- 提供使用CLI模式生成暫存更改的提交消息的說明。
+功能：重構 codegpt commit 命令標記
+
+- 將「codegpt commit」命令新增「預覽」標記
+- 從「codegpt commit」命令中移除「--disableCommit」標記
 
 ==================================================
 Write the commit message to .git/COMMIT_EDITMSG file

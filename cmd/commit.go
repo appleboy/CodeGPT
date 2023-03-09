@@ -20,12 +20,12 @@ var (
 	commitModel string
 
 	// disbale auot commit in Hook mode
-	disableAutoCommit bool
+	preview bool
 )
 
 func init() {
 	commitCmd.PersistentFlags().StringP("file", "f", ".git/COMMIT_EDITMSG", "commit message file")
-	commitCmd.PersistentFlags().BoolVar(&disableAutoCommit, "disbaleCommit", false, "disable auto commit message")
+	commitCmd.PersistentFlags().BoolVar(&preview, "preview", false, "preview commit message")
 	commitCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-3.5-turbo", "select openai model")
 	commitCmd.PersistentFlags().StringVar(&commitLang, "lang", "en", "summarizing language uses English by default")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
@@ -158,7 +158,7 @@ var commitCmd = &cobra.Command{
 			return err
 		}
 
-		if disableAutoCommit {
+		if preview {
 			return nil
 		}
 
