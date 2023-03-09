@@ -99,6 +99,25 @@ var commitCmd = &cobra.Command{
 			return err
 		}
 
+		// support conventional commits
+		out, err = util.GetTemplate(
+			prompt.ConventionalCommitTemplate,
+			util.Data{
+				"summary_points": summarizeDiff,
+			},
+		)
+		if err != nil {
+			return err
+		}
+		conventionalCommitPrefix, err := client.Completion(cmd.Context(), out)
+		if err != nil {
+			return err
+		}
+
+		if conventionalCommitPrefix != "" {
+			summarizeTitle = conventionalCommitPrefix + ": " + summarizeTitle
+		}
+
 		if prompt.GetLanguage(viper.GetString("output.lang")) != prompt.DefaultLanguage {
 			out, err = util.GetTemplate(
 				prompt.TranslationTemplate,
