@@ -10,8 +10,10 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
+// DefaultModel is the default OpenAI model to use if one is not provided.
 var DefaultModel = openai.GPT3Dot5Turbo
 
+// modelMaps maps model names to their corresponding model ID strings.
 var modelMaps = map[string]string{
 	"gpt-3.5-turbo":         openai.GPT3Dot5Turbo,
 	"gpt-3.5-turbo-0301":    openai.GPT3Dot5Turbo0301,
@@ -29,6 +31,8 @@ var modelMaps = map[string]string{
 	"babbage":               openai.GPT3Babbage,
 }
 
+// GetModel returns the model ID corresponding to the given model name.
+// If the model name is not recognized, it returns the default model ID.
 func GetModel(model string) string {
 	v, ok := modelMaps[model]
 	if !ok {
@@ -37,13 +41,13 @@ func GetModel(model string) string {
 	return v
 }
 
-// Clint for OpenAI client interface
+// Client is a struct that represents an OpenAI client.
 type Client struct {
 	client *openai.Client
 	model  string
 }
 
-// CreateChatCompletion — API call to Create a completion for the chat message.
+// CreateChatCompletion is an API call to create a completion for a chat message.
 func (c *Client) CreateChatCompletion(
 	ctx context.Context,
 	content string,
@@ -64,8 +68,9 @@ func (c *Client) CreateChatCompletion(
 	return c.client.CreateChatCompletion(ctx, req)
 }
 
-// CreateCompletion — API call to create a completion. This is the main endpoint of the API. Returns new text as well
-// as, if requested, the probabilities over each alternative token at each position.
+// CreateCompletion is an API call to create a completion.
+// This is the main endpoint of the API. It returns new text, as well as, if requested,
+// the probabilities over each alternative token at each position.
 //
 // If using a fine-tuned model, simply provide the model's ID in the CompletionRequest object,
 // and the server will use the model's parameters to generate the completion.
@@ -84,6 +89,8 @@ func (c *Client) CreateCompletion(
 	return c.client.CreateCompletion(ctx, req)
 }
 
+// Completion is a method on the Client struct that takes a context.Context and a string argument
+// and returns a string and an error.
 func (c *Client) Completion(
 	ctx context.Context,
 	content string,
@@ -106,7 +113,8 @@ func (c *Client) Completion(
 	return message, nil
 }
 
-// New for initialize OpenAI client interface.
+// New is a function that takes a variadic slice of Option types and
+// returns a pointer to a Client and an error.
 func New(opts ...Option) (*Client, error) {
 	cfg := &config{}
 
