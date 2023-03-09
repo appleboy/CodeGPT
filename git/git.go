@@ -2,7 +2,13 @@ package git
 
 import (
 	"errors"
+	"os"
 	"os/exec"
+	"path"
+	"strings"
+
+	"github.com/appleboy/CodeGPT/util"
+	"github.com/appleboy/com/file"
 )
 
 var excludeFromDiff = []string{
@@ -111,10 +117,36 @@ func (c *Command) DiffFiles() (string, error) {
 	return string(output), nil
 }
 
-// Hook to show git hook path
-func (c *Command) HookPath() (string, error) {
-	output, err := c.hookPath().Output()
-	return string(output), err
+func (c *Command) InstallHook() error {
+	hookPath, err := c.hookPath().Output()
+	if err != nil {
+		return err
+	}
+
+	target := path.Join(strings.TrimSpace(string(hookPath)), CommitMessageTemplate)
+	if file.IsFile(target) {
+		return errors.New("hook file prepare-commit-msg exist.")
+	}
+
+	content, err := util.GetTemplate(CommitMessageTemplate, nil)
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(target, []byte(content), 0o755)
+}
+
+func (c *Command) UninstallHook() error {
+	hookPath, err := c.hookPath().Output()
+	if err != nil {
+		return err
+	}
+
+	target := path.Join(strings.TrimSpace(string(hookPath)), CommitMessageTemplate)
+	if !file.IsFile(target) {
+		return errors.New("hook file prepare-commit-msg is not exist.")
+	}
+	return os.Remove(target)
 }
 
 func New() *Command {

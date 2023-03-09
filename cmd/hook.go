@@ -3,7 +3,7 @@ package cmd
 import (
 	"errors"
 
-	"github.com/appleboy/CodeGPT/hook"
+	"github.com/appleboy/CodeGPT/git"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -18,16 +18,18 @@ var hookCmd = &cobra.Command{
 			return errors.New("only support install or uninstall command")
 		}
 
+		g := git.New()
+
 		switch args[0] {
 		case "install":
-			if err := hook.Install(); err != nil {
+			if err := g.InstallHook(); err != nil {
 				return err
 			}
 
 			color.Green("Install git hook: prepare-commit-msg successfully")
 			color.Green("You can see the hook file: .git/hooks/prepare-commit-msg")
 		case "uninstall":
-			if err := hook.Uninstall(); err != nil {
+			if err := g.UninstallHook(); err != nil {
 				return err
 			}
 
