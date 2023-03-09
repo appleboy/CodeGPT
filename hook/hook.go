@@ -28,7 +28,8 @@ func init() {
 }
 
 func Install() error {
-	hookPath, err := git.Hook()
+	g := git.New()
+	hookPath, err := g.HookPath()
 	if err != nil {
 		return err
 	}
@@ -47,7 +48,8 @@ func Install() error {
 }
 
 func Uninstall() error {
-	hookPath, err := git.Hook()
+	g := git.New()
+	hookPath, err := g.HookPath()
 	if err != nil {
 		return err
 	}
