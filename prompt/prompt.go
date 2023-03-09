@@ -11,9 +11,10 @@ import (
 var files embed.FS
 
 const (
-	SummarizeFileDiffTemplate = "summarize_file_diff.tmpl"
-	SummarizeTitleTemplate    = "summarize_title.tmpl"
-	TranslationTemplate       = "translation.tmpl"
+	SummarizeFileDiffTemplate  = "summarize_file_diff.tmpl"
+	SummarizeTitleTemplate     = "summarize_title.tmpl"
+	ConventionalCommitTemplate = "conventional_commit.tmpl"
+	TranslationTemplate        = "translation.tmpl"
 )
 
 func init() {

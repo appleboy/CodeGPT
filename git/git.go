@@ -14,9 +14,7 @@ var excludeFromDiff = []string{
 	"go.sum",
 }
 
-type Command struct {
-	ignoreLists []string
-}
+type Command struct{}
 
 func (c *Command) excludeFiles() []string {
 	newFileLists := []string{}
