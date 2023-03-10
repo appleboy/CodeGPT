@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strconv"
 	"strings"
 
 	"github.com/appleboy/CodeGPT/util"
@@ -20,7 +21,10 @@ var excludeFromDiff = []string{
 	"go.mod",
 }
 
-type Command struct{}
+type Command struct {
+	// Generate diffs with <n> lines of context instead of the usual three
+	diffUnified int
+}
 
 func (c *Command) excludeFiles() []string {
 	newFileLists := []string{}
@@ -52,7 +56,7 @@ func (c *Command) diffFiles() *exec.Cmd {
 		"--staged",
 		"--ignore-all-space",
 		"--diff-algorithm=minimal",
-		"--function-context",
+		"--unified=" + strconv.Itoa(c.diffUnified),
 	}
 
 	args = append(args, c.excludeFiles()...)
@@ -151,6 +155,16 @@ func (c *Command) UninstallHook() error {
 	return os.Remove(target)
 }
 
-func New() *Command {
-	return &Command{}
+func New(opts ...Option) *Command {
+	cfg := &config{}
+
+	// Loop through each option
+	for _, o := range opts {
+		// Call the option giving the instantiated
+		o.apply(cfg)
+	}
+
+	return &Command{
+		diffUnified: cfg.diffUnified,
+	}
 }

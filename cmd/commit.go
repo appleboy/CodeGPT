@@ -19,13 +19,14 @@ var (
 	commitLang  string
 	commitModel string
 
-	// disbale auot commit in Hook mode
-	preview bool
+	preview     bool
+	diffUnified int
 )
 
 func init() {
 	commitCmd.PersistentFlags().StringP("file", "f", ".git/COMMIT_EDITMSG", "commit message file")
 	commitCmd.PersistentFlags().BoolVar(&preview, "preview", false, "preview commit message")
+	commitCmd.PersistentFlags().IntVar(&diffUnified, "diff_unified", 3, "generate diffs with <n> lines of context, default is 3")
 	commitCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-3.5-turbo", "select openai model")
 	commitCmd.PersistentFlags().StringVar(&commitLang, "lang", "en", "summarizing language uses English by default")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
@@ -42,7 +43,13 @@ var commitCmd = &cobra.Command{
 			return errors.New("To use CodeGPT, you must have git on your PATH")
 		}
 
-		g := git.New()
+		if diffUnified != 3 {
+			viper.Set("git.diff_unified", diffUnified)
+		}
+
+		g := git.New(
+			git.WithDiffUnified(viper.GetInt("git.diff_unified")),
+		)
 		diff, err := g.DiffFiles()
 		if err != nil {
 			return err
