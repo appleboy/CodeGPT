@@ -18,11 +18,14 @@ func init() {
 	configCmd.PersistentFlags().StringP("lang", "l", "en", "summarizing language uses English by default")
 	configCmd.PersistentFlags().StringP("org_id", "o", "", "openai requesting organization")
 	configCmd.PersistentFlags().StringP("proxy", "", "", "http proxy")
+	configCmd.PersistentFlags().IntP("diff_unified", "", 3, "generate diffs with <n> lines of context, default is 3")
+
 	_ = viper.BindPFlag("openai.org_id", configCmd.PersistentFlags().Lookup("org_id"))
 	_ = viper.BindPFlag("openai.api_key", configCmd.PersistentFlags().Lookup("api_key"))
 	_ = viper.BindPFlag("openai.model", configCmd.PersistentFlags().Lookup("model"))
 	_ = viper.BindPFlag("openai.proxy", configCmd.PersistentFlags().Lookup("proxy"))
 	_ = viper.BindPFlag("output.lang", configCmd.PersistentFlags().Lookup("lang"))
+	_ = viper.BindPFlag("git.diff_unified", configCmd.PersistentFlags().Lookup("diff_unified"))
 }
 
 var configCmd = &cobra.Command{
