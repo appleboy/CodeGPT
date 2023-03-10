@@ -103,6 +103,9 @@ var commitCmd = &cobra.Command{
 			return err
 		}
 
+		// lowercase the first character of first word of the commit message and remove last period
+		summarizeTitle = strings.TrimRight(strings.ToLower(string(summarizeTitle[0]))+summarizeTitle[1:], ".")
+
 		// support conventional commits
 		out, err = util.GetTemplate(
 			prompt.ConventionalCommitTemplate,

@@ -17,6 +17,7 @@ var excludeFromDiff = []string{
 	// yarn.lock, Cargo.lock, Gemfile.lock, Pipfile.lock, etc.
 	"*.lock",
 	"go.sum",
+	"go.mod",
 }
 
 type Command struct{}
