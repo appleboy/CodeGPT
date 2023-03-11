@@ -174,7 +174,7 @@ var commitCmd = &cobra.Command{
 
 		// git commit automatically
 		color.Cyan("Git record changes to the repository")
-		output, err := g.Commit(viper.GetString("output.file"))
+		output, err := g.Commit(message)
 		if err != nil {
 			return err
 		}

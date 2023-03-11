@@ -2,6 +2,7 @@ package git
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"path"
@@ -84,8 +85,7 @@ func (c *Command) commit(val string) *exec.Cmd {
 	args := []string{
 		"commit",
 		"--no-verify",
-		"--file",
-		val,
+		fmt.Sprintf("--message=%s", val),
 	}
 
 	return exec.Command(
