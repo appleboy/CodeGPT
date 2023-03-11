@@ -24,7 +24,19 @@ func WithDiffUnified(val int) Option {
 	})
 }
 
+// WithExcludeList returns an Option that sets the excludeList field of a config object to the given value.
+func WithExcludeList(val []string) Option {
+	return optionFunc(func(c *config) {
+		// If the given value is empty, do nothing.
+		if len(val) == 0 {
+			return
+		}
+		c.excludeList = val
+	})
+}
+
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
 	diffUnified int
+	excludeList []string
 }

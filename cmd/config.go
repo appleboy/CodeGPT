@@ -19,6 +19,7 @@ func init() {
 	configCmd.PersistentFlags().StringP("org_id", "o", "", "openai requesting organization")
 	configCmd.PersistentFlags().StringP("proxy", "", "", "http proxy")
 	configCmd.PersistentFlags().IntP("diff_unified", "", 3, "generate diffs with <n> lines of context, default is 3")
+	configCmd.PersistentFlags().StringSliceP("exclue_list", "", []string{}, "exclue file list")
 
 	_ = viper.BindPFlag("openai.org_id", configCmd.PersistentFlags().Lookup("org_id"))
 	_ = viper.BindPFlag("openai.api_key", configCmd.PersistentFlags().Lookup("api_key"))
@@ -26,6 +27,7 @@ func init() {
 	_ = viper.BindPFlag("openai.proxy", configCmd.PersistentFlags().Lookup("proxy"))
 	_ = viper.BindPFlag("output.lang", configCmd.PersistentFlags().Lookup("lang"))
 	_ = viper.BindPFlag("git.diff_unified", configCmd.PersistentFlags().Lookup("diff_unified"))
+	_ = viper.BindPFlag("git.exclue_list", configCmd.PersistentFlags().Lookup("exclue_list"))
 }
 
 var configCmd = &cobra.Command{

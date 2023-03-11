@@ -21,6 +21,7 @@ var (
 
 	preview     bool
 	diffUnified int
+	excludeList []string
 )
 
 func init() {
@@ -29,6 +30,7 @@ func init() {
 	commitCmd.PersistentFlags().IntVar(&diffUnified, "diff_unified", 3, "generate diffs with <n> lines of context, default is 3")
 	commitCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-3.5-turbo", "select openai model")
 	commitCmd.PersistentFlags().StringVar(&commitLang, "lang", "en", "summarizing language uses English by default")
+	commitCmd.PersistentFlags().StringSliceVar(&excludeList, "exludeList", []string{}, "exclue file list")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
 
@@ -47,8 +49,13 @@ var commitCmd = &cobra.Command{
 			viper.Set("git.diff_unified", diffUnified)
 		}
 
+		if len(excludeList) > 0 {
+			viper.Set("git.exclue_list", excludeList)
+		}
+
 		g := git.New(
 			git.WithDiffUnified(viper.GetInt("git.diff_unified")),
+			git.WithExcludeList(viper.GetStringSlice("git.exclue_list")),
 		)
 		diff, err := g.DiffFiles()
 		if err != nil {
