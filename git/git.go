@@ -19,17 +19,17 @@ var excludeFromDiff = []string{
 	// yarn.lock, Cargo.lock, Gemfile.lock, Pipfile.lock, etc.
 	"*.lock",
 	"go.sum",
-	"go.mod",
 }
 
 type Command struct {
 	// Generate diffs with <n> lines of context instead of the usual three
 	diffUnified int
+	excludeList []string
 }
 
 func (c *Command) excludeFiles() []string {
 	newFileLists := []string{}
-	for _, f := range excludeFromDiff {
+	for _, f := range c.excludeList {
 		newFileLists = append(newFileLists, ":(exclude)"+f)
 	}
 
@@ -166,5 +166,6 @@ func New(opts ...Option) *Command {
 
 	return &Command{
 		diffUnified: cfg.diffUnified,
+		excludeList: append(excludeFromDiff, cfg.excludeList...),
 	}
 }
