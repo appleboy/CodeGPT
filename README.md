@@ -8,6 +8,10 @@
 
 A CLI written in [Go](https://go.dev) language that writes git commit messages for you using ChatGPT AI (gpt-3.5-turbo model) and automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
 
+[繁體中文介紹][1]
+
+[1]:https://blog.wu-boy.com/2023/03/writes-git-commit-messages-using-chatgpt/
+
 ## Installation
 
 Currently, the only supported method of installation on MacOS is [Homebrew](http://brew.sh/). To install `codegpt` via brew:
