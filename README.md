@@ -10,6 +10,13 @@ A CLI written in [Go](https://go.dev) language that writes git commit messages f
 
 ## Installation
 
+Currently, the only supported method of installation on MacOS is [Homebrew](http://brew.sh/). To install `codegpt` via brew:
+
+```sh
+brew tap appleboy/tap
+brew install codegpt
+```
+
 The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/CodeGPT/releases).
 
 On linux AMD64
