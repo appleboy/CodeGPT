@@ -22,32 +22,32 @@ The pre-compiled binaries can be downloaded from [release page](https://github.c
 On linux AMD64
 
 ```sh
-wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.7/CodeGPT-0.0.7-linux-amd64 -O codegpt
+wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.8/CodeGPT-0.0.8-linux-amd64 -O codegpt
 ```
 
 On macOS (Intel amd64)
 
 ```sh
-wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.7/CodeGPT-0.0.7-darwin-amd64 -O codegpt
+wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.8/CodeGPT-0.0.8-darwin-amd64 -O codegpt
 ```
 
 On macOS (Apple arm64)
 
 ```sh
-wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.7/CodeGPT-0.0.7-darwin-arm64 -O codegpt
+wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.8/CodeGPT-0.0.8-darwin-arm64 -O codegpt
 ```
 
 On Windows (AMD64)
 
 ```sh
-wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.7/CodeGPT-0.0.7-windows-amd64.exe -O codegpt.exe
+wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.0.8/CodeGPT-0.0.8-windows-amd64.exe -O codegpt.exe
 ```
 
 Change the binary permissions to `755` and copy the binary to the system bin directory. Use the `codegpt` command as shown below.
 
 ```sh
 $ codegpt version
-version: v0.0.7 commit: xxxxxxx
+version: v0.0.8 commit: xxxxxxx
 ```
 
 ## Setup
