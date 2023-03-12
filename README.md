@@ -56,6 +56,14 @@ Please first create your OpenAI API Key. The [OpenAI Platform](https://platform.
 
 ![register](./images/register.png)
 
+An environment variable is a variable that is set on your operating system, rather than within your application. It consists of a name and value.We recommend that you set the name of the variable to OPENAI_API_KEY.
+
+```sh
+export OPENAI_API_KEY=sk-xxxxxxx
+```
+
+or store your API key in custom config file.
+
 ```sh
 codegpt config set openai.api_key sk-xxxxxxx
 ```
