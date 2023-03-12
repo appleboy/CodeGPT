@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/appleboy/com/file"
 	"github.com/spf13/cobra"
@@ -20,7 +21,8 @@ var rootCmd = &cobra.Command{
 
 // Used for flags.
 var (
-	cfgFile string
+	cfgFile  string
+	replacer = strings.NewReplacer("-", "_", ".", "_")
 )
 
 func init() {
@@ -66,6 +68,7 @@ func initConfig() {
 		}
 	}
 
+	viper.SetEnvKeyReplacer(replacer)
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
