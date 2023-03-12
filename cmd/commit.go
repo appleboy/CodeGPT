@@ -50,12 +50,12 @@ var commitCmd = &cobra.Command{
 		}
 
 		if len(excludeList) > 0 {
-			viper.Set("git.exclue_list", excludeList)
+			viper.Set("git.exclude_list", excludeList)
 		}
 
 		g := git.New(
 			git.WithDiffUnified(viper.GetInt("git.diff_unified")),
-			git.WithExcludeList(viper.GetStringSlice("git.exclue_list")),
+			git.WithExcludeList(viper.GetStringSlice("git.exclude_list")),
 		)
 		diff, err := g.DiffFiles()
 		if err != nil {

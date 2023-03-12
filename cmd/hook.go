@@ -25,14 +25,12 @@ var hookCmd = &cobra.Command{
 			if err := g.InstallHook(); err != nil {
 				return err
 			}
-
 			color.Green("Install git hook: prepare-commit-msg successfully")
 			color.Green("You can see the hook file: .git/hooks/prepare-commit-msg")
 		case "uninstall":
 			if err := g.UninstallHook(); err != nil {
 				return err
 			}
-
 			color.Green("Remove git hook: prepare-commit-msg successfully")
 		}
 
