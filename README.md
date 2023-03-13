@@ -80,7 +80,8 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 * **openai.org_id**: Identifier for this organization sometimes used in API requests. see [organization settings](https://platform.openai.com/account/org-settings).
 * **openai.model**: default model is `gpt-3.5-turbo`, you can change to `text-davinci-003` or [other available model list](https://github.com/appleboy/CodeGPT/blob/a75ed831ce30c5c593613b9c0792954586d7f399/openai/openai.go#L16-L29).
 * **openai.lang**: default language is `en` and available languages `zh-tw`, `zh-tw`, `ja`.
-* **openai.proxy**: set http client proxy.
+* **openai.proxy**: http/https client proxy.
+* **openai.socks**: socks client proxy.
 * **git.diff_unified**: generate diffs with `<n>` lines of context, default is `3`.
 * **git.exclue_list**: exclude file from `git diff` command.
 
