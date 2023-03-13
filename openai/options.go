@@ -45,10 +45,18 @@ func WithProxyURL(val string) Option {
 	})
 }
 
+// WithSocksURL is a function that returns an Option, which sets the socksURL field of the config struct.
+func WithSocksURL(val string) Option {
+	return optionFunc(func(c *config) {
+		c.socksURL = val
+	})
+}
+
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
 	token    string
 	orgID    string
 	model    string
 	proxyURL string
+	socksURL string
 }

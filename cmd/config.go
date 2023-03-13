@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var availableKeys = []string{"openai.api_key", "openai.model", "openai.org_id", "openai.proxy", "output.lang"}
+var availableKeys = []string{"openai.socks", "openai.api_key", "openai.model", "openai.org_id", "openai.proxy", "output.lang"}
 
 func init() {
 	configCmd.PersistentFlags().StringP("api_key", "k", "", "openai api key")
@@ -18,6 +18,7 @@ func init() {
 	configCmd.PersistentFlags().StringP("lang", "l", "en", "summarizing language uses English by default")
 	configCmd.PersistentFlags().StringP("org_id", "o", "", "openai requesting organization")
 	configCmd.PersistentFlags().StringP("proxy", "", "", "http proxy")
+	configCmd.PersistentFlags().StringP("socks", "", "", "socks proxy")
 	configCmd.PersistentFlags().IntP("diff_unified", "", 3, "generate diffs with <n> lines of context, default is 3")
 	configCmd.PersistentFlags().StringSliceP("exclude_list", "", []string{}, "exclude file from `git diff` command")
 
@@ -25,6 +26,7 @@ func init() {
 	_ = viper.BindPFlag("openai.api_key", configCmd.PersistentFlags().Lookup("api_key"))
 	_ = viper.BindPFlag("openai.model", configCmd.PersistentFlags().Lookup("model"))
 	_ = viper.BindPFlag("openai.proxy", configCmd.PersistentFlags().Lookup("proxy"))
+	_ = viper.BindPFlag("openai.socks", configCmd.PersistentFlags().Lookup("socks"))
 	_ = viper.BindPFlag("output.lang", configCmd.PersistentFlags().Lookup("lang"))
 	_ = viper.BindPFlag("git.diff_unified", configCmd.PersistentFlags().Lookup("diff_unified"))
 	_ = viper.BindPFlag("git.exclude_list", configCmd.PersistentFlags().Lookup("exclude_list"))

@@ -3,11 +3,13 @@ package openai
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"time"
 
 	openai "github.com/sashabaranov/go-openai"
+	"golang.org/x/net/proxy"
 )
 
 // DefaultModel is the default OpenAI model to use if one is not provided.
@@ -140,17 +142,25 @@ func New(opts ...Option) (*Client, error) {
 		c.OrgID = cfg.orgID
 	}
 
+	httpClient := &http.Client{
+		Timeout: time.Second * 10,
+	}
 	if cfg.proxyURL != "" {
-		httpClient := &http.Client{
-			Timeout: time.Second * 10,
-		}
 		proxy, _ := url.Parse(cfg.proxyURL)
 		httpClient.Transport = &http.Transport{
 			Proxy: http.ProxyURL(proxy),
 		}
-		c.HTTPClient = httpClient
+	} else if cfg.socksURL != "" {
+		dialer, err := proxy.SOCKS5("tcp", cfg.socksURL, nil, proxy.Direct)
+		if err != nil {
+			return nil, fmt.Errorf("can't connect to the proxy: %s", err)
+		}
+		httpClient.Transport = &http.Transport{
+			Dial: dialer.Dial,
+		}
 	}
 
+	c.HTTPClient = httpClient
 	instance.client = openai.NewClientWithConfig(c)
 
 	return instance, nil
