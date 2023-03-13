@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/appleboy/com v0.1.7
 	github.com/fatih/color v1.14.1
-	github.com/sashabaranov/go-openai v1.4.1
+	github.com/sashabaranov/go-openai v1.5.0
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
 	golang.org/x/net v0.4.0
