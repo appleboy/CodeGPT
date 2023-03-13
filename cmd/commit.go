@@ -22,6 +22,8 @@ var (
 	preview     bool
 	diffUnified int
 	excludeList []string
+	httpsProxy  string
+	socksProxy  string
 )
 
 func init() {
@@ -31,6 +33,8 @@ func init() {
 	commitCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-3.5-turbo", "select openai model")
 	commitCmd.PersistentFlags().StringVar(&commitLang, "lang", "en", "summarizing language uses English by default")
 	commitCmd.PersistentFlags().StringSliceVar(&excludeList, "exclude_list", []string{}, "exclude file from git diff command")
+	commitCmd.PersistentFlags().StringVar(&httpsProxy, "proxy", "", "http proxy")
+	commitCmd.PersistentFlags().StringVar(&socksProxy, "socks", "", "socks proxy")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
 
@@ -70,6 +74,14 @@ var commitCmd = &cobra.Command{
 		// check default model
 		if openai.GetModel(commitModel) != openai.DefaultModel {
 			viper.Set("openai.model", commitModel)
+		}
+
+		if httpsProxy != "" {
+			viper.Set("openai.proxy", httpsProxy)
+		}
+
+		if socksProxy != "" {
+			viper.Set("openai.socks", socksProxy)
 		}
 
 		color.Green("Summarize the commit message use " + viper.GetString("openai.model") + " model")
