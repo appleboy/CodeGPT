@@ -81,11 +81,21 @@ func (c *Command) hookPath() *exec.Cmd {
 	)
 }
 
-func (c *Command) commit(val string) *exec.Cmd {
+type CommitOption struct {
+	SignOff bool
+}
+
+func (c *Command) commit(val string, opt *CommitOption) *exec.Cmd {
 	args := []string{
 		"commit",
 		"--no-verify",
 		fmt.Sprintf("--message=%s", val),
+	}
+
+	if opt != nil {
+		if opt.SignOff {
+			args = append(args, "--signoff")
+		}
 	}
 
 	return exec.Command(
@@ -94,8 +104,8 @@ func (c *Command) commit(val string) *exec.Cmd {
 	)
 }
 
-func (c *Command) Commit(val string) (string, error) {
-	output, err := c.commit(val).Output()
+func (c *Command) Commit(val string, opt *CommitOption) (string, error) {
+	output, err := c.commit(val, opt).Output()
 	if err != nil {
 		return "", err
 	}

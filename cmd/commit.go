@@ -25,6 +25,7 @@ var (
 	excludeList []string
 	httpsProxy  string
 	socksProxy  string
+	signoff     bool
 )
 
 func init() {
@@ -36,6 +37,7 @@ func init() {
 	commitCmd.PersistentFlags().StringSliceVar(&excludeList, "exclude_list", []string{}, "exclude file from git diff command")
 	commitCmd.PersistentFlags().StringVar(&httpsProxy, "proxy", "", "http proxy")
 	commitCmd.PersistentFlags().StringVar(&socksProxy, "socks", "", "socks proxy")
+	commitCmd.PersistentFlags().BoolVarP(&signoff, "signoff", "s", false, "add Signed-off-by line at the end of the commit message")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
 
@@ -216,7 +218,9 @@ var commitCmd = &cobra.Command{
 
 		// git commit automatically
 		color.Cyan("Git record changes to the repository")
-		output, err := g.Commit(message)
+		output, err := g.Commit(message, &git.CommitOption{
+			SignOff: signoff,
+		})
 		if err != nil {
 			return err
 		}
