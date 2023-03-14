@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/appleboy/CodeGPT/git"
@@ -108,10 +109,15 @@ var commitCmd = &cobra.Command{
 
 		// Get summarize comment from diff datas
 		color.Cyan("We are trying to summarize a git diff")
-		summarizeDiff, err := client.Completion(cmd.Context(), out)
+		resp, err := client.Completion(cmd.Context(), out)
 		if err != nil {
 			return err
 		}
+		summarizeDiff := resp.Content
+		color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
+			", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
+			", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
+		)
 
 		out, err = util.GetTemplate(
 			prompt.SummarizeTitleTemplate,
@@ -125,10 +131,15 @@ var commitCmd = &cobra.Command{
 
 		// Get summarize title from diff datas
 		color.Cyan("We are trying to summarize a title for pull request")
-		summarizeTitle, err := client.Completion(cmd.Context(), out)
+		resp, err = client.Completion(cmd.Context(), out)
 		if err != nil {
 			return err
 		}
+		summarizeTitle := resp.Content
+		color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
+			", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
+			", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
+		)
 
 		// lowercase the first character of first word of the commit message and remove last period
 		summarizeTitle = strings.TrimRight(strings.ToLower(string(summarizeTitle[0]))+summarizeTitle[1:], ".")
@@ -143,10 +154,16 @@ var commitCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		conventionalCommitPrefix, err := client.Completion(cmd.Context(), out)
+		color.Cyan("We are trying to get conventional commit prefix")
+		resp, err = client.Completion(cmd.Context(), out)
 		if err != nil {
 			return err
 		}
+		conventionalCommitPrefix := resp.Content
+		color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
+			", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
+			", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
+		)
 
 		if conventionalCommitPrefix != "" {
 			summarizeTitle = conventionalCommitPrefix + ": " + summarizeTitle
@@ -167,10 +184,15 @@ var commitCmd = &cobra.Command{
 
 			// translate a git commit message
 			color.Cyan("We are trying to translate a git commit message to " + prompt.GetLanguage(viper.GetString("output.lang")) + " language")
-			summarize, err := client.Completion(cmd.Context(), out)
+			resp, err := client.Completion(cmd.Context(), out)
 			if err != nil {
 				return err
 			}
+			summarize := resp.Content
+			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
+				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
+				", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
+			)
 			message = summarize
 		} else {
 			message = strings.TrimSpace(summarizeTitle) + "\n\n" + strings.TrimSpace(summarizeDiff)

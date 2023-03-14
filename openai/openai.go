@@ -49,6 +49,11 @@ type Client struct {
 	model  string
 }
 
+type Response struct {
+	Content string
+	Usage   openai.Usage
+}
+
 // CreateChatCompletion is an API call to create a completion for a chat message.
 func (c *Client) CreateChatCompletion(
 	ctx context.Context,
@@ -96,23 +101,25 @@ func (c *Client) CreateCompletion(
 func (c *Client) Completion(
 	ctx context.Context,
 	content string,
-) (string, error) {
-	var message string
+) (*Response, error) {
+	resp := &Response{}
 	switch c.model {
 	case openai.GPT3Dot5Turbo, openai.GPT3Dot5Turbo0301:
-		resp, err := c.CreateChatCompletion(ctx, content)
+		r, err := c.CreateChatCompletion(ctx, content)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
-		message = resp.Choices[0].Message.Content
+		resp.Content = r.Choices[0].Message.Content
+		resp.Usage = r.Usage
 	default:
-		resp, err := c.CreateCompletion(ctx, content)
+		r, err := c.CreateCompletion(ctx, content)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
-		message = resp.Choices[0].Text
+		resp.Content = r.Choices[0].Text
+		resp.Usage = r.Usage
 	}
-	return message, nil
+	return resp, nil
 }
 
 // New is a function that takes a variadic slice of Option types and
