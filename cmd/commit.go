@@ -43,8 +43,6 @@ var commitCmd = &cobra.Command{
 	Use:   "commit",
 	Short: "Auto generate commit message",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		var message string
-
 		// check git command exist
 		if !util.IsCommandAvailable("git") {
 			return errors.New("To use CodeGPT, you must have git on your PATH")
@@ -169,13 +167,24 @@ var commitCmd = &cobra.Command{
 			summarizeTitle = summarizePrefix + ": " + summarizeTitle
 		}
 
+		commitMessage, err := util.GetTemplate(
+			git.CommitMessageTemplate,
+			util.Data{
+				"summarize_prefix":  strings.TrimSpace(summarizePrefix),
+				"summarize_title":   strings.TrimSpace(summarizeTitle),
+				"summarize_message": strings.TrimSpace(summarizeMessage),
+			},
+		)
+		if err != nil {
+			return err
+		}
+
 		if prompt.GetLanguage(viper.GetString("output.lang")) != prompt.DefaultLanguage {
 			out, err = util.GetTemplate(
 				prompt.TranslationTemplate,
 				util.Data{
 					"output_language": prompt.GetLanguage(viper.GetString("output.lang")),
-					"commit_title":    summarizeTitle,
-					"commit_message":  summarizeMessage,
+					"output_message":  commitMessage,
 				},
 			)
 			if err != nil {
@@ -188,24 +197,21 @@ var commitCmd = &cobra.Command{
 			if err != nil {
 				return err
 			}
-			summarize := resp.Content
 			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
 				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
 				", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
 			)
-			message = summarize
-		} else {
-			message = strings.TrimSpace(summarizeTitle) + "\n\n" + strings.TrimSpace(summarizeMessage)
+			commitMessage = resp.Content
 		}
 
 		// Output commit summary data from AI
 		color.Yellow("================Commit Summary====================")
-		color.Yellow("\n" + strings.TrimSpace(message) + "\n\n")
+		color.Yellow("\n" + strings.TrimSpace(commitMessage) + "\n\n")
 		color.Yellow("==================================================")
 
 		color.Cyan("Write the commit message to " + viper.GetString("output.file") + " file")
 		// write commit message to git staging file
-		err = os.WriteFile(viper.GetString("output.file"), []byte(message), 0o644)
+		err = os.WriteFile(viper.GetString("output.file"), []byte(commitMessage), 0o644)
 		if err != nil {
 			return err
 		}
@@ -216,7 +222,7 @@ var commitCmd = &cobra.Command{
 
 		// git commit automatically
 		color.Cyan("Git record changes to the repository")
-		output, err := g.Commit(message)
+		output, err := g.Commit(commitMessage)
 		if err != nil {
 			return err
 		}

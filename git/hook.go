@@ -11,7 +11,8 @@ import (
 var files embed.FS
 
 const (
-	CommitMessageTemplate = "prepare-commit-msg"
+	HookPrepareCommitMessageTemplate = "prepare-commit-msg"
+	CommitMessageTemplate            = "commit-msg.tmpl"
 )
 
 func init() {

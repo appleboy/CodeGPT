@@ -130,12 +130,12 @@ func (c *Command) InstallHook() error {
 		return err
 	}
 
-	target := path.Join(strings.TrimSpace(string(hookPath)), CommitMessageTemplate)
+	target := path.Join(strings.TrimSpace(string(hookPath)), HookPrepareCommitMessageTemplate)
 	if file.IsFile(target) {
 		return errors.New("hook file prepare-commit-msg exist.")
 	}
 
-	content, err := util.GetTemplate(CommitMessageTemplate, nil)
+	content, err := util.GetTemplate(HookPrepareCommitMessageTemplate, nil)
 	if err != nil {
 		return err
 	}
@@ -149,7 +149,7 @@ func (c *Command) UninstallHook() error {
 		return err
 	}
 
-	target := path.Join(strings.TrimSpace(string(hookPath)), CommitMessageTemplate)
+	target := path.Join(strings.TrimSpace(string(hookPath)), HookPrepareCommitMessageTemplate)
 	if !file.IsFile(target) {
 		return errors.New("hook file prepare-commit-msg is not exist.")
 	}
