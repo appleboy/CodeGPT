@@ -12,6 +12,15 @@ A CLI written in [Go](https://go.dev) language that writes git commit messages f
 
 [1]:https://blog.wu-boy.com/2023/03/writes-git-commit-messages-using-chatgpt/
 
+## Feature
+
+* Support [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
+* Support Git prepare-commit-msg Hook, see the [Git Hooks documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
+* Support customize generate diffs with n lines of context, default is 3.
+* Support exclude file list from git diff command.
+* Support translate commit message to another language (support `en`, `zh-tw` or `zh-cn`).
+* Support custom network http proxy or socks proxy.
+
 ## Installation
 
 Currently, the only supported method of installation on MacOS is [Homebrew](http://brew.sh/). To install `codegpt` via brew:
