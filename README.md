@@ -16,10 +16,10 @@ A CLI written in [Go](https://go.dev) language that writes git commit messages f
 
 * Support [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
 * Support Git prepare-commit-msg Hook, see the [Git Hooks documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
-* Support customize generate diffs with n lines of context, default is 3.
-* Support exclude file list from git diff command.
-* Support translate commit message to another language (support `en`, `zh-tw` or `zh-cn`).
-* Support custom network http proxy or socks proxy.
+* Support customize generate diffs with n lines of context, the default is three.
+* Support for excluding files from the git diff command.
+* Support commit message translation into another language (support `en`, `zh-tw` or `zh-cn`).
+* Support socks proxy or custom network http proxy.
 
 ## Installation
 
