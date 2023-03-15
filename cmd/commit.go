@@ -163,10 +163,6 @@ var commitCmd = &cobra.Command{
 			", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
 		)
 
-		if summarizePrefix != "" {
-			summarizeTitle = summarizePrefix + ": " + summarizeTitle
-		}
-
 		commitMessage, err := util.GetTemplate(
 			git.CommitMessageTemplate,
 			util.Data{
