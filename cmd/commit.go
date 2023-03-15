@@ -113,7 +113,7 @@ var commitCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		summarizeDiff := resp.Content
+		summarizeMessage := resp.Content
 		color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
 			", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
 			", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
@@ -122,7 +122,7 @@ var commitCmd = &cobra.Command{
 		out, err = util.GetTemplate(
 			prompt.SummarizeTitleTemplate,
 			util.Data{
-				"summary_points": summarizeDiff,
+				"summary_points": summarizeMessage,
 			},
 		)
 		if err != nil {
@@ -148,7 +148,7 @@ var commitCmd = &cobra.Command{
 		out, err = util.GetTemplate(
 			prompt.ConventionalCommitTemplate,
 			util.Data{
-				"summary_points": summarizeDiff,
+				"summary_points": summarizeMessage,
 			},
 		)
 		if err != nil {
@@ -159,14 +159,14 @@ var commitCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		conventionalCommitPrefix := resp.Content
+		summarizePrefix := resp.Content
 		color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
 			", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
 			", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
 		)
 
-		if conventionalCommitPrefix != "" {
-			summarizeTitle = conventionalCommitPrefix + ": " + summarizeTitle
+		if summarizePrefix != "" {
+			summarizeTitle = summarizePrefix + ": " + summarizeTitle
 		}
 
 		if prompt.GetLanguage(viper.GetString("output.lang")) != prompt.DefaultLanguage {
@@ -175,7 +175,7 @@ var commitCmd = &cobra.Command{
 				util.Data{
 					"output_language": prompt.GetLanguage(viper.GetString("output.lang")),
 					"commit_title":    summarizeTitle,
-					"commit_message":  summarizeDiff,
+					"commit_message":  summarizeMessage,
 				},
 			)
 			if err != nil {
@@ -195,7 +195,7 @@ var commitCmd = &cobra.Command{
 			)
 			message = summarize
 		} else {
-			message = strings.TrimSpace(summarizeTitle) + "\n\n" + strings.TrimSpace(summarizeDiff)
+			message = strings.TrimSpace(summarizeTitle) + "\n\n" + strings.TrimSpace(summarizeMessage)
 		}
 
 		// Output commit summary data from AI
