@@ -10,6 +10,7 @@ import (
 	"github.com/appleboy/CodeGPT/openai"
 	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/util"
+	"github.com/appleboy/com/file"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -20,11 +21,13 @@ var (
 	commitLang  string
 	commitModel string
 
-	preview     bool
-	diffUnified int
-	excludeList []string
-	httpsProxy  string
-	socksProxy  string
+	preview        bool
+	diffUnified    int
+	excludeList    []string
+	httpsProxy     string
+	socksProxy     string
+	templateFile   string
+	templateString string
 )
 
 func init() {
@@ -36,6 +39,8 @@ func init() {
 	commitCmd.PersistentFlags().StringSliceVar(&excludeList, "exclude_list", []string{}, "exclude file from git diff command")
 	commitCmd.PersistentFlags().StringVar(&httpsProxy, "proxy", "", "http proxy")
 	commitCmd.PersistentFlags().StringVar(&socksProxy, "socks", "", "socks proxy")
+	commitCmd.PersistentFlags().StringVar(&templateFile, "template_file", "", "git commit message file")
+	commitCmd.PersistentFlags().StringVar(&templateString, "template_string", "", "git commit message string")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
 
@@ -54,6 +59,20 @@ var commitCmd = &cobra.Command{
 
 		if len(excludeList) > 0 {
 			viper.Set("git.exclude_list", excludeList)
+		}
+
+		if templateFile != "" {
+			viper.Set("git.template_file", templateFile)
+		}
+
+		if templateString != "" {
+			viper.Set("git.template_string", templateString)
+		}
+
+		if viper.GetString("git.template_file") != "" {
+			if !file.IsFile(viper.GetString("git.template_file")) {
+				return errors.New("template file not found: " + viper.GetString("git.template_file"))
+			}
 		}
 
 		g := git.New(
@@ -163,16 +182,40 @@ var commitCmd = &cobra.Command{
 			", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
 		)
 
-		commitMessage, err := util.GetTemplateByString(
-			git.CommitMessageTemplate,
-			util.Data{
-				"summarize_prefix":  strings.TrimSpace(summarizePrefix),
-				"summarize_title":   strings.TrimSpace(summarizeTitle),
-				"summarize_message": strings.TrimSpace(summarizeMessage),
-			},
-		)
-		if err != nil {
-			return err
+		var commitMessage string
+		data := util.Data{
+			"summarize_prefix":  strings.TrimSpace(summarizePrefix),
+			"summarize_title":   strings.TrimSpace(summarizeTitle),
+			"summarize_message": strings.TrimSpace(summarizeMessage),
+		}
+		if viper.GetString("git.template_file") != "" {
+			format, err := os.ReadFile(viper.GetString("git.template_file"))
+			if err != nil {
+				return err
+			}
+			commitMessage, err = util.NewTemplateByString(
+				string(format),
+				data,
+			)
+			if err != nil {
+				return err
+			}
+		} else if viper.GetString("git.template_string") != "" {
+			commitMessage, err = util.NewTemplateByString(
+				viper.GetString("git.template_string"),
+				data,
+			)
+			if err != nil {
+				return err
+			}
+		} else {
+			commitMessage, err = util.GetTemplateByString(
+				git.CommitMessageTemplate,
+				data,
+			)
+			if err != nil {
+				return err
+			}
 		}
 
 		if prompt.GetLanguage(viper.GetString("output.lang")) != prompt.DefaultLanguage {

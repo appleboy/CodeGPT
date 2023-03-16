@@ -16,6 +16,21 @@ var (
 	templatesDir = "templates"
 )
 
+func NewTemplateByString(format string, data map[string]interface{}) (string, error) {
+	t, err := template.New("message").Parse(format)
+	if err != nil {
+		return "", err
+	}
+
+	var tpl bytes.Buffer
+
+	if err := t.Execute(&tpl, data); err != nil {
+		return "", err
+	}
+
+	return tpl.String(), nil
+}
+
 func processTemplate(name string, data map[string]interface{}) (*bytes.Buffer, error) {
 	t, ok := templates[name]
 	if !ok {
