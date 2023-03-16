@@ -135,12 +135,12 @@ func (c *Command) InstallHook() error {
 		return errors.New("hook file prepare-commit-msg exist.")
 	}
 
-	content, err := util.GetTemplate(HookPrepareCommitMessageTemplate, nil)
+	content, err := util.GetTemplateByBytes(HookPrepareCommitMessageTemplate, nil)
 	if err != nil {
 		return err
 	}
 
-	return os.WriteFile(target, []byte(content), 0o755)
+	return os.WriteFile(target, content, 0o755)
 }
 
 func (c *Command) UninstallHook() error {

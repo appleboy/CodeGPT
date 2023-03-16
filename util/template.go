@@ -16,20 +16,31 @@ var (
 	templatesDir = "templates"
 )
 
-// GetTemplate returns the parsed template as a string.
-func GetTemplate(name string, data map[string]interface{}) (string, error) {
+func processTemplate(name string, data map[string]interface{}) (*bytes.Buffer, error) {
 	t, ok := templates[name]
 	if !ok {
-		return "", fmt.Errorf("template %s not found", name)
+		return nil, fmt.Errorf("template %s not found", name)
 	}
 
 	var tpl bytes.Buffer
 
 	if err := t.Execute(&tpl, data); err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return tpl.String(), nil
+	return &tpl, nil
+}
+
+// GetTemplateByString returns the parsed template as a string.
+func GetTemplateByString(name string, data map[string]interface{}) (string, error) {
+	tpl, err := processTemplate(name, data)
+	return tpl.String(), err
+}
+
+// GetTemplateByBytes returns the parsed template as a byte.
+func GetTemplateByBytes(name string, data map[string]interface{}) ([]byte, error) {
+	tpl, err := processTemplate(name, data)
+	return tpl.Bytes(), err
 }
 
 // LoadTemplates loads all the templates found in the templates directory.

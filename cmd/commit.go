@@ -95,7 +95,7 @@ var commitCmd = &cobra.Command{
 			return err
 		}
 
-		out, err := util.GetTemplate(
+		out, err := util.GetTemplateByString(
 			prompt.SummarizeFileDiffTemplate,
 			util.Data{
 				"file_diffs": diff,
@@ -117,7 +117,7 @@ var commitCmd = &cobra.Command{
 			", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
 		)
 
-		out, err = util.GetTemplate(
+		out, err = util.GetTemplateByString(
 			prompt.SummarizeTitleTemplate,
 			util.Data{
 				"summary_points": summarizeMessage,
@@ -143,7 +143,7 @@ var commitCmd = &cobra.Command{
 		summarizeTitle = strings.TrimRight(strings.ToLower(string(summarizeTitle[0]))+summarizeTitle[1:], ".")
 
 		// support conventional commits
-		out, err = util.GetTemplate(
+		out, err = util.GetTemplateByString(
 			prompt.ConventionalCommitTemplate,
 			util.Data{
 				"summary_points": summarizeMessage,
@@ -163,7 +163,7 @@ var commitCmd = &cobra.Command{
 			", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
 		)
 
-		commitMessage, err := util.GetTemplate(
+		commitMessage, err := util.GetTemplateByString(
 			git.CommitMessageTemplate,
 			util.Data{
 				"summarize_prefix":  strings.TrimSpace(summarizePrefix),
@@ -176,7 +176,7 @@ var commitCmd = &cobra.Command{
 		}
 
 		if prompt.GetLanguage(viper.GetString("output.lang")) != prompt.DefaultLanguage {
-			out, err = util.GetTemplate(
+			out, err = util.GetTemplateByString(
 				prompt.TranslationTemplate,
 				util.Data{
 					"output_language": prompt.GetLanguage(viper.GetString("output.lang")),
