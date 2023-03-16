@@ -148,6 +148,29 @@ We are trying to translate a git commit message to Traditional Chinese language
 Write the commit message to .git/COMMIT_EDITMSG file
 ```
 
+## Change commit message template
+
+Default commit message template as following:
+
+```tmpl
+{{ .summarize_prefix }}: {{ .summarize_title }}
+
+{{ .summarize_message }}
+```
+
+change format with template string using `--template_string` paratemter:
+
+```sh
+codegpt commit --preview --template_string \
+  "[{{ .summarize_prefix }}]: {{ .summarize_title }}"
+```
+
+change format with template file using `--template_file` parameter:
+
+```sh
+codegpt commit --preview --template_file your_file_path
+```
+
 ### Git hook
 
 You can also use the prepare-commit-msg hook to integrate `codegpt` with Git. This allows you to use Git normally and edit the commit message before committing.
