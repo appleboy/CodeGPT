@@ -148,6 +148,12 @@ We are trying to translate a git commit message to Traditional Chinese language
 Write the commit message to .git/COMMIT_EDITMSG file
 ```
 
+You can replace the tip of the current branch by creating a new commit. just use `--anmed` flag
+
+```sh
+codegpt commit --anmed
+```
+
 ## Change commit message template
 
 Default commit message template as following:
