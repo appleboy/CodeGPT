@@ -25,6 +25,7 @@ type Command struct {
 	// Generate diffs with <n> lines of context instead of the usual three
 	diffUnified int
 	excludeList []string
+	isAmend     bool
 }
 
 func (c *Command) excludeFiles() []string {
@@ -39,8 +40,13 @@ func (c *Command) excludeFiles() []string {
 func (c *Command) diffNames() *exec.Cmd {
 	args := []string{
 		"diff",
-		"--staged",
 		"--name-only",
+	}
+
+	if c.isAmend {
+		args = append(args, "HEAD^", "HEAD")
+	} else {
+		args = append(args, "--staged")
 	}
 
 	args = append(args, c.excludeFiles()...)
@@ -54,10 +60,15 @@ func (c *Command) diffNames() *exec.Cmd {
 func (c *Command) diffFiles() *exec.Cmd {
 	args := []string{
 		"diff",
-		"--staged",
 		"--ignore-all-space",
 		"--diff-algorithm=minimal",
 		"--unified=" + strconv.Itoa(c.diffUnified),
+	}
+
+	if c.isAmend {
+		args = append(args, "HEAD^", "HEAD")
+	} else {
+		args = append(args, "--staged")
 	}
 
 	args = append(args, c.excludeFiles()...)
@@ -87,6 +98,10 @@ func (c *Command) commit(val string) *exec.Cmd {
 		"--no-verify",
 		"--signoff",
 		fmt.Sprintf("--message=%s", val),
+	}
+
+	if c.isAmend {
+		args = append(args, "--amend")
 	}
 
 	return exec.Command(
@@ -168,5 +183,6 @@ func New(opts ...Option) *Command {
 	return &Command{
 		diffUnified: cfg.diffUnified,
 		excludeList: append(excludeFromDiff, cfg.excludeList...),
+		isAmend:     cfg.isAmend,
 	}
 }

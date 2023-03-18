@@ -28,6 +28,7 @@ var (
 	socksProxy     string
 	templateFile   string
 	templateString string
+	commitAmend    bool
 )
 
 func init() {
@@ -41,6 +42,7 @@ func init() {
 	commitCmd.PersistentFlags().StringVar(&socksProxy, "socks", "", "socks proxy")
 	commitCmd.PersistentFlags().StringVar(&templateFile, "template_file", "", "git commit message file")
 	commitCmd.PersistentFlags().StringVar(&templateString, "template_string", "", "git commit message string")
+	commitCmd.PersistentFlags().BoolVar(&commitAmend, "amend", false, "replace the tip of the current branch by creating a new commit.")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
 
@@ -78,6 +80,7 @@ var commitCmd = &cobra.Command{
 		g := git.New(
 			git.WithDiffUnified(viper.GetInt("git.diff_unified")),
 			git.WithExcludeList(viper.GetStringSlice("git.exclude_list")),
+			git.WithEnableAmend(commitAmend),
 		)
 		diff, err := g.DiffFiles()
 		if err != nil {
