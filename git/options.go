@@ -35,8 +35,15 @@ func WithExcludeList(val []string) Option {
 	})
 }
 
+func WithEnableAmend(val bool) Option {
+	return optionFunc(func(c *config) {
+		c.isAmend = val
+	})
+}
+
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
 	diffUnified int
 	excludeList []string
+	isAmend     bool
 }
