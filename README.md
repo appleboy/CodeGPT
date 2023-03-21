@@ -19,8 +19,8 @@ A CLI written in [Go](https://go.dev) language that writes git commit messages f
 * Support customize generate diffs with n lines of context, the default is three.
 * Support for excluding files from the git diff command.
 * Support commit message translation into another language (support `en`, `zh-tw` or `zh-cn`).
-* Support socks proxy or custom network http proxy.
-* Support [model list](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) like `gpt-4`, `gpt-3.5-turbo` ...etc.
+* Support socks proxy or custom network HTTP proxy.
+* Support [model lists](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) like `gpt-4`, `gpt-3.5-turbo` ...etc.
 
 ## Installation
 
