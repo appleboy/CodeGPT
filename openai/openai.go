@@ -17,6 +17,10 @@ var DefaultModel = openai.GPT3Dot5Turbo
 
 // modelMaps maps model names to their corresponding model ID strings.
 var modelMaps = map[string]string{
+	"gpt-4-32k-0314":        openai.GPT432K0314,
+	"gpt-4-32k":             openai.GPT432K,
+	"gpt-4-0314":            openai.GPT40314,
+	"gpt-4":                 openai.GPT4,
 	"gpt-3.5-turbo":         openai.GPT3Dot5Turbo,
 	"gpt-3.5-turbo-0301":    openai.GPT3Dot5Turbo0301,
 	"text-davinci-003":      openai.GPT3TextDavinci003,
