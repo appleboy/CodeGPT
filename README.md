@@ -20,6 +20,7 @@ A CLI written in [Go](https://go.dev) language that writes git commit messages f
 * Support for excluding files from the git diff command.
 * Support commit message translation into another language (support `en`, `zh-tw` or `zh-cn`).
 * Support socks proxy or custom network http proxy.
+* Support [model list](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) like `gpt-4`, `gpt-3.5-turbo` ...etc.
 
 ## Installation
 
@@ -87,7 +88,7 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 
 * **openai.api_key**: generate API key from [openai platform page](https://platform.openai.com/account/api-keys).
 * **openai.org_id**: Identifier for this organization sometimes used in API requests. see [organization settings](https://platform.openai.com/account/org-settings).
-* **openai.model**: default model is `gpt-3.5-turbo`, you can change to `text-davinci-003` or [other available model list](https://github.com/appleboy/CodeGPT/blob/a75ed831ce30c5c593613b9c0792954586d7f399/openai/openai.go#L16-L29).
+* **openai.model**: default model is `gpt-3.5-turbo`, you can change to `gpt-4` or [other available model list](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38).
 * **openai.lang**: default language is `en` and available languages `zh-tw`, `zh-tw`, `ja`.
 * **openai.proxy**: http/https client proxy.
 * **openai.socks**: socks client proxy.
