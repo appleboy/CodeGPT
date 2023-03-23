@@ -20,6 +20,7 @@ var availableKeys = []string{
 	"openai.model",
 	"openai.org_id",
 	"openai.proxy",
+	"openai.timeout",
 	"output.lang",
 }
 
@@ -40,6 +41,7 @@ func init() {
 	_ = viper.BindPFlag("openai.model", configCmd.PersistentFlags().Lookup("model"))
 	_ = viper.BindPFlag("openai.proxy", configCmd.PersistentFlags().Lookup("proxy"))
 	_ = viper.BindPFlag("openai.socks", configCmd.PersistentFlags().Lookup("socks"))
+	_ = viper.BindPFlag("openai.timeout", configCmd.PersistentFlags().Lookup("timeout"))
 	_ = viper.BindPFlag("output.lang", configCmd.PersistentFlags().Lookup("lang"))
 	_ = viper.BindPFlag("git.diff_unified", configCmd.PersistentFlags().Lookup("diff_unified"))
 	_ = viper.BindPFlag("git.exclude_list", configCmd.PersistentFlags().Lookup("exclude_list"))

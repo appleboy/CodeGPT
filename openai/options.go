@@ -1,5 +1,7 @@
 package openai
 
+import "time"
+
 // Option is an interface that specifies instrumentation configuration options.
 type Option interface {
 	apply(*config)
@@ -52,6 +54,17 @@ func WithSocksURL(val string) Option {
 	})
 }
 
+// WithTimeout is a function that returns an Option, which sets the timeout field of the config struct.
+func WithTimeout(val time.Duration) Option {
+	return optionFunc(func(c *config) {
+		if val < 1 {
+			c.timeout = 10
+			return
+		}
+		c.timeout = val
+	})
+}
+
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
 	token    string
@@ -59,4 +72,5 @@ type config struct {
 	model    string
 	proxyURL string
 	socksURL string
+	timeout  time.Duration
 }

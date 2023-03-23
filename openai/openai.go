@@ -154,7 +154,7 @@ func New(opts ...Option) (*Client, error) {
 	}
 
 	httpClient := &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: cfg.timeout * time.Second,
 	}
 	if cfg.proxyURL != "" {
 		proxy, _ := url.Parse(cfg.proxyURL)
