@@ -21,9 +21,11 @@ var availableKeys = []string{
 	"openai.org_id",
 	"openai.proxy",
 	"output.lang",
+	"openai.base_url",
 }
 
 func init() {
+	configCmd.PersistentFlags().StringP("base_url", "b", "", "what API base url to use.")
 	configCmd.PersistentFlags().StringP("api_key", "k", "", "openai api key")
 	configCmd.PersistentFlags().StringP("model", "m", "gpt-3.5-turbo", "openai model")
 	configCmd.PersistentFlags().StringP("lang", "l", "en", "summarizing language uses English by default")
@@ -35,6 +37,7 @@ func init() {
 	configCmd.PersistentFlags().IntP("diff_unified", "", 3, "generate diffs with <n> lines of context, default is 3")
 	configCmd.PersistentFlags().StringSliceP("exclude_list", "", []string{}, "exclude file from `git diff` command")
 
+	_ = viper.BindPFlag("openai.base_url", configCmd.PersistentFlags().Lookup("base_url"))
 	_ = viper.BindPFlag("openai.org_id", configCmd.PersistentFlags().Lookup("org_id"))
 	_ = viper.BindPFlag("openai.api_key", configCmd.PersistentFlags().Lookup("api_key"))
 	_ = viper.BindPFlag("openai.model", configCmd.PersistentFlags().Lookup("model"))

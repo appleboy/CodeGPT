@@ -112,6 +112,7 @@ var commitCmd = &cobra.Command{
 			openai.WithOrgID(viper.GetString("openai.org_id")),
 			openai.WithProxyURL(viper.GetString("openai.proxy")),
 			openai.WithSocksURL(viper.GetString("openai.socks")),
+			openai.WithBaseURL(viper.GetString("openai.base_url")),
 		)
 		if err != nil {
 			return err

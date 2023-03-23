@@ -153,6 +153,10 @@ func New(opts ...Option) (*Client, error) {
 		c.OrgID = cfg.orgID
 	}
 
+	if cfg.baseURL != "" {
+		c.BaseURL = cfg.baseURL
+	}
+
 	httpClient := &http.Client{
 		Timeout: time.Second * 10,
 	}

@@ -52,8 +52,18 @@ func WithSocksURL(val string) Option {
 	})
 }
 
+// WithBaseURL returns a new Option that sets the base URL for the client configuration.
+// It takes a string value representing the base URL to use for requests.
+// It returns an optionFunc that sets the baseURL field of the configuration to the provided
+func WithBaseURL(val string) Option {
+	return optionFunc(func(c *config) {
+		c.baseURL = val
+	})
+}
+
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
+  baseURL string
 	token    string
 	orgID    string
 	model    string
