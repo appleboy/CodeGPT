@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"time"
 
 	openai "github.com/sashabaranov/go-openai"
 	"golang.org/x/net/proxy"
@@ -158,7 +157,7 @@ func New(opts ...Option) (*Client, error) {
 	}
 
 	httpClient := &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: cfg.timeout,
 	}
 	if cfg.proxyURL != "" {
 		proxy, _ := url.Parse(cfg.proxyURL)

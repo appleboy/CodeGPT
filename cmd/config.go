@@ -22,6 +22,7 @@ var availableKeys = []string{
 	"openai.proxy",
 	"output.lang",
 	"openai.base_url",
+	"openai.timeout",
 }
 
 func init() {
@@ -32,6 +33,7 @@ func init() {
 	configCmd.PersistentFlags().StringP("org_id", "o", "", "openai requesting organization")
 	configCmd.PersistentFlags().StringP("proxy", "", "", "http proxy")
 	configCmd.PersistentFlags().StringP("socks", "", "", "socks proxy")
+	configCmd.PersistentFlags().StringP("timeout", "t", "10s", "http timeout")
 	configCmd.PersistentFlags().StringP("template_file", "", "", "git commit message file")
 	configCmd.PersistentFlags().StringP("template_string", "", "", "git commit message string")
 	configCmd.PersistentFlags().IntP("diff_unified", "", 3, "generate diffs with <n> lines of context, default is 3")
@@ -43,6 +45,7 @@ func init() {
 	_ = viper.BindPFlag("openai.model", configCmd.PersistentFlags().Lookup("model"))
 	_ = viper.BindPFlag("openai.proxy", configCmd.PersistentFlags().Lookup("proxy"))
 	_ = viper.BindPFlag("openai.socks", configCmd.PersistentFlags().Lookup("socks"))
+	_ = viper.BindPFlag("openai.timeout", configCmd.PersistentFlags().Lookup("timeout"))
 	_ = viper.BindPFlag("output.lang", configCmd.PersistentFlags().Lookup("lang"))
 	_ = viper.BindPFlag("git.diff_unified", configCmd.PersistentFlags().Lookup("diff_unified"))
 	_ = viper.BindPFlag("git.exclude_list", configCmd.PersistentFlags().Lookup("exclude_list"))

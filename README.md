@@ -93,6 +93,7 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 * **openai.lang**: default language is `en` and available languages `zh-tw`, `zh-tw`, `ja`.
 * **openai.proxy**: http/https client proxy.
 * **openai.socks**: socks client proxy.
+* **openai.timeout**: default http timeout is `10s` (ten seconds).
 * **git.diff_unified**: generate diffs with `<n>` lines of context, default is `3`.
 * **git.exclue_list**: exclude file from `git diff` command.
 
