@@ -107,7 +107,12 @@ func (c *Client) Completion(
 ) (*Response, error) {
 	resp := &Response{}
 	switch c.model {
-	case openai.GPT3Dot5Turbo, openai.GPT3Dot5Turbo0301:
+	case openai.GPT3Dot5Turbo,
+		openai.GPT3Dot5Turbo0301,
+		openai.GPT432K0314,
+		openai.GPT432K,
+		openai.GPT40314,
+		openai.GPT4:
 		r, err := c.CreateChatCompletion(ctx, content)
 		if err != nil {
 			return nil, err
