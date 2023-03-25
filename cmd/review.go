@@ -76,7 +76,32 @@ var reviewCmd = &cobra.Command{
 			", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
 		)
 
-		// Output commit summary data from AI
+		if prompt.GetLanguage(viper.GetString("output.lang")) != prompt.DefaultLanguage {
+			out, err = util.GetTemplateByString(
+				prompt.TranslationTemplate,
+				util.Data{
+					"output_language": prompt.GetLanguage(viper.GetString("output.lang")),
+					"output_message":  summarizeMessage,
+				},
+			)
+			if err != nil {
+				return err
+			}
+
+			// translate a git commit message
+			color.Cyan("We are trying to translate code review to " + prompt.GetLanguage(viper.GetString("output.lang")) + " language")
+			resp, err := client.Completion(cmd.Context(), out)
+			if err != nil {
+				return err
+			}
+			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
+				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
+				", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
+			)
+			summarizeMessage = resp.Content
+		}
+
+		// Output core review summary
 		color.Yellow("================Review Summary====================")
 		color.Yellow("\n" + strings.TrimSpace(summarizeMessage) + "\n\n")
 		color.Yellow("==================================================")

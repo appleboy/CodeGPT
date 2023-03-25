@@ -64,7 +64,7 @@ func (c *Client) CreateChatCompletion(
 ) (resp openai.ChatCompletionResponse, err error) {
 	req := openai.ChatCompletionRequest{
 		Model:       c.model,
-		MaxTokens:   200,
+		MaxTokens:   300,
 		Temperature: 0.7,
 		TopP:        1,
 		Messages: []openai.ChatCompletionMessage{
@@ -90,7 +90,7 @@ func (c *Client) CreateCompletion(
 ) (resp openai.CompletionResponse, err error) {
 	req := openai.CompletionRequest{
 		Model:       c.model,
-		MaxTokens:   200,
+		MaxTokens:   300,
 		Temperature: 0.7,
 		TopP:        1,
 		Prompt:      content,
