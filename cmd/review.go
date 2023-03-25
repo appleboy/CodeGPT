@@ -14,8 +14,15 @@ import (
 	"github.com/spf13/viper"
 )
 
+var (
+	// The maximum number of tokens to generate in the chat completion.
+	// The total length of input tokens and generated tokens is limited by the model's context length.
+	maxTokens int
+)
+
 func init() {
 	reviewCmd.Flags().IntVar(&diffUnified, "diff_unified", 3, "generate diffs with <n> lines of context, default is 3")
+	reviewCmd.Flags().IntVar(&maxTokens, "max_tokens", 300, "the maximum number of tokens to generate in the chat completion.")
 	reviewCmd.Flags().StringVar(&commitModel, "model", "gpt-3.5-turbo", "select openai model")
 	reviewCmd.Flags().StringVar(&commitLang, "lang", "en", "summarizing language uses English by default")
 	reviewCmd.Flags().StringSliceVar(&excludeList, "exclude_list", []string{}, "exclude file from git diff command")
@@ -49,6 +56,7 @@ var reviewCmd = &cobra.Command{
 			openai.WithSocksURL(viper.GetString("openai.socks")),
 			openai.WithBaseURL(viper.GetString("openai.base_url")),
 			openai.WithTimeout(viper.GetDuration("openai.timeout")),
+			openai.WithMaxTokens(viper.GetInt("openai.max_tokens")),
 		)
 		if err != nil {
 			return err

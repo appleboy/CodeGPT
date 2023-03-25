@@ -48,8 +48,9 @@ func GetModel(model string) string {
 
 // Client is a struct that represents an OpenAI client.
 type Client struct {
-	client *openai.Client
-	model  string
+	client    *openai.Client
+	model     string
+	maxTokens int
 }
 
 type Response struct {
@@ -64,7 +65,7 @@ func (c *Client) CreateChatCompletion(
 ) (resp openai.ChatCompletionResponse, err error) {
 	req := openai.ChatCompletionRequest{
 		Model:       c.model,
-		MaxTokens:   300,
+		MaxTokens:   c.maxTokens,
 		Temperature: 0.7,
 		TopP:        1,
 		Messages: []openai.ChatCompletionMessage{
@@ -90,7 +91,7 @@ func (c *Client) CreateCompletion(
 ) (resp openai.CompletionResponse, err error) {
 	req := openai.CompletionRequest{
 		Model:       c.model,
-		MaxTokens:   300,
+		MaxTokens:   c.maxTokens,
 		Temperature: 0.7,
 		TopP:        1,
 		Prompt:      content,
@@ -133,7 +134,10 @@ func (c *Client) Completion(
 // New is a function that takes a variadic slice of Option types and
 // returns a pointer to a Client and an error.
 func New(opts ...Option) (*Client, error) {
-	cfg := &config{}
+	cfg := &config{
+		maxTokens: defaultMaxTokens,
+		model:     defaultModel,
+	}
 
 	// Loop through each option
 	for _, o := range opts {
@@ -151,6 +155,7 @@ func New(opts ...Option) (*Client, error) {
 		return nil, errors.New("missing model")
 	}
 	instance.model = v
+	instance.maxTokens = cfg.maxTokens
 
 	c := openai.DefaultConfig(cfg.token)
 	if cfg.orgID != "" {

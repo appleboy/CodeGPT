@@ -71,6 +71,7 @@ var commitCmd = &cobra.Command{
 			openai.WithSocksURL(viper.GetString("openai.socks")),
 			openai.WithBaseURL(viper.GetString("openai.base_url")),
 			openai.WithTimeout(viper.GetDuration("openai.timeout")),
+			openai.WithMaxTokens(viper.GetInt("openai.max_tokens")),
 		)
 		if err != nil {
 			return err

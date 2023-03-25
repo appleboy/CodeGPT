@@ -2,6 +2,13 @@ package openai
 
 import (
 	"time"
+
+	"github.com/sashabaranov/go-openai"
+)
+
+const (
+	defaultMaxTokens = 300
+	defaultModel     = openai.GPT3Dot5Turbo
 )
 
 // Option is an interface that specifies instrumentation configuration options.
@@ -74,13 +81,26 @@ func WithTimeout(val time.Duration) Option {
 	})
 }
 
+// WithMaxTokens returns a new Option that sets the max tokens for the client configuration.
+// The maximum number of tokens to generate in the chat completion.
+// The total length of input tokens and generated tokens is limited by the model's context length.
+func WithMaxTokens(val int) Option {
+	if val == 0 {
+		val = defaultMaxTokens
+	}
+	return optionFunc(func(c *config) {
+		c.maxTokens = val
+	})
+}
+
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
-	baseURL  string
-	token    string
-	orgID    string
-	model    string
-	proxyURL string
-	socksURL string
-	timeout  time.Duration
+	baseURL   string
+	token     string
+	orgID     string
+	model     string
+	proxyURL  string
+	socksURL  string
+	timeout   time.Duration
+	maxTokens int
 }

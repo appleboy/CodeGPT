@@ -43,6 +43,10 @@ func check() error {
 		viper.Set("openai.socks", socksProxy)
 	}
 
+	if maxTokens != 0 {
+		viper.Set("openai.max_tokens", maxTokens)
+	}
+
 	if templateFile != "" {
 		viper.Set("git.template_file", templateFile)
 	}
