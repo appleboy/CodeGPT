@@ -8,6 +8,7 @@ import (
 	"github.com/appleboy/CodeGPT/openai"
 	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/util"
+
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
