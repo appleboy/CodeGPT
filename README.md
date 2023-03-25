@@ -232,7 +232,7 @@ Write the commit message to .git/COMMIT_EDITMSG file
  1 file changed, 56 insertions(+)
 ```
 
-## Code Review
+### Code Review
 
 You can use `codegpt` to generate a code review message for your staged changes:
 
