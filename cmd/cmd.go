@@ -33,6 +33,7 @@ func init() {
 	rootCmd.AddCommand(configCmd)
 	rootCmd.AddCommand(commitCmd)
 	rootCmd.AddCommand(hookCmd)
+	rootCmd.AddCommand(reviewCmd)
 
 	// hide completion command
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true

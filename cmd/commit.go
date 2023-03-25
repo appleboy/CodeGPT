@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"os"
 	"strconv"
 	"strings"
@@ -10,7 +9,6 @@ import (
 	"github.com/appleboy/CodeGPT/openai"
 	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/util"
-	"github.com/appleboy/com/file"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -50,31 +48,8 @@ var commitCmd = &cobra.Command{
 	Use:   "commit",
 	Short: "Auto generate commit message",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		// check git command exist
-		if !util.IsCommandAvailable("git") {
-			return errors.New("To use CodeGPT, you must have git on your PATH")
-		}
-
-		if diffUnified != 3 {
-			viper.Set("git.diff_unified", diffUnified)
-		}
-
-		if len(excludeList) > 0 {
-			viper.Set("git.exclude_list", excludeList)
-		}
-
-		if templateFile != "" {
-			viper.Set("git.template_file", templateFile)
-		}
-
-		if templateString != "" {
-			viper.Set("git.template_string", templateString)
-		}
-
-		if viper.GetString("git.template_file") != "" {
-			if !file.IsFile(viper.GetString("git.template_file")) {
-				return errors.New("template file not found: " + viper.GetString("git.template_file"))
-			}
+		if err := check(); err != nil {
+			return err
 		}
 
 		g := git.New(
@@ -85,24 +60,6 @@ var commitCmd = &cobra.Command{
 		diff, err := g.DiffFiles()
 		if err != nil {
 			return err
-		}
-
-		// check default language
-		if prompt.GetLanguage(commitLang) != prompt.DefaultLanguage {
-			viper.Set("output.lang", commitLang)
-		}
-
-		// check default model
-		if openai.GetModel(commitModel) != openai.DefaultModel {
-			viper.Set("openai.model", commitModel)
-		}
-
-		if httpsProxy != "" {
-			viper.Set("openai.proxy", httpsProxy)
-		}
-
-		if socksProxy != "" {
-			viper.Set("openai.socks", socksProxy)
 		}
 
 		color.Green("Summarize the commit message use " + viper.GetString("openai.model") + " model")
