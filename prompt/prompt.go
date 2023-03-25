@@ -11,6 +11,7 @@ import (
 var files embed.FS
 
 const (
+	CodeReviewTemplate         = "code_review_file_diff.tmpl"
 	SummarizeFileDiffTemplate  = "summarize_file_diff.tmpl"
 	SummarizeTitleTemplate     = "summarize_title.tmpl"
 	ConventionalCommitTemplate = "conventional_commit.tmpl"
