@@ -21,6 +21,9 @@ A CLI written in [Go](https://go.dev) language that writes git commit messages f
 * Support commit message translation into another language (support `en`, `zh-tw` or `zh-cn`).
 * Support socks proxy or custom network HTTP proxy.
 * Support [model lists](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) like `gpt-4`, `gpt-3.5-turbo` ...etc.
+* Support do a brief code review.
+
+![code review](./images/code_review.png)
 
 ## Installation
 
@@ -227,6 +230,39 @@ Improve user experience and documentation for OpenAI tools
 Write the commit message to .git/COMMIT_EDITMSG file
 [main 6a9e879] Improve user experience and documentation for OpenAI tools
  1 file changed, 56 insertions(+)
+```
+
+## Code Review
+
+You can use `codegpt` to generate a code review message for your staged changes:
+
+```sh
+codegpt review
+```
+
+or translate all code review messages into a different language (`Traditional Chinese`, `Simplified Chinese` or `Japanese`)
+
+```sh
+codegpt review --lang zh-tw
+```
+
+See the following result:
+
+```sh
+Code review your changes using gpt-3.5-turbo model
+We are trying to review code changes
+PromptTokens: 1021, CompletionTokens: 200, TotalTokens: 1221
+We are trying to translate core review to Traditional Chinese language
+PromptTokens: 287, CompletionTokens: 199, TotalTokens: 486
+================Review Summary====================
+
+總體而言，此程式碼修補似乎在增加 Review 指令的功能，允許指定輸出語言並在必要時進行翻譯。以下是需要考慮的潛在問題：
+
+- 輸出語言沒有進行輸入驗證。如果指定了無效的語言代碼，程式可能會崩潰或產生意外結果。
+- 此使用的翻譯 API 未指定，因此不清楚是否存在任何安全漏洞。
+- 無法處理翻譯 API 調用的錯誤。如果翻譯服
+
+==================================================
 ```
 
 ## Reference
