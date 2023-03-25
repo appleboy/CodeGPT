@@ -6,7 +6,7 @@
 
 ![cover](./images/cover.png)
 
-A CLI written in [Go](https://go.dev) language that writes git commit messages for you using ChatGPT AI (gpt-3.5-turbo model) and automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
+A CLI written in [Go](https://go.dev) language that writes git commit messages for you using ChatGPT AI (gpt-3.5-turbo, gpt-4 model) and automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
 
 [繁體中文介紹][1]
 
