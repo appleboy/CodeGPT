@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"os"
+	"path"
 	"strconv"
 	"strings"
 
@@ -30,7 +31,7 @@ var (
 )
 
 func init() {
-	commitCmd.PersistentFlags().StringP("file", "f", ".git/COMMIT_EDITMSG", "commit message file")
+	commitCmd.PersistentFlags().StringP("file", "f", "", "commit message file")
 	commitCmd.PersistentFlags().BoolVar(&preview, "preview", false, "preview commit message")
 	commitCmd.PersistentFlags().IntVar(&diffUnified, "diff_unified", 3, "generate diffs with <n> lines of context, default is 3")
 	commitCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-3.5-turbo", "select openai model")
@@ -211,9 +212,17 @@ var commitCmd = &cobra.Command{
 		color.Yellow("\n" + strings.TrimSpace(commitMessage) + "\n\n")
 		color.Yellow("==================================================")
 
-		color.Cyan("Write the commit message to " + viper.GetString("output.file") + " file")
+		outputFile := viper.GetString("output.file")
+		if outputFile == "" {
+			out, err := g.TopLevel()
+			if err != nil {
+				return err
+			}
+			outputFile = path.Join(strings.TrimSpace(out), ".git", "COMMIT_EDITMSG")
+		}
+		color.Cyan("Write the commit message to " + outputFile + " file")
 		// write commit message to git staging file
-		err = os.WriteFile(viper.GetString("output.file"), []byte(commitMessage), 0o644)
+		err = os.WriteFile(outputFile, []byte(commitMessage), 0o644)
 		if err != nil {
 			return err
 		}
