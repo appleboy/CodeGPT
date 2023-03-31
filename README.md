@@ -93,7 +93,7 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 * **openai.api_key**: generate API key from [openai platform page](https://platform.openai.com/account/api-keys).
 * **openai.org_id**: Identifier for this organization sometimes used in API requests. see [organization settings](https://platform.openai.com/account/org-settings).
 * **openai.model**: default model is `gpt-3.5-turbo`, you can change to `gpt-4` or [other available model list](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38).
-* **openai.lang**: default language is `en` and available languages `zh-tw`, `zh-tw`, `ja`.
+* **openai.lang**: default language is `en` and available languages `zh-tw`, `zh-cn`, `ja`.
 * **openai.proxy**: http/https client proxy.
 * **openai.socks**: socks client proxy.
 * **openai.timeout**: default http timeout is `10s` (ten seconds).
