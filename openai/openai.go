@@ -147,7 +147,7 @@ func New(opts ...Option) (*Client, error) {
 
 	instance := &Client{}
 	if cfg.token == "" {
-		return nil, errors.New("missing api key")
+		return nil, errors.New("please set OPENAI_API_KEY environment variable")
 	}
 
 	v, ok := modelMaps[cfg.model]
