@@ -12,7 +12,7 @@ LABEL org.opencontainers.image.source=https://github.com/appleboy/CodeGPT
 LABEL org.opencontainers.image.description="A CLI written in Go language that writes git commit messages or do a code review brief for you using ChatGPT AI."
 LABEL org.opencontainers.image.licenses=MIT
 
-RUN apk add --no-cache ca-certificates git && \
+RUN apk add --no-cache ca-certificates=20220614-r4 git=2.38.4-r1 && \
   rm -rf /var/cache/apk/*
 
 COPY release/${TARGETOS}/${TARGETARCH}/codegpt /bin/
