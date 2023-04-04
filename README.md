@@ -12,6 +12,8 @@ A CLI written in [Go](https://go.dev) language that writes git commit messages o
 
 [1]:https://blog.wu-boy.com/2023/03/writes-git-commit-messages-using-chatgpt/
 
+![flow](./images/flow.svg)
+
 ## Feature
 
 * Support [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).

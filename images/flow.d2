@@ -1,0 +1,151 @@
+direction: right
+
+developer: {
+  shape: person
+  style: {
+    multiple: true
+    fill: "#f0f0f0"
+  }
+}
+
+program: {
+  style: {
+    opacity: 0
+  }
+
+  react: {
+    icon: https://icons.terrastruct.com/dev%2Freact.svg
+    shape: image
+  }
+
+  golang: {
+    icon: https://icons.terrastruct.com/dev%2Fgo.svg
+    shape: image
+  }
+
+  python: {
+    icon: https://icons.terrastruct.com/dev%2Fpython.svg
+    shape: image
+  }
+
+  source: "" {
+    shape: page
+    equation: |md
+    ```diff
+    - wget -c https://xxxxx/v0.1.5/CodeGPT-0.1.5
+    + wget -c https://xxxxx/v0.1.6/CodeGPT-0.1.6
+    ```
+      |
+    style: {
+      fill: "#f0f0f0"
+      fill-pattern: grain
+    }
+  }
+}
+
+git: Write Message{
+  style: {
+    opacity: 0
+  }
+
+  source01 : CodeGPT {
+    icon: https://icons.terrastruct.com/dev%2Fgit.svg
+    shape: image
+    style: {
+      font-color: "#f4a261"
+      font-size: 20
+    }
+  }
+
+  source02 : CodeGPT{
+    icon: https://icons.terrastruct.com/dev%2Fgit.svg
+    shape: image
+    style: {
+      font-color: "#f4a261"
+      font-size: 20
+    }
+  }
+
+  source03 : CodeGPT{
+    icon: https://icons.terrastruct.com/dev%2Fgit.svg
+    shape: image
+    style: {
+      font-color: "#f4a261"
+      font-size: 20
+    }
+  }
+
+  message: "" {
+    shape: page
+    equation: |md
+    ```text
+    chore: update CodeGPT binary download links and version number
+    - Update CodeGPT binary download links to version 0.1.6 for all platforms
+    ```
+      |
+    style: {
+      fill: "#f0f0f0"
+      fill-pattern: grain
+    }
+  }
+}
+
+github: {
+  shape: image
+  icon: https://icons.terrastruct.com/dev%2Fgithub.svg
+}
+
+developer -> program.golang {
+  style: {
+    animated: true
+  }
+}
+
+developer -> program.python {
+  style: {
+    opacity: 0.3
+  }
+}
+
+developer -> program.react {
+  style: {
+    opacity: 0.3
+  }
+}
+
+program.react -> git.source01{
+  style: {
+    opacity: 0.3
+  }
+}
+program.golang -> git.source02{
+  style: {
+    animated: true
+  }
+}
+
+
+
+program.python -> git.source03{
+  style: {
+    opacity: 0.3
+  }
+}
+
+git.source01 -> github {
+  style: {
+    opacity: 0.3
+  }
+}
+
+git.source02 -> github {
+  style: {
+    animated: true
+  }
+}
+
+git.source03 -> github {
+  style: {
+    opacity: 0.3
+  }
+}
