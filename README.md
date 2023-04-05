@@ -99,6 +99,8 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 * **openai.proxy**: http/https client proxy.
 * **openai.socks**: socks client proxy.
 * **openai.timeout**: default http timeout is `10s` (ten seconds).
+* **openai.max_tokens**: default max tokens is `300`. see reference [max_tokens](https://platform.openai.com/docs/api-reference/completions/create#completions/create-max_tokens).
+* **openai.temperature**: default temperature is `0.7`. see reference [temperature](https://platform.openai.com/docs/api-reference/completions/create#completions/create-temperature).
 * **git.diff_unified**: generate diffs with `<n>` lines of context, default is `3`.
 * **git.exclue_list**: exclude file from `git diff` command.
 
