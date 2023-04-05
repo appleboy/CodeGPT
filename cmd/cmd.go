@@ -82,9 +82,9 @@ func initConfig() {
 	// Drone CI need to use `DRONE_` prefix
 	switch viper.GetString("platform") {
 	case GITHUB:
-		viper.SetEnvPrefix(GITHUB)
+		viper.SetEnvPrefix("input")
 	case DRONE:
-		viper.SetEnvPrefix(DRONE)
+		viper.SetEnvPrefix("drone")
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
