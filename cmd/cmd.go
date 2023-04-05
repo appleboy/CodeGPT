@@ -25,6 +25,11 @@ var (
 	replacer = strings.NewReplacer("-", "_", ".", "_")
 )
 
+const (
+	GITHUB = "github"
+	DRONE  = "drone"
+)
+
 func init() {
 	cobra.OnInitialize(initConfig)
 
@@ -69,8 +74,18 @@ func initConfig() {
 		}
 	}
 
-	viper.SetEnvKeyReplacer(replacer)
 	viper.AutomaticEnv()
+	viper.SetEnvKeyReplacer(replacer)
+
+	// Support multiple platforms for CI/CD
+	// GitHub Actions need to use `INPUT_` prefix
+	// Drone CI need to use `DRONE_` prefix
+	switch viper.GetString("platform") {
+	case GITHUB:
+		viper.SetEnvPrefix(GITHUB)
+	case DRONE:
+		viper.SetEnvPrefix(DRONE)
+	}
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
