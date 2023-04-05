@@ -23,6 +23,7 @@ var availableKeys = []string{
 	"output.lang",
 	"openai.base_url",
 	"openai.timeout",
+	"openai.max_tokens",
 }
 
 func init() {
@@ -37,6 +38,7 @@ func init() {
 	configCmd.PersistentFlags().StringP("template_file", "", "", "git commit message file")
 	configCmd.PersistentFlags().StringP("template_string", "", "", "git commit message string")
 	configCmd.PersistentFlags().IntP("diff_unified", "", 3, "generate diffs with <n> lines of context, default is 3")
+	configCmd.PersistentFlags().IntP("max_tokens", "", 300, "the maximum number of tokens to generate in the chat completion.")
 	configCmd.PersistentFlags().StringSliceP("exclude_list", "", []string{}, "exclude file from `git diff` command")
 
 	_ = viper.BindPFlag("openai.base_url", configCmd.PersistentFlags().Lookup("base_url"))
@@ -46,6 +48,7 @@ func init() {
 	_ = viper.BindPFlag("openai.proxy", configCmd.PersistentFlags().Lookup("proxy"))
 	_ = viper.BindPFlag("openai.socks", configCmd.PersistentFlags().Lookup("socks"))
 	_ = viper.BindPFlag("openai.timeout", configCmd.PersistentFlags().Lookup("timeout"))
+	_ = viper.BindPFlag("openai.max_tokens", configCmd.PersistentFlags().Lookup("max_tokens"))
 	_ = viper.BindPFlag("output.lang", configCmd.PersistentFlags().Lookup("lang"))
 	_ = viper.BindPFlag("git.diff_unified", configCmd.PersistentFlags().Lookup("diff_unified"))
 	_ = viper.BindPFlag("git.exclude_list", configCmd.PersistentFlags().Lookup("exclude_list"))
