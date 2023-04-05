@@ -7,8 +7,9 @@ import (
 )
 
 const (
-	defaultMaxTokens = 300
-	defaultModel     = openai.GPT3Dot5Turbo
+	defaultMaxTokens   = 300
+	defaultModel       = openai.GPT3Dot5Turbo
+	defaultTemperature = 0.7
 )
 
 // Option is an interface that specifies instrumentation configuration options.
@@ -85,7 +86,7 @@ func WithTimeout(val time.Duration) Option {
 // The maximum number of tokens to generate in the chat completion.
 // The total length of input tokens and generated tokens is limited by the model's context length.
 func WithMaxTokens(val int) Option {
-	if val == 0 {
+	if val <= 0 {
 		val = defaultMaxTokens
 	}
 	return optionFunc(func(c *config) {
@@ -93,14 +94,28 @@ func WithMaxTokens(val int) Option {
 	})
 }
 
+// WithTemperature returns a new Option that sets the temperature for the client configuration.
+// What sampling temperature to use, between 0 and 2.
+// Higher values like 0.8 will make the output more random,
+// while lower values like 0.2 will make it more focused and deterministic.
+func WithTemperature(val float32) Option {
+	if val <= 0 {
+		val = defaultTemperature
+	}
+	return optionFunc(func(c *config) {
+		c.temperature = val
+	})
+}
+
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
-	baseURL   string
-	token     string
-	orgID     string
-	model     string
-	proxyURL  string
-	socksURL  string
-	timeout   time.Duration
-	maxTokens int
+	baseURL     string
+	token       string
+	orgID       string
+	model       string
+	proxyURL    string
+	socksURL    string
+	timeout     time.Duration
+	maxTokens   int
+	temperature float32
 }

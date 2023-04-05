@@ -48,9 +48,10 @@ func GetModel(model string) string {
 
 // Client is a struct that represents an OpenAI client.
 type Client struct {
-	client    *openai.Client
-	model     string
-	maxTokens int
+	client      *openai.Client
+	model       string
+	maxTokens   int
+	temperature float32
 }
 
 type Response struct {
@@ -66,7 +67,7 @@ func (c *Client) CreateChatCompletion(
 	req := openai.ChatCompletionRequest{
 		Model:       c.model,
 		MaxTokens:   c.maxTokens,
-		Temperature: 0.7,
+		Temperature: c.temperature,
 		TopP:        1,
 		Messages: []openai.ChatCompletionMessage{
 			{
@@ -92,7 +93,7 @@ func (c *Client) CreateCompletion(
 	req := openai.CompletionRequest{
 		Model:       c.model,
 		MaxTokens:   c.maxTokens,
-		Temperature: 0.7,
+		Temperature: c.temperature,
 		TopP:        1,
 		Prompt:      content,
 	}
@@ -135,8 +136,9 @@ func (c *Client) Completion(
 // returns a pointer to a Client and an error.
 func New(opts ...Option) (*Client, error) {
 	cfg := &config{
-		maxTokens: defaultMaxTokens,
-		model:     defaultModel,
+		maxTokens:   defaultMaxTokens,
+		model:       defaultModel,
+		temperature: defaultTemperature,
 	}
 
 	// Loop through each option
@@ -156,6 +158,7 @@ func New(opts ...Option) (*Client, error) {
 	}
 	instance.model = v
 	instance.maxTokens = cfg.maxTokens
+	instance.temperature = cfg.temperature
 
 	c := openai.DefaultConfig(cfg.token)
 	if cfg.orgID != "" {

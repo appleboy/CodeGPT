@@ -24,6 +24,7 @@ var availableKeys = []string{
 	"openai.base_url",
 	"openai.timeout",
 	"openai.max_tokens",
+	"openai.temperature",
 }
 
 func init() {
@@ -39,6 +40,7 @@ func init() {
 	configCmd.PersistentFlags().StringP("template_string", "", "", "git commit message string")
 	configCmd.PersistentFlags().IntP("diff_unified", "", 3, "generate diffs with <n> lines of context, default is 3")
 	configCmd.PersistentFlags().IntP("max_tokens", "", 300, "the maximum number of tokens to generate in the chat completion.")
+	configCmd.PersistentFlags().Float32P("temperature", "", 0.7, "What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.")
 	configCmd.PersistentFlags().StringSliceP("exclude_list", "", []string{}, "exclude file from `git diff` command")
 
 	_ = viper.BindPFlag("openai.base_url", configCmd.PersistentFlags().Lookup("base_url"))
@@ -49,6 +51,7 @@ func init() {
 	_ = viper.BindPFlag("openai.socks", configCmd.PersistentFlags().Lookup("socks"))
 	_ = viper.BindPFlag("openai.timeout", configCmd.PersistentFlags().Lookup("timeout"))
 	_ = viper.BindPFlag("openai.max_tokens", configCmd.PersistentFlags().Lookup("max_tokens"))
+	_ = viper.BindPFlag("openai.temperature", configCmd.PersistentFlags().Lookup("temperature"))
 	_ = viper.BindPFlag("output.lang", configCmd.PersistentFlags().Lookup("lang"))
 	_ = viper.BindPFlag("git.diff_unified", configCmd.PersistentFlags().Lookup("diff_unified"))
 	_ = viper.BindPFlag("git.exclude_list", configCmd.PersistentFlags().Lookup("exclude_list"))

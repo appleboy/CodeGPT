@@ -14,11 +14,9 @@ import (
 	"github.com/spf13/viper"
 )
 
-var (
-	// The maximum number of tokens to generate in the chat completion.
-	// The total length of input tokens and generated tokens is limited by the model's context length.
-	maxTokens int
-)
+// The maximum number of tokens to generate in the chat completion.
+// The total length of input tokens and generated tokens is limited by the model's context length.
+var maxTokens int
 
 func init() {
 	reviewCmd.Flags().IntVar(&diffUnified, "diff_unified", 3, "generate diffs with <n> lines of context, default is 3")
@@ -57,6 +55,7 @@ var reviewCmd = &cobra.Command{
 			openai.WithBaseURL(viper.GetString("openai.base_url")),
 			openai.WithTimeout(viper.GetDuration("openai.timeout")),
 			openai.WithMaxTokens(viper.GetInt("openai.max_tokens")),
+			openai.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
 		)
 		if err != nil {
 			return err

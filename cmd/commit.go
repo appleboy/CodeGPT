@@ -73,6 +73,7 @@ var commitCmd = &cobra.Command{
 			openai.WithBaseURL(viper.GetString("openai.base_url")),
 			openai.WithTimeout(viper.GetDuration("openai.timeout")),
 			openai.WithMaxTokens(viper.GetInt("openai.max_tokens")),
+			openai.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
 		)
 		if err != nil {
 			return err
