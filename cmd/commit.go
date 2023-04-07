@@ -5,6 +5,7 @@ import (
 	"path"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/appleboy/CodeGPT/git"
 	"github.com/appleboy/CodeGPT/openai"
@@ -28,6 +29,7 @@ var (
 	templateFile   string
 	templateString string
 	commitAmend    bool
+	timeout        time.Duration
 )
 
 func init() {
@@ -42,6 +44,7 @@ func init() {
 	commitCmd.PersistentFlags().StringVar(&templateFile, "template_file", "", "git commit message file")
 	commitCmd.PersistentFlags().StringVar(&templateString, "template_string", "", "git commit message string")
 	commitCmd.PersistentFlags().BoolVar(&commitAmend, "amend", false, "replace the tip of the current branch by creating a new commit.")
+	commitCmd.PersistentFlags().DurationVarP(&timeout, "timeout", "t", 10*time.Second, "http timeout")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
 
@@ -61,6 +64,11 @@ var commitCmd = &cobra.Command{
 		diff, err := g.DiffFiles()
 		if err != nil {
 			return err
+		}
+
+		// Update the OpenAI client request timeout if the timeout value is greater than the default openai.timeout
+		if timeout > viper.GetDuration("openai.timeout") {
+			viper.Set("openai.timeout", timeout)
 		}
 
 		color.Green("Summarize the commit message use " + viper.GetString("openai.model") + " model")
