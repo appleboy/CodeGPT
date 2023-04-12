@@ -56,6 +56,9 @@ var reviewCmd = &cobra.Command{
 			openai.WithTimeout(viper.GetDuration("openai.timeout")),
 			openai.WithMaxTokens(viper.GetInt("openai.max_tokens")),
 			openai.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
+
+			openai.WithServiceProvider(viper.GetString("openai.service_provider")),
+			openai.WithModelName(viper.GetString("openai.model_name")),
 		)
 		if err != nil {
 			return err

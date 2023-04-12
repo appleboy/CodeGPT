@@ -107,6 +107,20 @@ func WithTemperature(val float32) Option {
 	})
 }
 
+
+func WithServiceProvider(val string) Option {
+	return optionFunc(func(c *config) {
+		c.serviceProvider = val
+	})
+}
+
+func WithModelName(val string) Option {
+	return optionFunc(func(c *config) {
+		c.modelName = val
+	})
+}
+
+
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
 	baseURL     string
@@ -118,4 +132,7 @@ type config struct {
 	timeout     time.Duration
 	maxTokens   int
 	temperature float32
+
+	serviceProvider string
+	modelName	string
 }
