@@ -36,3 +36,9 @@ build_linux_arm64:
 
 build_linux_arm:
 	CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=7 $(GO) build -a -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)' -o release/linux/arm/$(EXECUTABLE)
+
+build_mac_intel:
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 $(GO) build -a -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)' -o release/mac/intel/$(EXECUTABLE)
+
+build_windows_64:
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 $(GO) build -a -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)' -o release/windows/intel/$(EXECUTABLE).exe
