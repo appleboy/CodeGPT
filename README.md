@@ -80,6 +80,23 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 * **openai.provider**: default service provider is `openai`, you can change to `azure`.
 * **openai.model_name**: model deployment name (for azure).
 
+### How to change to Azure OpenAI Service
+
+Please get the `API key`, `Endpoint` and `Model deployments` list from Azure Resource Management Portal on left menu.
+
+![azure01](./images/azure_01.png)
+
+![azure02](./images/azure_02.png)
+
+Update your config file.
+
+```sh
+codegpt config set openai.provider azure
+codegpt config set openai.base_url https://xxxxxxxxx.openai.azure.com/
+codegpt config set openai.api_key xxxxxxxxxxxxxxxx
+codegpt config set openai.model_name xxxxx-gpt-35-turbo
+```
+
 ## Usage
 
 There are two methods for generating a commit message using the `codegpt` command. The first is CLI mode, and the second is Git Hook.
