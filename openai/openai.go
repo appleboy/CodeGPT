@@ -187,8 +187,13 @@ func New(opts ...Option) (*Client, error) {
 		}
 	}
 
-	c.HTTPClient = httpClient
-	instance.client = openai.NewClientWithConfig(c)
+	if cfg.serviceProvider == "azure" {
+		config := openai.DefaultAzureConfig(cfg.token, cfg.baseURL,cfg.modelName)
+		instance.client = openai.NewClientWithConfig(config)
+	} else {
+		c.HTTPClient = httpClient
+		instance.client = openai.NewClientWithConfig(c)
+	}
 
 	return instance, nil
 }
