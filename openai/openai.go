@@ -2,7 +2,6 @@ package openai
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -135,28 +134,15 @@ func (c *Client) Completion(
 // New is a function that takes a variadic slice of Option types and
 // returns a pointer to a Client and an error.
 func New(opts ...Option) (*Client, error) {
-	cfg := &config{
-		maxTokens:       defaultMaxTokens,
-		model:           defaultModel,
-		temperature:     defaultTemperature,
-		serviceProvider: defaultServiceProvider,
-	}
+	cfg := newConfig(opts...)
 
-	// Loop through each option
-	for _, o := range opts {
-		// Call the option giving the instantiated
-		o.apply(cfg)
+	if err := cfg.vaild(); err != nil {
+		return nil, err
 	}
 
 	instance := &Client{}
-	if cfg.token == "" {
-		return nil, errors.New("please set OPENAI_API_KEY environment variable")
-	}
 
-	v, ok := modelMaps[cfg.model]
-	if !ok {
-		return nil, errors.New("missing model")
-	}
+	v, _ := modelMaps[cfg.model]
 	instance.model = v
 	instance.maxTokens = cfg.maxTokens
 	instance.temperature = cfg.temperature
@@ -188,12 +174,10 @@ func New(opts ...Option) (*Client, error) {
 		}
 	}
 
-	if cfg.serviceProvider == AZURE {
-		if cfg.modelName == "" {
-			return nil, errors.New("missing Azure deployments model name")
-		}
-		config := openai.DefaultAzureConfig(cfg.token, cfg.baseURL, cfg.modelName)
-		instance.client = openai.NewClientWithConfig(config)
+	if cfg.provider == AZURE {
+		instance.client = openai.NewClientWithConfig(
+			openai.DefaultAzureConfig(cfg.token, cfg.baseURL, cfg.modelName),
+		)
 	} else {
 		c.HTTPClient = httpClient
 		instance.client = openai.NewClientWithConfig(c)
