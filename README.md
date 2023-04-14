@@ -16,6 +16,7 @@ A CLI written in [Go](https://go.dev) language that writes git commit messages o
 
 ## Feature
 
+* Support [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service) or [OpenAI API](https://platform.openai.com/docs/api-reference).
 * Support [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
 * Support Git prepare-commit-msg Hook, see the [Git Hooks documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
 * Support customize generate diffs with n lines of context, the default is three.
