@@ -27,7 +27,7 @@ var availableKeys = []string{
 	"openai.max_tokens",
 	"openai.temperature",
 
-	"openai.service_provider",
+	"openai.provider",
 	"openai.model_name",
 }
 
@@ -47,8 +47,8 @@ func init() {
 	configCmd.PersistentFlags().Float32P("temperature", "", 0.7, "What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.")
 	configCmd.PersistentFlags().StringSliceP("exclude_list", "", []string{}, "exclude file from `git diff` command")
 
-	configCmd.PersistentFlags().StringP("service_provider", "", "ChatGPT", "Ssrvice provider")
-	configCmd.PersistentFlags().StringP("model_name", "", "", "model deployment name")
+	configCmd.PersistentFlags().StringP("provider", "", "openai", "srvice provider, only support 'openai' or 'azure'")
+	configCmd.PersistentFlags().StringP("model_name", "", "", "model deployment name for Azure cognitive service")
 
 	_ = viper.BindPFlag("openai.base_url", configCmd.PersistentFlags().Lookup("base_url"))
 	_ = viper.BindPFlag("openai.org_id", configCmd.PersistentFlags().Lookup("org_id"))
@@ -65,7 +65,7 @@ func init() {
 	_ = viper.BindPFlag("git.template_file", configCmd.PersistentFlags().Lookup("template_file"))
 	_ = viper.BindPFlag("git.template_string", configCmd.PersistentFlags().Lookup("template_string"))
 
-	_ = viper.BindPFlag("openai.service_provider", configCmd.PersistentFlags().Lookup("service_provider"))
+	_ = viper.BindPFlag("openai.provider", configCmd.PersistentFlags().Lookup("provider"))
 	_ = viper.BindPFlag("openai.model_name", configCmd.PersistentFlags().Lookup("model_name"))
 }
 

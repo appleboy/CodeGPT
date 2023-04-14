@@ -7,9 +7,15 @@ import (
 )
 
 const (
-	defaultMaxTokens   = 300
-	defaultModel       = openai.GPT3Dot5Turbo
-	defaultTemperature = 0.7
+	OPENAI = "openai"
+	AZURE  = "azure"
+)
+
+const (
+	defaultMaxTokens       = 300
+	defaultModel           = openai.GPT3Dot5Turbo
+	defaultTemperature     = 0.7
+	defaultServiceProvider = OPENAI
 )
 
 // Option is an interface that specifies instrumentation configuration options.
@@ -107,8 +113,12 @@ func WithTemperature(val float32) Option {
 	})
 }
 
-
 func WithServiceProvider(val string) Option {
+	switch val {
+	case OPENAI, AZURE:
+	default:
+		val = defaultServiceProvider
+	}
 	return optionFunc(func(c *config) {
 		c.serviceProvider = val
 	})
@@ -119,7 +129,6 @@ func WithModelName(val string) Option {
 		c.modelName = val
 	})
 }
-
 
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
@@ -134,5 +143,5 @@ type config struct {
 	temperature float32
 
 	serviceProvider string
-	modelName	string
+	modelName       string
 }

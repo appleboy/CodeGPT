@@ -136,9 +136,10 @@ func (c *Client) Completion(
 // returns a pointer to a Client and an error.
 func New(opts ...Option) (*Client, error) {
 	cfg := &config{
-		maxTokens:   defaultMaxTokens,
-		model:       defaultModel,
-		temperature: defaultTemperature,
+		maxTokens:       defaultMaxTokens,
+		model:           defaultModel,
+		temperature:     defaultTemperature,
+		serviceProvider: defaultServiceProvider,
 	}
 
 	// Loop through each option
@@ -187,8 +188,11 @@ func New(opts ...Option) (*Client, error) {
 		}
 	}
 
-	if cfg.serviceProvider == "azure" {
-		config := openai.DefaultAzureConfig(cfg.token, cfg.baseURL,cfg.modelName)
+	if cfg.serviceProvider == AZURE {
+		if cfg.modelName == "" {
+			return nil, errors.New("missing Azure deployments model name")
+		}
+		config := openai.DefaultAzureConfig(cfg.token, cfg.baseURL, cfg.modelName)
 		instance.client = openai.NewClientWithConfig(config)
 	} else {
 		c.HTTPClient = httpClient
