@@ -140,12 +140,11 @@ func New(opts ...Option) (*Client, error) {
 		return nil, err
 	}
 
-	instance := &Client{}
-
-	v, _ := modelMaps[cfg.model]
-	instance.model = v
-	instance.maxTokens = cfg.maxTokens
-	instance.temperature = cfg.temperature
+	instance := &Client{
+		model:       modelMaps[cfg.model],
+		maxTokens:   cfg.maxTokens,
+		temperature: cfg.temperature,
+	}
 
 	c := openai.DefaultConfig(cfg.token)
 	if cfg.orgID != "" {
