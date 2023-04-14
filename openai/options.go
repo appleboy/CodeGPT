@@ -1,9 +1,16 @@
 package openai
 
 import (
+	"errors"
 	"time"
 
 	"github.com/sashabaranov/go-openai"
+)
+
+var (
+	errorsMissingToken      = errors.New("please set OPENAI_API_KEY environment variable")
+	errorsMissingModel      = errors.New("missing model")
+	errorsMissingAzureModel = errors.New("missing Azure deployments model name")
 )
 
 const (
@@ -12,10 +19,10 @@ const (
 )
 
 const (
-	defaultMaxTokens       = 300
-	defaultModel           = openai.GPT3Dot5Turbo
-	defaultTemperature     = 0.7
-	defaultServiceProvider = OPENAI
+	defaultMaxTokens   = 300
+	defaultModel       = openai.GPT3Dot5Turbo
+	defaultTemperature = 0.7
+	defaultProvider    = OPENAI
 )
 
 // Option is an interface that specifies instrumentation configuration options.
@@ -113,18 +120,27 @@ func WithTemperature(val float32) Option {
 	})
 }
 
-func WithServiceProvider(val string) Option {
+// WithProvider sets the `provider` variable based on the value of the `val` parameter.
+// If `val` is not set to `OPENAI` or `AZURE`, it will be set to the default value `defaultProvider`.
+// This function returns an `Option` object.
+func WithProvider(val string) Option {
+	// Check if `val` is set to `OPENAI` or `AZURE`. If not, set it to the default value.
 	switch val {
 	case OPENAI, AZURE:
 	default:
-		val = defaultServiceProvider
+		val = defaultProvider
 	}
+
+	// Return an `optionFunc` object with `c.provider` set to `val`.
 	return optionFunc(func(c *config) {
-		c.serviceProvider = val
+		c.provider = val
 	})
 }
 
+// WithModelName sets the `modelName` variable to the provided `val` parameter.
+// This function returns an `Option` object.
 func WithModelName(val string) Option {
+	// Return an `optionFunc` object with `c.modelName` set to `val`.
 	return optionFunc(func(c *config) {
 		c.modelName = val
 	})
@@ -142,6 +158,40 @@ type config struct {
 	maxTokens   int
 	temperature float32
 
-	serviceProvider string
-	modelName       string
+	provider  string
+	modelName string
+}
+
+func (cfg *config) vaild() error {
+	if cfg.token == "" {
+		return errorsMissingToken
+	}
+
+	_, ok := modelMaps[cfg.model]
+	if !ok {
+		return errorsMissingModel
+	}
+
+	if cfg.provider == AZURE {
+		if cfg.modelName == "" {
+			return errorsMissingAzureModel
+		}
+	}
+
+	return nil
+}
+
+func newConfig(opts ...Option) *config {
+	c := &config{
+		model:       defaultModel,
+		maxTokens:   defaultMaxTokens,
+		temperature: defaultTemperature,
+		provider:    defaultProvider,
+	}
+
+	for _, opt := range opts {
+		opt.apply(c)
+	}
+
+	return c
 }
