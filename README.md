@@ -36,33 +36,7 @@ brew tap appleboy/tap
 brew install codegpt
 ```
 
-The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/CodeGPT/releases).
-
-On linux AMD64
-
-```sh
-wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.1.6/CodeGPT-0.1.6-linux-amd64 -O codegpt
-```
-
-On macOS (Intel amd64)
-
-```sh
-wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.1.6/CodeGPT-0.1.6-darwin-amd64 -O codegpt
-```
-
-On macOS (Apple arm64)
-
-```sh
-wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.1.6/CodeGPT-0.1.6-darwin-arm64 -O codegpt
-```
-
-On Windows (AMD64)
-
-```sh
-wget -c https://github.com/appleboy/CodeGPT/releases/download/v0.1.6/CodeGPT-0.1.6-windows-amd64.exe -O codegpt.exe
-```
-
-Change the binary permissions to `755` and copy the binary to the system bin directory. Use the `codegpt` command as shown below.
+The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/CodeGPT/releases).Change the binary permissions to `755` and copy the binary to the system bin directory. Use the `codegpt` command as shown below.
 
 ```sh
 $ codegpt version
