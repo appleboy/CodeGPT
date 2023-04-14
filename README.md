@@ -67,7 +67,7 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 
 * **openai.base_url**: replace the default base URL (`https://api.openai.com/v1`). You can try `https://closeai.deno.dev/v1`. See [justjavac/openai-proxy](https://github.com/justjavac/openai-proxy).
 * **openai.api_key**: generate API key from [openai platform page](https://platform.openai.com/account/api-keys).
-* **openai.org_id**: Identifier for this organization sometimes used in API requests. see [organization settings](https://platform.openai.com/account/org-settings).
+* **openai.org_id**: Identifier for this organization sometimes used in API requests. see [organization settings](https://platform.openai.com/account/org-settings). only for `openai` service.
 * **openai.model**: default model is `gpt-3.5-turbo`, you can change to `gpt-4` or [other available model list](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38).
 * **openai.lang**: default language is `en` and available languages `zh-tw`, `zh-cn`, `ja`.
 * **openai.proxy**: http/https client proxy.
