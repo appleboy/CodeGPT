@@ -162,20 +162,18 @@ type config struct {
 	modelName string
 }
 
-func (cfg *config) vaild() error {
+func (cfg *config) valid() error {
 	if cfg.token == "" {
 		return errorsMissingToken
 	}
 
-	_, ok := modelMaps[cfg.model]
-	if !ok {
+	modelExists := modelMaps[cfg.model] != ""
+	if !modelExists {
 		return errorsMissingModel
 	}
 
-	if cfg.provider == AZURE {
-		if cfg.modelName == "" {
-			return errorsMissingAzureModel
-		}
+	if cfg.provider == AZURE && cfg.modelName == "" {
+		return errorsMissingAzureModel
 	}
 
 	return nil

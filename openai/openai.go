@@ -136,7 +136,7 @@ func (c *Client) Completion(
 func New(opts ...Option) (*Client, error) {
 	cfg := newConfig(opts...)
 
-	if err := cfg.vaild(); err != nil {
+	if err := cfg.valid(); err != nil {
 		return nil, err
 	}
 

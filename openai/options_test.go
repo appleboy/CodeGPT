@@ -6,19 +6,19 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
-func Test_config_vaild(t *testing.T) {
+func Test_config_valid(t *testing.T) {
 	tests := []struct {
 		name    string
 		cfg     *config
 		wantErr error
 	}{
 		{
-			name:    "test vaild",
+			name:    "test valid",
 			cfg:     newConfig(),
 			wantErr: errorsMissingToken,
 		},
 		{
-			name: "model vaild",
+			name: "model valid",
 			cfg: newConfig(
 				WithToken("test"),
 				WithModel("test"),
@@ -38,8 +38,8 @@ func Test_config_vaild(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg := tt.cfg
-			if err := cfg.vaild(); err != tt.wantErr {
-				t.Errorf("config.vaild() error = %v, wantErr %v", err, tt.wantErr)
+			if err := cfg.valid(); err != tt.wantErr {
+				t.Errorf("config.valid() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
