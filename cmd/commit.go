@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"html"
 	"os"
 	"path"
 	"strconv"
@@ -217,6 +218,9 @@ var commitCmd = &cobra.Command{
 			)
 			commitMessage = resp.Content
 		}
+
+		// unescape html entities in commit message
+		commitMessage = html.UnescapeString(commitMessage)
 
 		// Output commit summary data from AI
 		color.Yellow("================Commit Summary====================")

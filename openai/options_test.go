@@ -13,15 +13,25 @@ func Test_config_valid(t *testing.T) {
 		wantErr error
 	}{
 		{
-			name:    "test valid",
+			name: "valid config",
+			cfg: newConfig(
+				WithToken("test"),
+				WithModel(openai.GPT3Dot5Turbo),
+				WithProvider(OPENAI),
+			),
+			wantErr: nil,
+		},
+		{
+			name:    "missing token",
 			cfg:     newConfig(),
 			wantErr: errorsMissingToken,
 		},
 		{
-			name: "model valid",
+			name: "missing model",
 			cfg: newConfig(
 				WithToken("test"),
 				WithModel("test"),
+				WithProvider(OPENAI),
 			),
 			wantErr: errorsMissingModel,
 		},
