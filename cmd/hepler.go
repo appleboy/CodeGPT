@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/appleboy/CodeGPT/openai"
 	"github.com/appleboy/CodeGPT/prompt"
@@ -12,11 +13,12 @@ import (
 )
 
 func check() error {
-	// check git command exist
+	// Check if the Git command is available on the system's PATH
 	if !util.IsCommandAvailable("git") {
 		return errors.New("Git command not found on your system's PATH. Please install Git and try again.")
 	}
 
+	// Update Viper configuration values based on the CLI flags
 	if diffUnified != 3 {
 		viper.Set("git.diff_unified", diffUnified)
 	}
@@ -25,12 +27,10 @@ func check() error {
 		viper.Set("git.exclude_list", excludeList)
 	}
 
-	// check default language
 	if prompt.GetLanguage(commitLang) != prompt.DefaultLanguage {
 		viper.Set("output.lang", commitLang)
 	}
 
-	// check default model
 	if openai.GetModel(commitModel) != openai.DefaultModel {
 		viper.Set("openai.model", commitModel)
 	}
@@ -55,10 +55,10 @@ func check() error {
 		viper.Set("git.template_string", templateString)
 	}
 
-	if viper.GetString("git.template_file") != "" {
-		if !file.IsFile(viper.GetString("git.template_file")) {
-			return errors.New("template file not found: " + viper.GetString("git.template_file"))
-		}
+	// Check if the template file specified in the configuration exists
+	templateFile := viper.GetString("git.template_file")
+	if templateFile != "" && !file.IsFile(templateFile) {
+		return fmt.Errorf("template file not found: %s", templateFile)
 	}
 
 	return nil

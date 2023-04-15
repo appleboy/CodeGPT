@@ -26,7 +26,6 @@ var availableKeys = []string{
 	"openai.timeout",
 	"openai.max_tokens",
 	"openai.temperature",
-
 	"openai.provider",
 	"openai.model_name",
 }
@@ -74,18 +73,25 @@ var configCmd = &cobra.Command{
 	Short: "Add openai config (openai.api_key, openai.model ...)",
 	Args:  cobra.MinimumNArgs(3),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		// Check if command is 'set'
 		if args[0] != "set" {
 			return errors.New("config set key value. ex: config set openai.api_key sk-...")
 		}
 
+		// Check if key is available
 		if !array.InSlice(args[1], availableKeys) {
 			return errors.New("available key list: " + strings.Join(availableKeys, ", "))
 		}
 
+		// Set config value in viper
 		viper.Set(args[1], args[2])
+
+		// Write config to file
 		if err := viper.WriteConfig(); err != nil {
 			return err
 		}
+
+		// Print success message with config file location
 		color.Green("you can see the config file: %s", viper.ConfigFileUsed())
 		return nil
 	},
