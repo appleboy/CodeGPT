@@ -29,12 +29,11 @@ type Command struct {
 }
 
 func (c *Command) excludeFiles() []string {
-	newFileLists := []string{}
+	var excludedFiles []string
 	for _, f := range c.excludeList {
-		newFileLists = append(newFileLists, ":(exclude)"+f)
+		excludedFiles = append(excludedFiles, ":(exclude)"+f)
 	}
-
-	return newFileLists
+	return excludedFiles
 }
 
 func (c *Command) diffNames() *exec.Cmd {
@@ -49,7 +48,8 @@ func (c *Command) diffNames() *exec.Cmd {
 		args = append(args, "--staged")
 	}
 
-	args = append(args, c.excludeFiles()...)
+	excludedFiles := c.excludeFiles()
+	args = append(args, excludedFiles...)
 
 	return exec.Command(
 		"git",
@@ -71,7 +71,8 @@ func (c *Command) diffFiles() *exec.Cmd {
 		args = append(args, "--staged")
 	}
 
-	args = append(args, c.excludeFiles()...)
+	excludedFiles := c.excludeFiles()
+	args = append(args, excludedFiles...)
 
 	return exec.Command(
 		"git",
@@ -195,17 +196,21 @@ func (c *Command) UninstallHook() error {
 }
 
 func New(opts ...Option) *Command {
+	// Instantiate a new config object with default values
 	cfg := &config{}
 
-	// Loop through each option
+	// Loop through each option passed as argument and apply it to the config object
 	for _, o := range opts {
-		// Call the option giving the instantiated
 		o.apply(cfg)
 	}
 
-	return &Command{
+	// Instantiate a new Command object with the configurations from the config object
+	cmd := &Command{
 		diffUnified: cfg.diffUnified,
+		// Append the user-defined excludeList to the default excludeFromDiff
 		excludeList: append(excludeFromDiff, cfg.excludeList...),
 		isAmend:     cfg.isAmend,
 	}
+
+	return cmd
 }
