@@ -131,30 +131,33 @@ func (c *Client) Completion(
 	return resp, nil
 }
 
-// New is a function that takes a variadic slice of Option types and
-// returns a pointer to a Client and an error.
+// New creates a new OpenAI API client with the given options.
 func New(opts ...Option) (*Client, error) {
+	// Create a new config object with the given options.
 	cfg := newConfig(opts...)
 
+	// Validate the config object, returning an error if it is invalid.
 	if err := cfg.valid(); err != nil {
 		return nil, err
 	}
 
+	// Create a new client instance with the necessary fields.
 	instance := &Client{
 		model:       modelMaps[cfg.model],
 		maxTokens:   cfg.maxTokens,
 		temperature: cfg.temperature,
 	}
 
+	// Create a new OpenAI config object with the given API token and other optional fields.
 	c := openai.DefaultConfig(cfg.token)
 	if cfg.orgID != "" {
 		c.OrgID = cfg.orgID
 	}
-
 	if cfg.baseURL != "" {
 		c.BaseURL = cfg.baseURL
 	}
 
+	// Create a new HTTP client with the specified timeout and proxy, if any.
 	httpClient := &http.Client{
 		Timeout: cfg.timeout,
 	}
@@ -173,14 +176,17 @@ func New(opts ...Option) (*Client, error) {
 		}
 	}
 
+	// Set the OpenAI client to use the default configuration with Azure-specific options, if the provider is Azure.
 	if cfg.provider == AZURE {
 		instance.client = openai.NewClientWithConfig(
 			openai.DefaultAzureConfig(cfg.token, cfg.baseURL, cfg.modelName),
 		)
 	} else {
+		// Otherwise, set the OpenAI client to use the HTTP client with the specified options.
 		c.HTTPClient = httpClient
 		instance.client = openai.NewClientWithConfig(c)
 	}
 
+	// Return the resulting client instance.
 	return instance, nil
 }

@@ -162,24 +162,31 @@ type config struct {
 	modelName string
 }
 
+// valid checks whether a config object is valid, returning an error if it is not.
 func (cfg *config) valid() error {
+	// Check that the token is not empty.
 	if cfg.token == "" {
 		return errorsMissingToken
 	}
 
+	// Check that the model exists in the model maps.
 	modelExists := modelMaps[cfg.model] != ""
 	if !modelExists {
 		return errorsMissingModel
 	}
 
+	// If the provider is Azure, check that the model name is not empty.
 	if cfg.provider == AZURE && cfg.modelName == "" {
 		return errorsMissingAzureModel
 	}
 
+	// If all checks pass, return nil (no error).
 	return nil
 }
 
+// newConfig creates a new config object with default values, and applies the given options.
 func newConfig(opts ...Option) *config {
+	// Create a new config object with default values.
 	c := &config{
 		model:       defaultModel,
 		maxTokens:   defaultMaxTokens,
@@ -187,9 +194,11 @@ func newConfig(opts ...Option) *config {
 		provider:    defaultProvider,
 	}
 
+	// Apply each of the given options to the config object.
 	for _, opt := range opts {
 		opt.apply(c)
 	}
 
+	// Return the resulting config object.
 	return c
 }
