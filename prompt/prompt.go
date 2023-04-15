@@ -8,8 +8,9 @@ import (
 )
 
 //go:embed templates/*
-var files embed.FS
+var templatesFS embed.FS
 
+// Template file names
 const (
 	CodeReviewTemplate         = "code_review_file_diff.tmpl"
 	SummarizeFileDiffTemplate  = "summarize_file_diff.tmpl"
@@ -18,8 +19,9 @@ const (
 	TranslationTemplate        = "translation.tmpl"
 )
 
+// Initializes the prompt package by loading the templates from the embedded file system.
 func init() {
-	if err := util.LoadTemplates(files); err != nil {
+	if err := util.LoadTemplates(templatesFS); err != nil {
 		log.Fatal(err)
 	}
 }

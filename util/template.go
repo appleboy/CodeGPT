@@ -8,7 +8,7 @@ import (
 	"io/fs"
 )
 
-// Data define a custom type for the template data.
+// Data defines a custom type for the template data.
 type Data map[string]interface{}
 
 var (
@@ -31,6 +31,7 @@ func NewTemplateByString(format string, data map[string]interface{}) (string, er
 	return tpl.String(), nil
 }
 
+// processTemplate processes the template with the given name and data.
 func processTemplate(name string, data map[string]interface{}) (*bytes.Buffer, error) {
 	t, ok := templates[name]
 	if !ok {

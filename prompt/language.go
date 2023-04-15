@@ -1,6 +1,6 @@
 package prompt
 
-var DefaultLanguage = "English"
+const DefaultLanguage = "English"
 
 var languageMaps = map[string]string{
 	"en":    DefaultLanguage,
@@ -9,10 +9,11 @@ var languageMaps = map[string]string{
 	"ja":    "Japanese",
 }
 
-func GetLanguage(lang string) string {
-	v, ok := languageMaps[lang]
-	if !ok {
-		return DefaultLanguage
+// GetLanguage returns the language name for the given language code,
+// or the default language if the code is not recognized.
+func GetLanguage(langCode string) string {
+	if language, ok := languageMaps[langCode]; ok {
+		return language
 	}
-	return v
+	return DefaultLanguage
 }
