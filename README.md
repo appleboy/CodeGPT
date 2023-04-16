@@ -8,9 +8,11 @@
 
 A CLI written in [Go](https://go.dev) language that writes git commit messages or do a code review brief for you using ChatGPT AI (gpt-3.5-turbo, gpt-4 model) and automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
 
-[繁體中文介紹][1]
+* [繁體中文介紹][1]
+* [繁體中文影片][2]
 
 [1]:https://blog.wu-boy.com/2023/03/writes-git-commit-messages-using-chatgpt/
+[2]:https://www.youtube.com/watch?v=4Yei_t6eMZU
 
 ![flow](./images/flow.svg)
 
