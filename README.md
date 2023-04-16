@@ -309,6 +309,10 @@ Suggestions for improvement:
 ==================================================
 ```
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=appleboy/codegpt&type=Date)](https://star-history.com/#appleboy/codegpt&Date)
+
 ## Reference
 
 * [OpenAI Chat completions documentation](https://platform.openai.com/docs/guides/chat).
