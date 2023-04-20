@@ -162,9 +162,9 @@ func New(opts ...Option) (*Client, error) {
 		Timeout: cfg.timeout,
 	}
 	if cfg.proxyURL != "" {
-		proxy, _ := url.Parse(cfg.proxyURL)
+		proxyURL, _ := url.Parse(cfg.proxyURL)
 		httpClient.Transport = &http.Transport{
-			Proxy: http.ProxyURL(proxy),
+			Proxy: http.ProxyURL(proxyURL),
 		}
 	} else if cfg.socksURL != "" {
 		dialer, err := proxy.SOCKS5("tcp", cfg.socksURL, nil, proxy.Direct)
