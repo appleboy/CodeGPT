@@ -229,11 +229,11 @@ var commitCmd = &cobra.Command{
 
 		outputFile := viper.GetString("output.file")
 		if outputFile == "" {
-			out, err := g.TopLevel()
+			out, err := g.GitDir()
 			if err != nil {
 				return err
 			}
-			outputFile = path.Join(strings.TrimSpace(out), ".git", "COMMIT_EDITMSG")
+			outputFile = path.Join(strings.TrimSpace(out), "COMMIT_EDITMSG")
 		}
 		color.Cyan("Write the commit message to " + outputFile + " file")
 		// write commit message to git staging file
