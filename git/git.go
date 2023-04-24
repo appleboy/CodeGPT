@@ -105,6 +105,18 @@ func (c *Command) topLevel() *exec.Cmd {
 	)
 }
 
+func (c *Command) gitDir() *exec.Cmd {
+	args := []string{
+		"rev-parse",
+		"--git-dir",
+	}
+
+	return exec.Command(
+		"git",
+		args...,
+	)
+}
+
 func (c *Command) commit(val string) *exec.Cmd {
 	args := []string{
 		"commit",
@@ -136,6 +148,16 @@ func (c *Command) Commit(val string) (string, error) {
 // If there is no working tree, report an error.
 func (c *Command) TopLevel() (string, error) {
 	output, err := c.topLevel().Output()
+	if err != nil {
+		return "", err
+	}
+
+	return string(output), nil
+}
+
+// GitDir to show the (by default, absolute) path of the git directory of the working tree.
+func (c *Command) GitDir() (string, error) {
+	output, err := c.gitDir().Output()
 	if err != nil {
 		return "", err
 	}
