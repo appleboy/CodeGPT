@@ -93,18 +93,6 @@ func (c *Command) hookPath() *exec.Cmd {
 	)
 }
 
-func (c *Command) topLevel() *exec.Cmd {
-	args := []string{
-		"rev-parse",
-		"--show-toplevel",
-	}
-
-	return exec.Command(
-		"git",
-		args...,
-	)
-}
-
 func (c *Command) gitDir() *exec.Cmd {
 	args := []string{
 		"rev-parse",
@@ -137,17 +125,6 @@ func (c *Command) commit(val string) *exec.Cmd {
 
 func (c *Command) Commit(val string) (string, error) {
 	output, err := c.commit(val).Output()
-	if err != nil {
-		return "", err
-	}
-
-	return string(output), nil
-}
-
-// TopLevel to show the (by default, absolute) path of the top-level directory of the working tree.
-// If there is no working tree, report an error.
-func (c *Command) TopLevel() (string, error) {
-	output, err := c.topLevel().Output()
 	if err != nil {
 		return "", err
 	}
