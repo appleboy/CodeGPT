@@ -72,7 +72,12 @@ var commitCmd = &cobra.Command{
 			viper.Set("openai.timeout", timeout)
 		}
 
-		color.Green("Summarize the commit message use " + viper.GetString("openai.model") + " model")
+		currentModel := viper.GetString("openai.model")
+		if viper.GetString("openai.provider") == openai.AZURE {
+			currentModel = viper.GetString("openai.model_name")
+		}
+
+		color.Green("Summarize the commit message use " + currentModel + " model")
 		client, err := openai.New(
 			openai.WithToken(viper.GetString("openai.api_key")),
 			openai.WithModel(viper.GetString("openai.model")),
