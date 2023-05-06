@@ -72,6 +72,10 @@ builds:
     {{- else }}{{ .Arch }}{{ end }}
     {{- if .Arm }}-{{ .Arm }}{{ end }}
   no_unique_dist_dir: true
+  hooks:
+    post:
+      - cmd: xz -k -9 {{ .Path }}
+        dir: ./dist/
 
 archives:
   - format: binary
@@ -83,3 +87,12 @@ checksum:
 
 snapshot:
   name_template: "{{ incpatch .Version }}"
+
+release:
+  # You can add extra pre-existing files to the release.
+  # The filename on the release will be the last part of the path (base).
+  # If another file with the same name exists, the last one found will be used.
+  #
+  # Templates: allowed
+  extra_files:
+    - glob: ./**.xz
