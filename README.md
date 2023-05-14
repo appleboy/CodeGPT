@@ -72,7 +72,6 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 * **openai.api_key**: generate API key from [openai platform page](https://platform.openai.com/account/api-keys).
 * **openai.org_id**: Identifier for this organization sometimes used in API requests. see [organization settings](https://platform.openai.com/account/org-settings). only for `openai` service.
 * **openai.model**: default model is `gpt-3.5-turbo`, you can change to `gpt-4` or [other available model list](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38).
-* **openai.lang**: default language is `en` and available languages `zh-tw`, `zh-cn`, `ja`.
 * **openai.proxy**: http/https client proxy.
 * **openai.socks**: socks client proxy.
 * **openai.timeout**: default http timeout is `10s` (ten seconds).
@@ -82,6 +81,7 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 * **git.exclude_list**: exclude file from `git diff` command.
 * **openai.provider**: default service provider is `openai`, you can change to `azure`.
 * **openai.model_name**: model deployment name (for azure).
+* **output.lang**: default language is `en` and available languages `zh-tw`, `zh-cn`, `ja`.
 
 ### How to change to Azure OpenAI Service
 
