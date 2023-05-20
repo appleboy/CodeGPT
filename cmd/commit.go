@@ -14,6 +14,7 @@ import (
 	"github.com/appleboy/CodeGPT/util"
 
 	"github.com/fatih/color"
+	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -29,9 +30,11 @@ var (
 	socksProxy     string
 	templateFile   string
 	templateString string
-	templateVars   []string
 	commitAmend    bool
 	timeout        time.Duration
+
+	templateVars     []string
+	templateVarsFile string
 )
 
 func init() {
@@ -46,6 +49,7 @@ func init() {
 	commitCmd.PersistentFlags().StringVar(&templateFile, "template_file", "", "git commit message file")
 	commitCmd.PersistentFlags().StringVar(&templateString, "template_string", "", "git commit message string")
 	commitCmd.PersistentFlags().StringSliceVar(&templateVars, "template_vars", []string{}, "template variables")
+	commitCmd.PersistentFlags().StringVar(&templateVarsFile, "template_vars_file", "", "template variables file")
 	commitCmd.PersistentFlags().BoolVar(&commitAmend, "amend", false, "replace the tip of the current branch by creating a new commit.")
 	commitCmd.PersistentFlags().DurationVarP(&timeout, "timeout", "t", 10*time.Second, "http timeout")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
@@ -171,9 +175,23 @@ var commitCmd = &cobra.Command{
 			"summarize_title":   strings.TrimSpace(summarizeTitle),
 			"summarize_message": strings.TrimSpace(summarizeMessage),
 		}
-		vars := util.ConvertToMap(templateVars)
-		for k, v := range vars {
-			data[k] = v
+
+		// add template vars
+		if vars := util.ConvertToMap(templateVars); len(vars) > 0 {
+			for k, v := range vars {
+				data[k] = v
+			}
+		}
+
+		// add template vars from file
+		if templateVarsFile != "" {
+			allENV, err := godotenv.Read(templateVarsFile)
+			if err != nil {
+				return err
+			}
+			for k, v := range allENV {
+				data[k] = v
+			}
 		}
 
 		if viper.GetString("git.template_file") != "" {

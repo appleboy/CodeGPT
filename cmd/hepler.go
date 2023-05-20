@@ -61,5 +61,9 @@ func check() error {
 		return fmt.Errorf("template file not found: %s", templateFile)
 	}
 
+	if templateVarsFile != "" && !file.IsFile(templateVarsFile) {
+		return fmt.Errorf("template variables file not found: %s", templateVarsFile)
+	}
+
 	return nil
 }
