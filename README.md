@@ -170,7 +170,7 @@ Default commit message template as following:
 {{ .summarize_message }}
 ```
 
-change format with template string using `--template_string` paratemter:
+change format with template string using `--template_string` parameter:
 
 ```sh
 codegpt commit --preview --template_string \
@@ -181,6 +181,34 @@ change format with template file using `--template_file` parameter:
 
 ```sh
 codegpt commit --preview --template_file your_file_path
+```
+
+Add custom variable to git commit message template:
+
+```sh
+{{ .summarize_prefix }}: {{ .summarize_title }}
+
+{{ .summarize_message }}
+
+{{ if .JIRA_URL }}{{ .JIRA_URL }}{{ end }}
+```
+
+Add custom variable to git commit message template using `--template_vars` parameter:
+
+```sh
+codegpt commit --preview --template_file your_file_path --template_vars JIRA_URL=https://jira.example.com/ABC-123
+```
+
+Load custom variable from file using `--template_vars_file` parameter:
+
+```sh
+codegpt commit --preview --template_file your_file_path --template_vars_file your_file_path
+```
+
+See the `template_vars_file` format as following:
+
+```env
+JIRA_URL=https://jira.example.com/ABC-123
 ```
 
 ### Git hook
