@@ -2,6 +2,7 @@ package util
 
 import (
 	"os"
+	"reflect"
 	"testing"
 )
 
@@ -45,6 +46,38 @@ func TestIsCommandAvailable(t *testing.T) {
 
 			if got != tc.want {
 				t.Errorf("IsCommandAvailable(%q) = %v; want %v", tc.cmd, got, tc.want)
+			}
+		})
+	}
+}
+
+func TestConvertToMap(t *testing.T) {
+	type args struct {
+		args []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want Data
+	}{
+		{
+			name: "convert slice to map",
+			args: args{
+				[]string{
+					"TICKET_ID=ABC-1234",
+					"Name=John Doe",
+				},
+			},
+			want: Data{
+				"Name":      "John Doe",
+				"TICKET_ID": "ABC-1234",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ConvertToMap(tt.args.args); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ConvertToMap() = %v, want %v", got, tt.want)
 			}
 		})
 	}

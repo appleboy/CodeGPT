@@ -22,6 +22,25 @@ func TestNewTemplateByString(t *testing.T) {
 	}
 }
 
+func TestNewTemplateByStringWithCustomVars(t *testing.T) {
+	data := map[string]interface{}{}
+	vars := ConvertToMap([]string{"Name=John Doe", "Message=Hello"})
+	for k, v := range vars {
+		data[k] = v
+	}
+
+	expected := "Hello, John Doe! Hello"
+
+	actual, err := NewTemplateByString("Hello, {{.Name}}! {{.Message}}", data)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	if actual != expected {
+		t.Errorf("Expected %q but got %q", expected, actual)
+	}
+}
+
 func TestProcessTemplate(t *testing.T) {
 	// Set up test data
 	testTemplateName := "test.tmpl"
