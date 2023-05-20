@@ -84,6 +84,8 @@ archives:
 
 checksum:
   name_template: 'checksums.txt'
+  extra_files:
+      - glob: ./**.xz
 
 snapshot:
   name_template: "{{ incpatch .Version }}"
