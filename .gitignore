@@ -17,3 +17,4 @@ coverage.txt
 codegpt
 dist
 **/.DS_Store
+bin

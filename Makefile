@@ -20,7 +20,7 @@ COMMIT ?= $(shell git rev-parse --short HEAD)
 build: $(EXECUTABLE)
 
 $(EXECUTABLE): $(GOFILES)
-	$(GO) build -v -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)' -o $@
+	$(GO) build -v -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)' -o bin/$@
 
 install: $(GOFILES)
 	$(GO) install -v -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)'
