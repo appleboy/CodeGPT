@@ -29,6 +29,7 @@ var (
 	socksProxy     string
 	templateFile   string
 	templateString string
+	templateVars   []string
 	commitAmend    bool
 	timeout        time.Duration
 )
@@ -44,6 +45,7 @@ func init() {
 	commitCmd.PersistentFlags().StringVar(&socksProxy, "socks", "", "socks proxy")
 	commitCmd.PersistentFlags().StringVar(&templateFile, "template_file", "", "git commit message file")
 	commitCmd.PersistentFlags().StringVar(&templateString, "template_string", "", "git commit message string")
+	commitCmd.PersistentFlags().StringSliceVar(&templateVars, "template_vars", []string{}, "template variables")
 	commitCmd.PersistentFlags().BoolVar(&commitAmend, "amend", false, "replace the tip of the current branch by creating a new commit.")
 	commitCmd.PersistentFlags().DurationVarP(&timeout, "timeout", "t", 10*time.Second, "http timeout")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
@@ -169,6 +171,11 @@ var commitCmd = &cobra.Command{
 			"summarize_title":   strings.TrimSpace(summarizeTitle),
 			"summarize_message": strings.TrimSpace(summarizeMessage),
 		}
+		vars := util.ConvertToMap(templateVars)
+		for k, v := range vars {
+			data[k] = v
+		}
+
 		if viper.GetString("git.template_file") != "" {
 			format, err := os.ReadFile(viper.GetString("git.template_file"))
 			if err != nil {
