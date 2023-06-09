@@ -44,9 +44,9 @@ func init() {
 	configCmd.PersistentFlags().IntP("diff_unified", "", 3, "generate diffs with <n> lines of context, default is 3")
 	configCmd.PersistentFlags().IntP("max_tokens", "", 300, "the maximum number of tokens to generate in the chat completion.")
 	configCmd.PersistentFlags().Float32P("temperature", "", 0.7, "What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.")
-	configCmd.PersistentFlags().StringSliceP("exclude_list", "", []string{}, "exclude file from `git diff` command")
+	configCmd.PersistentFlags().StringP("exclude_list", "", "", "exclude file from `git diff` command")
 
-	configCmd.PersistentFlags().StringP("provider", "", "openai", "srvice provider, only support 'openai' or 'azure'")
+	configCmd.PersistentFlags().StringP("provider", "", "openai", "service provider, only support 'openai' or 'azure'")
 	configCmd.PersistentFlags().StringP("model_name", "", "", "model deployment name for Azure cognitive service")
 
 	_ = viper.BindPFlag("openai.base_url", configCmd.PersistentFlags().Lookup("base_url"))
@@ -84,7 +84,11 @@ var configCmd = &cobra.Command{
 		}
 
 		// Set config value in viper
-		viper.Set(args[1], args[2])
+		if args[1] == "git.exclude_list" {
+			viper.Set(args[1], strings.Split(args[2], ","))
+		} else {
+			viper.Set(args[1], args[2])
+		}
 
 		// Write config to file
 		if err := viper.WriteConfig(); err != nil {
