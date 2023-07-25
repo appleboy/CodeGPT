@@ -74,7 +74,7 @@ var commitCmd = &cobra.Command{
 		}
 
 		// Update the OpenAI client request timeout if the timeout value is greater than the default openai.timeout
-		if timeout > viper.GetDuration("openai.timeout") {
+		if timeout > viper.GetDuration("openai.timeout")*time.Second {
 			viper.Set("openai.timeout", timeout)
 		}
 
@@ -91,7 +91,7 @@ var commitCmd = &cobra.Command{
 			openai.WithProxyURL(viper.GetString("openai.proxy")),
 			openai.WithSocksURL(viper.GetString("openai.socks")),
 			openai.WithBaseURL(viper.GetString("openai.base_url")),
-			openai.WithTimeout(viper.GetDuration("openai.timeout")),
+			openai.WithTimeout(viper.GetDuration("openai.timeout")*time.Second),
 			openai.WithMaxTokens(viper.GetInt("openai.max_tokens")),
 			openai.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
 			openai.WithProvider(viper.GetString("openai.provider")),

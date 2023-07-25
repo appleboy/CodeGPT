@@ -1,13 +1,13 @@
 package cmd
 
 import (
-	"strconv"
-	"strings"
-
 	"github.com/appleboy/CodeGPT/git"
 	"github.com/appleboy/CodeGPT/openai"
 	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/util"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -53,7 +53,7 @@ var reviewCmd = &cobra.Command{
 			openai.WithProxyURL(viper.GetString("openai.proxy")),
 			openai.WithSocksURL(viper.GetString("openai.socks")),
 			openai.WithBaseURL(viper.GetString("openai.base_url")),
-			openai.WithTimeout(viper.GetDuration("openai.timeout")),
+			openai.WithTimeout(viper.GetDuration("openai.timeout")*time.Second),
 			openai.WithMaxTokens(viper.GetInt("openai.max_tokens")),
 			openai.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
 			openai.WithProvider(viper.GetString("openai.provider")),
