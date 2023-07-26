@@ -51,7 +51,7 @@ func init() {
 	commitCmd.PersistentFlags().StringSliceVar(&templateVars, "template_vars", []string{}, "template variables")
 	commitCmd.PersistentFlags().StringVar(&templateVarsFile, "template_vars_file", "", "template variables file")
 	commitCmd.PersistentFlags().BoolVar(&commitAmend, "amend", false, "replace the tip of the current branch by creating a new commit.")
-	commitCmd.PersistentFlags().DurationVarP(&timeout, "timeout", "t", 10*time.Second, "http timeout")
+	commitCmd.PersistentFlags().DurationVarP(&timeout, "timeout", "t", 30, "http timeout")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
 

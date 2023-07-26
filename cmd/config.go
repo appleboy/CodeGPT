@@ -2,13 +2,11 @@ package cmd
 
 import (
 	"errors"
-	"strings"
-	"time"
-
 	"github.com/appleboy/com/array"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 var availableKeys = []string{
@@ -38,7 +36,7 @@ func init() {
 	configCmd.PersistentFlags().StringP("org_id", "o", "", "openai requesting organization")
 	configCmd.PersistentFlags().StringP("proxy", "", "", "http proxy")
 	configCmd.PersistentFlags().StringP("socks", "", "", "socks proxy")
-	configCmd.PersistentFlags().DurationP("timeout", "t", 10*time.Second, "http timeout")
+	configCmd.PersistentFlags().DurationP("timeout", "t", 30, "http timeout")
 	configCmd.PersistentFlags().StringP("template_file", "", "", "git commit message file")
 	configCmd.PersistentFlags().StringP("template_string", "", "", "git commit message string")
 	configCmd.PersistentFlags().IntP("diff_unified", "", 3, "generate diffs with <n> lines of context, default is 3")

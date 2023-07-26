@@ -74,7 +74,7 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 * **openai.model**: default model is `gpt-3.5-turbo`, you can change to `gpt-4` or [other available model list](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38).
 * **openai.proxy**: http/https client proxy.
 * **openai.socks**: socks client proxy.
-* **openai.timeout**: default http timeout is `10s` (ten seconds).
+* **openai.timeout**: default http timeout is `30s` (thirty seconds).
 * **openai.max_tokens**: default max tokens is `300`. see reference [max_tokens](https://platform.openai.com/docs/api-reference/completions/create#completions/create-max_tokens).
 * **openai.temperature**: default temperature is `0.7`. see reference [temperature](https://platform.openai.com/docs/api-reference/completions/create#completions/create-temperature).
 * **git.diff_unified**: generate diffs with `<n>` lines of context, default is `3`.
