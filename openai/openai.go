@@ -187,7 +187,7 @@ func New(opts ...Option) (*Client, error) {
 		if err != nil {
 			return nil, fmt.Errorf("can't connect to the proxy: %s", err)
 		}
-		tr.Dial = dialer.Dial
+		tr.DialContext = dialer.(proxy.ContextDialer).DialContext
 	}
 
 	// Set the HTTP client to use the default header transport with the specified headers.
