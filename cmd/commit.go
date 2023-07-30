@@ -32,6 +32,7 @@ var (
 	templateString string
 	commitAmend    bool
 	timeout        time.Duration
+	promptOnly     bool
 
 	templateVars     []string
 	templateVarsFile string
@@ -52,6 +53,7 @@ func init() {
 	commitCmd.PersistentFlags().StringVar(&templateVarsFile, "template_vars_file", "", "template variables file")
 	commitCmd.PersistentFlags().BoolVar(&commitAmend, "amend", false, "replace the tip of the current branch by creating a new commit.")
 	commitCmd.PersistentFlags().DurationVarP(&timeout, "timeout", "t", 10*time.Second, "http timeout")
+	commitCmd.PersistentFlags().BoolVar(&promptOnly, "prompt_only", false, "show prompt only, don't send request to openai")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
 
@@ -97,7 +99,7 @@ var commitCmd = &cobra.Command{
 			openai.WithProvider(viper.GetString("openai.provider")),
 			openai.WithModelName(viper.GetString("openai.model_name")),
 		)
-		if err != nil {
+		if err != nil && !promptOnly {
 			return err
 		}
 
@@ -109,6 +111,14 @@ var commitCmd = &cobra.Command{
 		)
 		if err != nil {
 			return err
+		}
+
+		// determine if the user wants to use the prompt only
+		if promptOnly {
+			color.Yellow("====================Prompt========================")
+			color.Yellow("\n" + strings.TrimSpace(out) + "\n\n")
+			color.Yellow("==================================================")
+			return nil
 		}
 
 		// Get summarize comment from diff datas
