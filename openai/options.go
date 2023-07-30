@@ -153,6 +153,13 @@ func WithSkipVerify(val bool) Option {
 	})
 }
 
+// WithHeaders returns a new Option that sets the headers for the http client configuration.
+func WithHeaders(headers []string) Option {
+	return optionFunc(func(c *config) {
+		c.headers = headers
+	})
+}
+
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
 	baseURL     string
@@ -168,6 +175,7 @@ type config struct {
 	provider   string
 	modelName  string
 	skipVerify bool
+	headers    []string
 }
 
 // valid checks whether a config object is valid, returning an error if it is not.

@@ -176,8 +176,7 @@ func New(opts ...Option) (*Client, error) {
 
 	// Create a new HTTP client with the specified timeout and proxy, if any.
 	httpClient := &http.Client{
-		Timeout:   cfg.timeout,
-		Transport: tr,
+		Timeout: cfg.timeout,
 	}
 
 	if cfg.proxyURL != "" {
@@ -189,6 +188,12 @@ func New(opts ...Option) (*Client, error) {
 			return nil, fmt.Errorf("can't connect to the proxy: %s", err)
 		}
 		tr.Dial = dialer.Dial
+	}
+
+	// Set the HTTP client to use the default header transport with the specified headers.
+	httpClient.Transport = &DefaultHeaderTransport{
+		Origin: tr,
+		Header: NewHeaders(cfg.headers),
 	}
 
 	// Set the OpenAI client to use the default configuration with Azure-specific options, if the provider is Azure.

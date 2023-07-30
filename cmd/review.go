@@ -59,6 +59,7 @@ var reviewCmd = &cobra.Command{
 			openai.WithProvider(viper.GetString("openai.provider")),
 			openai.WithModelName(viper.GetString("openai.model_name")),
 			openai.WithSkipVerify(viper.GetBool("openai.skip_verify")),
+			openai.WithHeaders(viper.GetStringSlice("openai.headers")),
 		)
 		if err != nil {
 			return err

@@ -29,6 +29,7 @@ var availableKeys = []string{
 	"openai.provider",
 	"openai.model_name",
 	"openai.skip_verify",
+	"openai.headers",
 }
 
 func init() {
@@ -50,6 +51,7 @@ func init() {
 	configCmd.PersistentFlags().StringP("provider", "", "openai", "service provider, only support 'openai' or 'azure'")
 	configCmd.PersistentFlags().StringP("model_name", "", "", "model deployment name for Azure cognitive service")
 	configCmd.PersistentFlags().BoolP("skip_verify", "", false, "skip verify TLS certificate")
+	configCmd.PersistentFlags().StringP("headers", "", "", "custom headers for openai request")
 
 	_ = viper.BindPFlag("openai.base_url", configCmd.PersistentFlags().Lookup("base_url"))
 	_ = viper.BindPFlag("openai.org_id", configCmd.PersistentFlags().Lookup("org_id"))
@@ -69,6 +71,7 @@ func init() {
 	_ = viper.BindPFlag("openai.provider", configCmd.PersistentFlags().Lookup("provider"))
 	_ = viper.BindPFlag("openai.model_name", configCmd.PersistentFlags().Lookup("model_name"))
 	_ = viper.BindPFlag("openai.skip_verify", configCmd.PersistentFlags().Lookup("skip_verify"))
+	_ = viper.BindPFlag("openai.headers", configCmd.PersistentFlags().Lookup("headers"))
 }
 
 var configCmd = &cobra.Command{
