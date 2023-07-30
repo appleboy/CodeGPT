@@ -167,23 +167,24 @@ func New(opts ...Option) (*Client, error) {
 		c.BaseURL = cfg.baseURL
 	}
 
+	// Create a new HTTP transport.
+	tr := &http.Transport{}
+
 	// Create a new HTTP client with the specified timeout and proxy, if any.
 	httpClient := &http.Client{
-		Timeout: cfg.timeout,
+		Timeout:   cfg.timeout,
+		Transport: tr,
 	}
+
 	if cfg.proxyURL != "" {
 		proxyURL, _ := url.Parse(cfg.proxyURL)
-		httpClient.Transport = &http.Transport{
-			Proxy: http.ProxyURL(proxyURL),
-		}
+		tr.Proxy = http.ProxyURL(proxyURL)
 	} else if cfg.socksURL != "" {
 		dialer, err := proxy.SOCKS5("tcp", cfg.socksURL, nil, proxy.Direct)
 		if err != nil {
 			return nil, fmt.Errorf("can't connect to the proxy: %s", err)
 		}
-		httpClient.Transport = &http.Transport{
-			Dial: dialer.Dial,
-		}
+		tr.Dial = dialer.Dial
 	}
 
 	// Set the OpenAI client to use the default configuration with Azure-specific options, if the provider is Azure.
@@ -192,6 +193,8 @@ func New(opts ...Option) (*Client, error) {
 		defaultAzureConfig.AzureModelMapperFunc = func(model string) string {
 			return cfg.modelName
 		}
+		// Set the HTTP client to the one with the specified options.
+		defaultAzureConfig.HTTPClient = httpClient
 		instance.client = openai.NewClientWithConfig(
 			defaultAzureConfig,
 		)
