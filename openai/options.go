@@ -146,6 +146,13 @@ func WithModelName(val string) Option {
 	})
 }
 
+// WithSkipVerify returns a new Option that sets the skipVerify for the client configuration.
+func WithSkipVerify(val bool) Option {
+	return optionFunc(func(c *config) {
+		c.skipVerify = val
+	})
+}
+
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
 	baseURL     string
@@ -158,8 +165,9 @@ type config struct {
 	maxTokens   int
 	temperature float32
 
-	provider  string
-	modelName string
+	provider   string
+	modelName  string
+	skipVerify bool
 }
 
 // valid checks whether a config object is valid, returning an error if it is not.

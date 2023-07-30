@@ -98,6 +98,7 @@ var commitCmd = &cobra.Command{
 			openai.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
 			openai.WithProvider(viper.GetString("openai.provider")),
 			openai.WithModelName(viper.GetString("openai.model_name")),
+			openai.WithSkipVerify(viper.GetBool("openai.skip_verify")),
 		)
 		if err != nil && !promptOnly {
 			return err

@@ -2,6 +2,7 @@ package openai
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -169,6 +170,9 @@ func New(opts ...Option) (*Client, error) {
 
 	// Create a new HTTP transport.
 	tr := &http.Transport{}
+	if cfg.skipVerify {
+		tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	}
 
 	// Create a new HTTP client with the specified timeout and proxy, if any.
 	httpClient := &http.Client{
