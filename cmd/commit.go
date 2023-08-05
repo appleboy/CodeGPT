@@ -100,6 +100,7 @@ var commitCmd = &cobra.Command{
 			openai.WithModelName(viper.GetString("openai.model_name")),
 			openai.WithSkipVerify(viper.GetBool("openai.skip_verify")),
 			openai.WithHeaders(viper.GetStringSlice("openai.headers")),
+			openai.WithApiVersion(viper.GetString("openai.api_version")),
 		)
 		if err != nil && !promptOnly {
 			return err

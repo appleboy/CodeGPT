@@ -202,6 +202,10 @@ func New(opts ...Option) (*Client, error) {
 		defaultAzureConfig.AzureModelMapperFunc = func(model string) string {
 			return cfg.modelName
 		}
+		// Set the API version to the one with the specified options.
+		if cfg.apiVersion != "" {
+			defaultAzureConfig.APIVersion = cfg.apiVersion
+		}
 		// Set the HTTP client to the one with the specified options.
 		defaultAzureConfig.HTTPClient = httpClient
 		instance.client = openai.NewClientWithConfig(
@@ -210,6 +214,9 @@ func New(opts ...Option) (*Client, error) {
 	} else {
 		// Otherwise, set the OpenAI client to use the HTTP client with the specified options.
 		c.HTTPClient = httpClient
+		if cfg.apiVersion != "" {
+			c.APIVersion = cfg.apiVersion
+		}
 		instance.client = openai.NewClientWithConfig(c)
 	}
 
