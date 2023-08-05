@@ -160,6 +160,13 @@ func WithHeaders(headers []string) Option {
 	})
 }
 
+// WithApiVersion returns a new Option that sets the apiVersion for OpenAI Model.
+func WithApiVersion(apiVersion string) Option {
+	return optionFunc(func(c *config) {
+		c.apiVersion = apiVersion
+	})
+}
+
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
 	baseURL     string
@@ -176,6 +183,7 @@ type config struct {
 	modelName  string
 	skipVerify bool
 	headers    []string
+	apiVersion string
 }
 
 // valid checks whether a config object is valid, returning an error if it is not.
