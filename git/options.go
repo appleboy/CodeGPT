@@ -35,6 +35,7 @@ func WithExcludeList(val []string) Option {
 	})
 }
 
+// WithEnableAmend returns an Option that sets the isAmend field of a config object to the given value.
 func WithEnableAmend(val bool) Option {
 	return optionFunc(func(c *config) {
 		c.isAmend = val
