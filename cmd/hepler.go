@@ -43,7 +43,7 @@ func check() error {
 		viper.Set("openai.socks", socksProxy)
 	}
 
-	if maxTokens != 0 {
+	if maxTokens != 300 {
 		viper.Set("openai.max_tokens", maxTokens)
 	}
 
