@@ -27,18 +27,15 @@ var modelMaps = map[string]string{
 	"gpt-3.5-turbo-16k":      openai.GPT3Dot5Turbo16K,
 	"gpt-3.5-turbo-16k-0613": openai.GPT3Dot5Turbo16K0613,
 	"gpt-3.5-turbo":          openai.GPT3Dot5Turbo,
-	"text-davinci-003":       openai.GPT3TextDavinci003,
-	"text-davinci-002":       openai.GPT3TextDavinci002,
-	"text-davinci-001":       openai.GPT3TextDavinci001,
-	"text-curie-001":         openai.GPT3TextCurie001,
-	"text-babbage-001":       openai.GPT3TextBabbage001,
-	"text-ada-001":           openai.GPT3TextAda001,
-	"davinci-instruct-beta":  openai.GPT3DavinciInstructBeta,
+	"gpt-3.5-turbo-instruct": openai.GPT3Dot5TurboInstruct,
 	"davinci":                openai.GPT3Davinci,
-	"curie-instruct-beta":    openai.GPT3CurieInstructBeta,
+	"davinci-002":            openai.GPT3Davinci002,
 	"curie":                  openai.GPT3Curie,
+	"curie-002":              openai.GPT3Curie002,
 	"ada":                    openai.GPT3Ada,
+	"ada-002":                openai.GPT3Ada002,
 	"babbage":                openai.GPT3Babbage,
+	"babbage-002":            openai.GPT3Babbage002,
 }
 
 // GetModel returns the model ID corresponding to the given model name.
