@@ -17,6 +17,9 @@ const (
 	SummarizeTitleTemplate     = "summarize_title.tmpl"
 	ConventionalCommitTemplate = "conventional_commit.tmpl"
 	TranslationTemplate        = "translation.tmpl"
+	SummarizePrefixKey         = "summarize_prefix"
+	SummarizeTitleKey          = "summarize_title"
+	SummarizeMessageKey        = "summarize_message"
 )
 
 // Initializes the prompt package by loading the templates from the embedded file system.

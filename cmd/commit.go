@@ -106,89 +106,7 @@ var commitCmd = &cobra.Command{
 			return err
 		}
 
-		out, err := util.GetTemplateByString(
-			prompt.SummarizeFileDiffTemplate,
-			util.Data{
-				"file_diffs": diff,
-			},
-		)
-		if err != nil {
-			return err
-		}
-
-		// determine if the user wants to use the prompt only
-		if promptOnly {
-			color.Yellow("====================Prompt========================")
-			color.Yellow("\n" + strings.TrimSpace(out) + "\n\n")
-			color.Yellow("==================================================")
-			return nil
-		}
-
-		// Get summarize comment from diff datas
-		color.Cyan("We are trying to summarize a git diff")
-		resp, err := client.Completion(cmd.Context(), out)
-		if err != nil {
-			return err
-		}
-		summarizeMessage := resp.Content
-		color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
-			", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
-			", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
-		)
-
-		out, err = util.GetTemplateByString(
-			prompt.SummarizeTitleTemplate,
-			util.Data{
-				"summary_points": summarizeMessage,
-			},
-		)
-		if err != nil {
-			return err
-		}
-
-		// Get summarize title from diff datas
-		color.Cyan("We are trying to summarize a title for pull request")
-		resp, err = client.Completion(cmd.Context(), out)
-		if err != nil {
-			return err
-		}
-		summarizeTitle := resp.Content
-		color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
-			", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
-			", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
-		)
-
-		// lowercase the first character of first word of the commit message and remove last period
-		summarizeTitle = strings.TrimRight(strings.ToLower(string(summarizeTitle[0]))+summarizeTitle[1:], ".")
-
-		// support conventional commits
-		out, err = util.GetTemplateByString(
-			prompt.ConventionalCommitTemplate,
-			util.Data{
-				"summary_points": summarizeMessage,
-			},
-		)
-		if err != nil {
-			return err
-		}
-		color.Cyan("We are trying to get conventional commit prefix")
-		resp, err = client.Completion(cmd.Context(), out)
-		if err != nil {
-			return err
-		}
-		summarizePrefix := resp.Content
-		color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
-			", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
-			", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
-		)
-
-		var commitMessage string
-		data := util.Data{
-			"summarize_prefix":  strings.TrimSpace(summarizePrefix),
-			"summarize_title":   strings.TrimSpace(summarizeTitle),
-			"summarize_message": strings.TrimSpace(summarizeMessage),
-		}
-
+		data := util.Data{}
 		// add template vars
 		if vars := util.ConvertToMap(templateVars); len(vars) > 0 {
 			for k, v := range vars {
@@ -207,6 +125,91 @@ var commitCmd = &cobra.Command{
 			}
 		}
 
+		// Get code review message from diff datas
+		if _, ok := data[prompt.SummarizeMessageKey]; !ok {
+			out, err := util.GetTemplateByString(
+				prompt.SummarizeFileDiffTemplate,
+				util.Data{
+					"file_diffs": diff,
+				},
+			)
+			if err != nil {
+				return err
+			}
+
+			// determine if the user wants to use the prompt only
+			if promptOnly {
+				color.Yellow("====================Prompt========================")
+				color.Yellow("\n" + strings.TrimSpace(out) + "\n\n")
+				color.Yellow("==================================================")
+				return nil
+			}
+
+			// Get summarize comment from diff datas
+			color.Cyan("We are trying to summarize a git diff")
+			resp, err := client.Completion(cmd.Context(), out)
+			if err != nil {
+				return err
+			}
+			data[prompt.SummarizeMessageKey] = strings.TrimSpace(resp.Content)
+			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
+				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
+				", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
+			)
+		}
+
+		// Get summarize title from diff datas
+		if _, ok := data[prompt.SummarizeTitleKey]; !ok {
+			out, err := util.GetTemplateByString(
+				prompt.SummarizeTitleTemplate,
+				util.Data{
+					"summary_points": data[prompt.SummarizeMessageKey],
+				},
+			)
+			if err != nil {
+				return err
+			}
+
+			// Get summarize title from diff datas
+			color.Cyan("We are trying to summarize a title for pull request")
+			resp, err := client.Completion(cmd.Context(), out)
+			if err != nil {
+				return err
+			}
+			summarizeTitle := resp.Content
+			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
+				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
+				", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
+			)
+
+			// lowercase the first character of first word of the commit message and remove last period
+			summarizeTitle = strings.TrimRight(strings.ToLower(string(summarizeTitle[0]))+summarizeTitle[1:], ".")
+			data[prompt.SummarizeTitleKey] = strings.TrimSpace(summarizeTitle)
+		}
+
+		if _, ok := data[prompt.SummarizePrefixKey]; !ok {
+			out, err := util.GetTemplateByString(
+				prompt.ConventionalCommitTemplate,
+				util.Data{
+					"summary_points": data[prompt.SummarizeMessageKey],
+				},
+			)
+			if err != nil {
+				return err
+			}
+			color.Cyan("We are trying to get conventional commit prefix")
+			resp, err := client.Completion(cmd.Context(), out)
+			if err != nil {
+				return err
+			}
+			data[prompt.SummarizePrefixKey] = strings.TrimSpace(resp.Content)
+			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
+				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
+				", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
+			)
+		}
+
+		var commitMessage string
 		if viper.GetString("git.template_file") != "" {
 			format, err := os.ReadFile(viper.GetString("git.template_file"))
 			if err != nil {
@@ -238,7 +241,7 @@ var commitCmd = &cobra.Command{
 		}
 
 		if prompt.GetLanguage(viper.GetString("output.lang")) != prompt.DefaultLanguage {
-			out, err = util.GetTemplateByString(
+			out, err := util.GetTemplateByString(
 				prompt.TranslationTemplate,
 				util.Data{
 					"output_language": prompt.GetLanguage(viper.GetString("output.lang")),
