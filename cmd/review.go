@@ -57,7 +57,12 @@ var reviewCmd = &cobra.Command{
 			openai.WithMaxTokens(viper.GetInt("openai.max_tokens")),
 			openai.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
 			openai.WithProvider(viper.GetString("openai.provider")),
-			openai.WithModelName(viper.GetString("openai.model_name")),
+			openai.WithAzureModelMapperFunc(func(azureModel string) string {
+				azureModelMapping := map[string]string{
+					viper.GetString("openai.model"): viper.GetString("openai.model_name"),
+				}
+				return azureModelMapping[azureModel]
+			}),
 			openai.WithSkipVerify(viper.GetBool("openai.skip_verify")),
 			openai.WithHeaders(viper.GetStringSlice("openai.headers")),
 			openai.WithApiVersion(viper.GetString("openai.api_version")),

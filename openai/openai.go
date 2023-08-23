@@ -196,9 +196,16 @@ func New(opts ...Option) (*Client, error) {
 	// Set the OpenAI client to use the default configuration with Azure-specific options, if the provider is Azure.
 	if cfg.provider == AZURE {
 		defaultAzureConfig := openai.DefaultAzureConfig(cfg.token, cfg.baseURL)
-		defaultAzureConfig.AzureModelMapperFunc = func(model string) string {
-			return cfg.modelName
+		var azureModelMapperFunc func(string) string
+		if cfg.modelName != "" {
+			azureModelMapperFunc = func(model string) string {
+				return cfg.modelName
+			}
 		}
+		if cfg.azureModelMapperFunc != nil {
+			azureModelMapperFunc = cfg.azureModelMapperFunc
+		}
+		defaultAzureConfig.AzureModelMapperFunc = azureModelMapperFunc
 		// Set the API version to the one with the specified options.
 		if cfg.apiVersion != "" {
 			defaultAzureConfig.APIVersion = cfg.apiVersion

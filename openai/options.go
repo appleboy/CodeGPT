@@ -137,12 +137,32 @@ func WithProvider(val string) Option {
 	})
 }
 
+// Deprecated: use WithAzureModelMapperFunc
 // WithModelName sets the `modelName` variable to the provided `val` parameter.
 // This function returns an `Option` object.
 func WithModelName(val string) Option {
 	// Return an `optionFunc` object with `c.modelName` set to `val`.
 	return optionFunc(func(c *config) {
 		c.modelName = val
+	})
+}
+
+// WithAzureModelMapperFunc Support for multiple azure deployment model name Settings
+//
+//	Example:
+//
+//	import openaiv1 "github.com/sashabaranov/go-openai"
+//	openai.WithAzureModelMapperFunc(func(mode string) string {
+//		azureModelMapping := map[string]string{
+//			openaiv1.GPT3Dot5Turbo:           "your gpt-3.5-turbo deployment name",
+//			openaiv1.AdaEmbeddingV2.String(): "your text-embedding-ada-002 deployment name",
+//			"whisper-1":                      "your whisper-1 deployment name",
+//		}
+//		return azureModelMapping[mode]
+//	})
+func WithAzureModelMapperFunc(azureModelMapperFunc func(azureModel string) string) Option {
+	return optionFunc(func(c *config) {
+		c.azureModelMapperFunc = azureModelMapperFunc
 	})
 }
 
@@ -179,11 +199,14 @@ type config struct {
 	maxTokens   int
 	temperature float32
 
-	provider   string
+	provider string
+	// Deprecated: use azureModelMapperFunc
 	modelName  string
 	skipVerify bool
 	headers    []string
 	apiVersion string
+
+	azureModelMapperFunc func(azureModel string) string
 }
 
 // valid checks whether a config object is valid, returning an error if it is not.
@@ -199,8 +222,8 @@ func (cfg *config) valid() error {
 		return errorsMissingModel
 	}
 
-	// If the provider is Azure, check that the model name is not empty.
-	if cfg.provider == AZURE && cfg.modelName == "" {
+	// If the provider is Azure, check that the model name or azureModelMapperFunc is not empty.
+	if cfg.provider == AZURE && cfg.modelName == "" && cfg.azureModelMapperFunc != nil {
 		return errorsMissingAzureModel
 	}
 
