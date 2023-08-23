@@ -223,7 +223,7 @@ func (cfg *config) valid() error {
 	}
 
 	// If the provider is Azure, check that the model name or azureModelMapperFunc is not empty.
-	if cfg.provider == AZURE && cfg.modelName == "" && cfg.azureModelMapperFunc != nil {
+	if cfg.provider == AZURE && cfg.modelName == "" && cfg.azureModelMapperFunc == nil {
 		return errorsMissingAzureModel
 	}
 
