@@ -54,6 +54,7 @@ type Client struct {
 	model       string
 	maxTokens   int
 	temperature float32
+	isFuncCall  bool
 }
 
 type Response struct {
@@ -173,7 +174,7 @@ func New(opts ...Option) (*Client, error) {
 	}
 
 	// Create a new client instance with the necessary fields.
-	instance := &Client{
+	engine := &Client{
 		model:       modelMaps[cfg.model],
 		maxTokens:   cfg.maxTokens,
 		temperature: cfg.temperature,
@@ -228,7 +229,7 @@ func New(opts ...Option) (*Client, error) {
 		}
 		// Set the HTTP client to the one with the specified options.
 		defaultAzureConfig.HTTPClient = httpClient
-		instance.client = openai.NewClientWithConfig(
+		engine.client = openai.NewClientWithConfig(
 			defaultAzureConfig,
 		)
 	} else {
@@ -237,21 +238,35 @@ func New(opts ...Option) (*Client, error) {
 		if cfg.apiVersion != "" {
 			c.APIVersion = cfg.apiVersion
 		}
-		instance.client = openai.NewClientWithConfig(c)
+		engine.client = openai.NewClientWithConfig(c)
 	}
 
-	// Return the resulting client instance.
-	return instance, nil
+	engine.isFuncCall = engine.allowFuncCall(cfg)
+
+	// Return the resulting client engine.
+	return engine, nil
 }
 
-// AllowFuncCall returns true if the model supports function calls.
-// In an API call, you can describe functions to gpt-3.5-turbo-0613 and gpt-4-0613
-// https://platform.openai.com/docs/guides/gpt/chat-completions-api
-func (c *Client) AllowFuncCall() bool {
+// allowFuncCall returns true if the model supports function calls.
+// https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/function-calling
+// Function calling is available in the 2023-07-01-preview API version and works with version 0613 of
+// gpt-35-turbo, gpt-35-turbo-16k, gpt-4, and gpt-4-32k.
+func (c *Client) allowFuncCall(cfg *config) bool {
+	if cfg.provider == AZURE && cfg.apiVersion == "2023-07-01-preview" {
+		return true
+	}
+
 	switch c.model {
 	case openai.GPT432K0613, openai.GPT40613, openai.GPT3Dot5Turbo0613, openai.GPT3Dot5Turbo16K0613:
 		return true
 	default:
 		return false
 	}
+}
+
+// AllowFuncCall returns true if the model supports function calls.
+// In an API call, you can describe functions to gpt-3.5-turbo-0613 and gpt-4-0613
+// https://platform.openai.com/docs/guides/gpt/chat-completions-api
+func (c *Client) AllowFuncCall() bool {
+	return c.isFuncCall
 }
