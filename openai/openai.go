@@ -243,3 +243,15 @@ func New(opts ...Option) (*Client, error) {
 	// Return the resulting client instance.
 	return instance, nil
 }
+
+// AllowFuncCall returns true if the model supports function calls.
+// In an API call, you can describe functions to gpt-3.5-turbo-0613 and gpt-4-0613
+// https://platform.openai.com/docs/guides/gpt/chat-completions-api
+func (c *Client) AllowFuncCall() bool {
+	switch c.model {
+	case openai.GPT432K0613, openai.GPT40613, openai.GPT3Dot5Turbo0613, openai.GPT3Dot5Turbo16K0613:
+		return true
+	default:
+		return false
+	}
+}
