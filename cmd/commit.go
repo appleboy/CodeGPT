@@ -198,11 +198,16 @@ var commitCmd = &cobra.Command{
 				return err
 			}
 			color.Cyan("We are trying to get conventional commit prefix")
-			resp, err := client.Completion(cmd.Context(), out)
+			resp, err := client.CreateFunctionCall(cmd.Context(), out, openai.SummaryPrefixFunc)
 			if err != nil {
 				return err
 			}
-			data[prompt.SummarizePrefixKey] = strings.TrimSpace(resp.Content)
+			summaryPrix := ""
+			if len(resp.Choices) > 0 {
+				args := openai.GetSummaryPrefixArgs(resp.Choices[0].Message.FunctionCall.Arguments)
+				summaryPrix = args.Prefix
+			}
+			data[prompt.SummarizePrefixKey] = summaryPrix
 			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
 				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
 				", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),

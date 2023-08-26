@@ -61,6 +61,29 @@ type Response struct {
 	Usage   openai.Usage
 }
 
+// CreateChatCompletion is an API call to create a function call for a chat message.
+func (c *Client) CreateFunctionCall(
+	ctx context.Context,
+	content string,
+	funcs ...openai.FunctionDefinition,
+) (resp openai.ChatCompletionResponse, err error) {
+	req := openai.ChatCompletionRequest{
+		Model:       c.model,
+		MaxTokens:   c.maxTokens,
+		Temperature: c.temperature,
+		TopP:        1,
+		Messages: []openai.ChatCompletionMessage{
+			{
+				Role:    openai.ChatMessageRoleUser,
+				Content: content,
+			},
+		},
+		Functions:    funcs,
+		FunctionCall: "auto",
+	}
+	return c.client.CreateChatCompletion(ctx, req)
+}
+
 // CreateChatCompletion is an API call to create a completion for a chat message.
 func (c *Client) CreateChatCompletion(
 	ctx context.Context,
