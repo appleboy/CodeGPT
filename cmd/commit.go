@@ -198,20 +198,32 @@ var commitCmd = &cobra.Command{
 				return err
 			}
 			color.Cyan("We are trying to get conventional commit prefix")
-			resp, err := client.CreateFunctionCall(cmd.Context(), out, openai.SummaryPrefixFunc)
-			if err != nil {
-				return err
-			}
 			summaryPrix := ""
-			if len(resp.Choices) > 0 {
-				args := openai.GetSummaryPrefixArgs(resp.Choices[0].Message.FunctionCall.Arguments)
-				summaryPrix = args.Prefix
+			if client.AllowFuncCall() {
+				resp, err := client.CreateFunctionCall(cmd.Context(), out, openai.SummaryPrefixFunc)
+				if err != nil {
+					return err
+				}
+				if len(resp.Choices) > 0 {
+					args := openai.GetSummaryPrefixArgs(resp.Choices[0].Message.FunctionCall.Arguments)
+					summaryPrix = args.Prefix
+				}
+				color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
+					", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
+					", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
+				)
+			} else {
+				resp, err := client.Completion(cmd.Context(), out)
+				if err != nil {
+					return err
+				}
+				summaryPrix = strings.TrimSpace(resp.Content)
+				color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
+					", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
+					", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
+				)
 			}
 			data[prompt.SummarizePrefixKey] = summaryPrix
-			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
-				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
-				", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
-			)
 		}
 
 		var commitMessage string
