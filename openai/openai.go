@@ -257,7 +257,8 @@ func (c *Client) allowFuncCall(cfg *config) bool {
 	}
 
 	switch c.model {
-	case openai.GPT432K0613, openai.GPT40613, openai.GPT3Dot5Turbo0613, openai.GPT3Dot5Turbo16K0613:
+	case openai.GPT432K0613, openai.GPT40613,
+		openai.GPT3Dot5Turbo0613, openai.GPT3Dot5Turbo16K0613:
 		return true
 	default:
 		return false
