@@ -22,7 +22,7 @@ jobs:
         with:
           go-version: '^1'
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
@@ -34,7 +34,7 @@ jobs:
     container: golang:1.21-alpine
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: add git make command
         run: |
@@ -50,7 +50,7 @@ jobs:
   commitlint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: wagoid/commitlint-github-action@v5
