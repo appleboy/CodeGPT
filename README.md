@@ -43,7 +43,7 @@ The pre-compiled binaries can be downloaded from [release page](https://github.c
 
 ```sh
 $ codegpt version
-version: v0.1.6 commit: xxxxxxx
+version: v0.4.3 commit: xxxxxxx
 ```
 
 ## Setup
