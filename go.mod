@@ -6,7 +6,7 @@ require (
 	github.com/appleboy/com v0.1.7
 	github.com/fatih/color v1.15.0
 	github.com/joho/godotenv v1.5.1
-	github.com/sashabaranov/go-openai v1.15.3
+	github.com/sashabaranov/go-openai v1.15.4
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
 	golang.org/x/net v0.15.0
