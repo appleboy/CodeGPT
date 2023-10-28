@@ -55,6 +55,19 @@ type Client struct {
 	maxTokens   int
 	temperature float32
 	isFuncCall  bool
+
+	// An alternative to sampling with temperature, called nucleus sampling,
+	// where the model considers the results of the tokens with top_p probability mass.
+	// So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+	topP float32
+	// Number between -2.0 and 2.0.
+	// Positive values penalize new tokens based on whether they appear in the text so far,
+	// increasing the model's likelihood to talk about new topics.
+	presencePenalty float32
+	// Number between -2.0 and 2.0.
+	// Positive values penalize new tokens based on their existing frequency in the text so far,
+	// decreasing the model's likelihood to repeat the same line verbatim.
+	frequencyPenalty float32
 }
 
 type Response struct {
@@ -69,10 +82,12 @@ func (c *Client) CreateFunctionCall(
 	funcs ...openai.FunctionDefinition,
 ) (resp openai.ChatCompletionResponse, err error) {
 	req := openai.ChatCompletionRequest{
-		Model:       c.model,
-		MaxTokens:   c.maxTokens,
-		Temperature: c.temperature,
-		TopP:        1,
+		Model:            c.model,
+		MaxTokens:        c.maxTokens,
+		Temperature:      c.temperature,
+		TopP:             c.topP,
+		FrequencyPenalty: c.frequencyPenalty,
+		PresencePenalty:  c.presencePenalty,
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role:    openai.ChatMessageRoleUser,
@@ -91,10 +106,12 @@ func (c *Client) CreateChatCompletion(
 	content string,
 ) (resp openai.ChatCompletionResponse, err error) {
 	req := openai.ChatCompletionRequest{
-		Model:       c.model,
-		MaxTokens:   c.maxTokens,
-		Temperature: c.temperature,
-		TopP:        1,
+		Model:            c.model,
+		MaxTokens:        c.maxTokens,
+		Temperature:      c.temperature,
+		TopP:             c.topP,
+		FrequencyPenalty: c.frequencyPenalty,
+		PresencePenalty:  c.presencePenalty,
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role:    openai.ChatMessageRoleUser,
@@ -117,11 +134,13 @@ func (c *Client) CreateCompletion(
 	content string,
 ) (resp openai.CompletionResponse, err error) {
 	req := openai.CompletionRequest{
-		Model:       c.model,
-		MaxTokens:   c.maxTokens,
-		Temperature: c.temperature,
-		TopP:        1,
-		Prompt:      content,
+		Model:            c.model,
+		MaxTokens:        c.maxTokens,
+		Temperature:      c.temperature,
+		TopP:             c.topP,
+		FrequencyPenalty: c.frequencyPenalty,
+		PresencePenalty:  c.presencePenalty,
+		Prompt:           content,
 	}
 
 	return c.client.CreateCompletion(ctx, req)
