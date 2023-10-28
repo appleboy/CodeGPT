@@ -61,6 +61,9 @@ var reviewCmd = &cobra.Command{
 			openai.WithSkipVerify(viper.GetBool("openai.skip_verify")),
 			openai.WithHeaders(viper.GetStringSlice("openai.headers")),
 			openai.WithApiVersion(viper.GetString("openai.api_version")),
+			openai.WithTopP(float32(viper.GetFloat64("openai.top_p"))),
+			openai.WithFrequencyPenalty(float32(viper.GetFloat64("openai.frequency_penalty"))),
+			openai.WithPresencePenalty(float32(viper.GetFloat64("openai.presence_penalty"))),
 		)
 		if err != nil {
 			return err

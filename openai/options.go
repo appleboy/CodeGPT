@@ -23,6 +23,7 @@ const (
 	defaultModel       = openai.GPT3Dot5Turbo
 	defaultTemperature = 0.7
 	defaultProvider    = OPENAI
+	defaultTopP        = 1.0
 )
 
 // Option is an interface that specifies instrumentation configuration options.
@@ -167,6 +168,27 @@ func WithApiVersion(apiVersion string) Option {
 	})
 }
 
+// WithTopP returns a new Option that sets the topP for the client configuration.
+func WithTopP(val float32) Option {
+	return optionFunc(func(c *config) {
+		c.topP = val
+	})
+}
+
+// WithPresencePenalty returns a new Option that sets the presencePenalty for the client configuration.
+func WithPresencePenalty(val float32) Option {
+	return optionFunc(func(c *config) {
+		c.presencePenalty = val
+	})
+}
+
+// WithFrequencyPenalty returns a new Option that sets the frequencyPenalty for the client configuration.
+func WithFrequencyPenalty(val float32) Option {
+	return optionFunc(func(c *config) {
+		c.frequencyPenalty = val
+	})
+}
+
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
 	baseURL     string
@@ -178,6 +200,10 @@ type config struct {
 	timeout     time.Duration
 	maxTokens   int
 	temperature float32
+
+	topP             float32
+	presencePenalty  float32
+	frequencyPenalty float32
 
 	provider   string
 	modelName  string
@@ -216,6 +242,7 @@ func newConfig(opts ...Option) *config {
 		maxTokens:   defaultMaxTokens,
 		temperature: defaultTemperature,
 		provider:    defaultProvider,
+		topP:        defaultTopP,
 	}
 
 	// Apply each of the given options to the config object.
