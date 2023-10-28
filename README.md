@@ -82,6 +82,9 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 * **openai.provider**: default service provider is `openai`, you can change to `azure`.
 * **openai.model_name**: model deployment name (for azure).
 * **output.lang**: default language is `en` and available languages `zh-tw`, `zh-cn`, `ja`.
+* **openai.top_p**: default top_p is `1.0`. see reference [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p).
+* **openai.frequency_penalty**: default frequency_penalty is `0.0`. see reference [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty).
+* **openai.presence_penalty**: default presence_penalty is `0.0`. see reference [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty).
 
 ### How to change to Azure OpenAI Service
 
