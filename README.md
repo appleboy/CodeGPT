@@ -46,6 +46,12 @@ $ codegpt version
 version: v0.4.3 commit: xxxxxxx
 ```
 
+Install from source code:
+
+```sh
+go install github.com/appleboy/CodeGPT/cmd/codegpt@latest
+```
+
 ## Setup
 
 Please first create your OpenAI API Key. The [OpenAI Platform](https://platform.openai.com/account/api-keys) allows you to generate a new API Key.

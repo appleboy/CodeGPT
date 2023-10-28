@@ -76,6 +76,7 @@ builds:
     post:
       - cmd: xz -k -9 {{ .Path }}
         dir: ./dist/
+  main: ./cmd/codegpt
 
 archives:
   - format: binary
