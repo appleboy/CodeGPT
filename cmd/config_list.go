@@ -39,6 +39,7 @@ var availableKeys = map[string]string{
 	"openai.presence_penalty":  "Number between 0.0 and 1.0 that penalizes new tokens based on whether they appear in the text so far. Increases the model's likelihood to talk about new topics.",
 }
 
+// configListCmd represents the config list command
 var configListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "show the config list",
@@ -46,9 +47,11 @@ var configListCmd = &cobra.Command{
 		headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
 		columnFmt := color.New(color.FgYellow).SprintfFunc()
 
+		// Create a new table with the header "Key" and "Value"
 		tbl := table.New("Key", "Value")
 		tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
+		// Sort the keys
 		keys := make([]string, 0, len(availableKeys))
 		for key := range availableKeys {
 			keys = append(keys, key)
@@ -56,10 +59,12 @@ var configListCmd = &cobra.Command{
 
 		sort.Strings(keys)
 
+		// Add the key and value to the table
 		for _, v := range keys {
 			tbl.AddRow(v, viper.Get(v))
 		}
 
+		// Print the table
 		tbl.Print()
 	},
 }

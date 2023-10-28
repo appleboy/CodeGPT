@@ -13,6 +13,7 @@ func init() {
 	configCmd.AddCommand(configSetCmd)
 }
 
+// configSetCmd represents the config set command
 var configSetCmd = &cobra.Command{
 	Use:   "set",
 	Short: "update the config value",
