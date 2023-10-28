@@ -49,7 +49,7 @@ func init() {
 	configCmd.PersistentFlags().StringP("template_string", "", "", "git commit message string")
 	configCmd.PersistentFlags().IntP("diff_unified", "", 3, "generate diffs with <n> lines of context, default is 3")
 	configCmd.PersistentFlags().IntP("max_tokens", "", 300, "the maximum number of tokens to generate in the chat completion.")
-	configCmd.PersistentFlags().Float32P("temperature", "", 0.7, "What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.")
+	configCmd.PersistentFlags().Float32P("temperature", "", 1.0, "What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.")
 	configCmd.PersistentFlags().Float32P("top_p", "", 1.0, "An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.")
 	configCmd.PersistentFlags().Float32P("frequency_penalty", "", 0.0, "Number between 0.0 and 1.0 that penalizes new tokens based on their existing frequency in the text so far. Decreases the model's likelihood to repeat the same line verbatim.")
 	configCmd.PersistentFlags().Float32P("presence_penalty", "", 0.0, "Number between 0.0 and 1.0 that penalizes new tokens based on whether they appear in the text so far. Increases the model's likelihood to talk about new topics.")
