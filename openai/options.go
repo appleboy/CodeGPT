@@ -21,7 +21,7 @@ const (
 const (
 	defaultMaxTokens   = 300
 	defaultModel       = openai.GPT3Dot5Turbo
-	defaultTemperature = 0.7
+	defaultTemperature = 1.0
 	defaultProvider    = OPENAI
 	defaultTopP        = 1.0
 )
