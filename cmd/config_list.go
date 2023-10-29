@@ -61,6 +61,11 @@ var configListCmd = &cobra.Command{
 
 		// Add the key and value to the table
 		for _, v := range keys {
+			// Hide the api key
+			if v == "openai.api_key" {
+				tbl.AddRow(v, "****************")
+				continue
+			}
 			tbl.AddRow(v, viper.Get(v))
 		}
 
