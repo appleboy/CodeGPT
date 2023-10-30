@@ -39,7 +39,10 @@ var availableKeys = map[string]string{
 	"openai.presence_penalty":  "Number between 0.0 and 1.0 that penalizes new tokens based on whether they appear in the text so far. Increases the model's likelihood to talk about new topics.",
 }
 
-// configListCmd represents the config list command
+// configListCmd represents the command to list the configuration values.
+// It creates a table with the header "Key" and "Value" and adds the configuration keys and values to the table.
+// The api key is hidden for security purposes.
+// Finally, it prints the table.
 var configListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "show the config list",

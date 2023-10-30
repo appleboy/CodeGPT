@@ -13,7 +13,11 @@ func init() {
 	configCmd.AddCommand(configSetCmd)
 }
 
-// configSetCmd represents the config set command
+// configSetCmd updates the config value.
+// It takes at least two arguments, the first one being the key and the second one being the value.
+// If the key is not available, it returns an error message.
+// If the key is "git.exclude_list", it sets the value as a slice of strings.
+// It writes the config to file and prints a success message with the config file location.
 var configSetCmd = &cobra.Command{
 	Use:   "set",
 	Short: "update the config value",
