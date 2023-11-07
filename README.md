@@ -205,7 +205,8 @@ Add custom variable to git commit message template:
 Add custom variable to git commit message template using `--template_vars` parameter:
 
 ```sh
-codegpt commit --preview --template_file your_file_path --template_vars JIRA_URL=https://jira.example.com/ABC-123
+codegpt commit --preview --template_file your_file_path --template_vars \
+  JIRA_URL=https://jira.example.com/ABC-123
 ```
 
 Load custom variable from file using `--template_vars_file` parameter:
