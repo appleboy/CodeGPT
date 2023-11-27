@@ -28,6 +28,10 @@ jobs:
         with:
           version: latest
           args: --verbose
+      - uses: hadolint/hadolint-action@v3.1.0
+        name: hadolint for Dockerfile
+        with:
+          dockerfile: docker/Dockerfile
 
   testing:
     runs-on: ubuntu-latest
