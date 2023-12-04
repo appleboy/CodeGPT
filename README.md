@@ -32,11 +32,17 @@ A CLI written in [Go](https://go.dev) language that writes git commit messages o
 
 ## Installation
 
-Currently, the only supported method of installation on MacOS is [Homebrew](http://brew.sh/). To install `codegpt` via brew:
+Install from [Homebrew](http://brew.sh/) on MacOS
 
 ```sh
 brew tap appleboy/tap
 brew install codegpt
+```
+
+Install from [Chocolatey]([url](https://chocolatey.org/install)) on Windows
+
+```sh
+choco install codegpt
 ```
 
 The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/CodeGPT/releases).Change the binary permissions to `755` and copy the binary to the system bin directory. Use the `codegpt` command as shown below.
