@@ -39,7 +39,7 @@ brew tap appleboy/tap
 brew install codegpt
 ```
 
-Install from [Chocolatey]([url](https://chocolatey.org/install)) on Windows
+Install from [Chocolatey](https://chocolatey.org/install) on Windows
 
 ```sh
 choco install codegpt
