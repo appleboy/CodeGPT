@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"strings"
-	"time"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -19,7 +18,7 @@ func init() {
 	configSetCmd.Flags().StringP("org_id", "o", "", availableKeys["openai.org_id"])
 	configSetCmd.Flags().StringP("proxy", "", "", availableKeys["openai.proxy"])
 	configSetCmd.Flags().StringP("socks", "", "", availableKeys["openai.socks"])
-	configSetCmd.Flags().DurationP("timeout", "t", 10*time.Second, availableKeys["openai.timeout"])
+	configSetCmd.Flags().DurationP("timeout", "t", defaultTimeout, availableKeys["openai.timeout"])
 	configSetCmd.Flags().StringP("template_file", "", "", availableKeys["git.template_file"])
 	configSetCmd.Flags().StringP("template_string", "", "", availableKeys["git.template_string"])
 	configSetCmd.Flags().IntP("diff_unified", "", 3, availableKeys["git.diff_unified"])

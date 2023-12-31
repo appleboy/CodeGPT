@@ -36,6 +36,8 @@ var (
 
 	templateVars     []string
 	templateVarsFile string
+
+	defaultTimeout = 30 * time.Second
 )
 
 func init() {
@@ -52,7 +54,7 @@ func init() {
 	commitCmd.PersistentFlags().StringSliceVar(&templateVars, "template_vars", []string{}, "template variables")
 	commitCmd.PersistentFlags().StringVar(&templateVarsFile, "template_vars_file", "", "template variables file")
 	commitCmd.PersistentFlags().BoolVar(&commitAmend, "amend", false, "replace the tip of the current branch by creating a new commit.")
-	commitCmd.PersistentFlags().DurationVarP(&timeout, "timeout", "t", 10*time.Second, "http timeout")
+	commitCmd.PersistentFlags().DurationVarP(&timeout, "timeout", "t", defaultTimeout, "request timeout")
 	commitCmd.PersistentFlags().BoolVar(&promptOnly, "prompt_only", false, "show prompt only, don't send request to openai")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
@@ -76,7 +78,8 @@ var commitCmd = &cobra.Command{
 		}
 
 		// Update the OpenAI client request timeout if the timeout value is greater than the default openai.timeout
-		if timeout > viper.GetDuration("openai.timeout") {
+		if timeout > viper.GetDuration("openai.timeout") ||
+			timeout != defaultTimeout {
 			viper.Set("openai.timeout", timeout)
 		}
 
