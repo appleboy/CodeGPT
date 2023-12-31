@@ -26,7 +26,7 @@ var availableKeys = map[string]string{
 	"openai.proxy":             "http proxy",
 	"output.lang":              "summarizing language uses English by default",
 	"openai.base_url":          "what API base url to use.",
-	"openai.timeout":           "http timeout",
+	"openai.timeout":           "request timeout",
 	"openai.max_tokens":        "the maximum number of tokens to generate in the chat completion.",
 	"openai.temperature":       "What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
 	"openai.provider":          "service provider, only support 'openai' or 'azure'",
