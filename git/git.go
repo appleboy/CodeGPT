@@ -31,7 +31,7 @@ type Command struct {
 func (c *Command) excludeFiles() []string {
 	var excludedFiles []string
 	for _, f := range c.excludeList {
-		excludedFiles = append(excludedFiles, ":(exclude)"+f)
+		excludedFiles = append(excludedFiles, ":(exclude,top)"+f)
 	}
 	return excludedFiles
 }
