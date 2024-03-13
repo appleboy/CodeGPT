@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/appleboy/com v0.1.7
-	github.com/appleboy/graceful v1.1.0
+	github.com/appleboy/graceful v1.1.1
 	github.com/fatih/color v1.16.0
 	github.com/joho/godotenv v1.5.1
 	github.com/rodaine/table v1.1.1
