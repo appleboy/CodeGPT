@@ -296,16 +296,28 @@ func New(opts ...Option) (*Client, error) {
 
 // allowFuncCall returns true if the model supports function calls.
 // https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/function-calling
-// Function calling is available in the 2023-07-01-preview API version and works with version 0613 of
-// gpt-35-turbo, gpt-35-turbo-16k, gpt-4, and gpt-4-32k.
+// https://platform.openai.com/docs/guides/function-calling/supported-models
+// Not all model versions are trained with function calling data.
+// Function calling is supported with the following models:
+// gpt-4, gpt-4-turbo-preview, gpt-4-0125-preview, gpt-4-1106-preview, gpt-4-0613,
+// gpt-3.5-turbo, gpt-3.5-turbo-0125, gpt-3.5-turbo-1106, and gpt-3.5-turbo-0613
+// In addition, parallel function calls is supported on the following models:
+// gpt-4-turbo-preview, gpt-4-0125-preview, gpt-4-1106-preview,
+// gpt-3.5-turbo-0125, and gpt-3.5-turbo-1106
 func (c *Client) allowFuncCall(cfg *config) bool {
 	if cfg.provider == AZURE && cfg.apiVersion == "2023-07-01-preview" {
 		return true
 	}
 
 	switch c.model {
-	case openai.GPT432K0613, openai.GPT40613,
-		openai.GPT3Dot5Turbo0613, openai.GPT3Dot5Turbo16K0613:
+	case openai.GPT4TurboPreview,
+		openai.GPT4Turbo0125,
+		openai.GPT4Turbo1106,
+		openai.GPT40613,
+		openai.GPT3Dot5Turbo,
+		openai.GPT3Dot5Turbo0125,
+		openai.GPT3Dot5Turbo0613,
+		openai.GPT3Dot5Turbo1106:
 		return true
 	default:
 		return false
