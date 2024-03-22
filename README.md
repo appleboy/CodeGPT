@@ -115,7 +115,7 @@ codegpt config set openai.api_key xxxxxxxxxxxxxxxx
 codegpt config set openai.model_name xxxxx-gpt-35-turbo
 ```
 
-### How to change to Groq API Service
+### How to change to [Groq][30] API Service
 
 Please get the `API key` from Groq API Service, please vist [here][31]. Update the `base_url` and `api_key` in your config file.
 
@@ -123,14 +123,16 @@ Please get the `API key` from Groq API Service, please vist [here][31]. Update t
 codegpt config set openai.provider openai
 codegpt config set openai.base_url https://api.groq.com/openai/v1
 codegpt config set openai.api_key gsk_xxxxxxxxxxxxxx
+codegpt config set openai.model LLaMA2-70b-chat
 ```
 
 Support the [following models][32]:
 
-1. LLaMA2-70b (Meta) **recommended**
-2. Mixtral-8x7b (Mistral)
+1. LLaMA2-70b-chat (Meta) **recommended**
+2. Mixtral-8x7b-Instruct-v0.1 (Mistral)
 3. Gemma-7b-it (Google)
 
+[30]: https://groq.com/
 [31]: https://console.groq.com/keys
 [32]: https://console.groq.com/docs/models
 
