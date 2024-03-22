@@ -115,6 +115,25 @@ codegpt config set openai.api_key xxxxxxxxxxxxxxxx
 codegpt config set openai.model_name xxxxx-gpt-35-turbo
 ```
 
+### How to change to Groq API Service
+
+Please get the `API key` from Groq API Service, please vist [here][31]. Update the `base_url` and `api_key` in your config file.
+
+```sh
+codegpt config set openai.provider openai
+codegpt config set openai.base_url https://api.groq.com/openai/v1
+codegpt config set openai.api_key gsk_xxxxxxxxxxxxxx
+```
+
+Support the [following models][32]:
+
+1. LLaMA2-70b (Meta) **recommended**
+2. Mixtral-8x7b (Mistral)
+3. Gemma-7b-it (Google)
+
+[31]: https://console.groq.com/keys
+[32]: https://console.groq.com/docs/models
+
 ## Usage
 
 There are two methods for generating a commit message using the `codegpt` command. The first is CLI mode, and the second is Git Hook.
