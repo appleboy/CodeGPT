@@ -3,80 +3,80 @@ before:
     - go mod tidy
 
 builds:
-- env:
-  - CGO_ENABLED=0
-  goos:
-  - darwin
-  - linux
-  - windows
-  - freebsd
-  goarch:
-  - amd64
-  - arm
-  - arm64
-  goarm:
-  - "5"
-  - "6"
-  - "7"
-  ignore:
-    - goos: darwin
-      goarch: arm
-    - goos: darwin
-      goarch: ppc64le
-    - goos: darwin
-      goarch: s390x
-    - goos: windows
-      goarch: ppc64le
-    - goos: windows
-      goarch: s390x
-    - goos: windows
-      goarch: arm
-      goarm: "5"
-    - goos: windows
-      goarch: arm
-      goarm: "6"
-    - goos: windows
-      goarch: arm
-      goarm: "7"
-    - goos: windows
-      goarch: arm64
-    - goos: freebsd
-      goarch: ppc64le
-    - goos: freebsd
-      goarch: s390x
-    - goos: freebsd
-      goarch: arm
-      goarm: "5"
-    - goos: freebsd
-      goarch: arm
-      goarm: "6"
-    - goos: freebsd
-      goarch: arm
-      goarm: "7"
-    - goos: freebsd
-      goarch: arm64
-  flags:
-  - -trimpath
-  ldflags:
-  - -s -w
-  - -X github.com/appleboy/CodeGPT/cmd.Version={{.Version}}
-  - -X github.com/appleboy/CodeGPT/cmd.Commit={{.ShortCommit}}
-  binary: >-
-    {{ .ProjectName }}-
-    {{- if .IsSnapshot }}{{ .Branch }}-
-    {{- else }}{{- .Version }}-{{ end }}
-    {{- .Os }}-
-    {{- if eq .Arch "amd64" }}amd64
-    {{- else if eq .Arch "amd64_v1" }}amd64
-    {{- else if eq .Arch "386" }}386
-    {{- else }}{{ .Arch }}{{ end }}
-    {{- if .Arm }}-{{ .Arm }}{{ end }}
-  no_unique_dist_dir: true
-  hooks:
-    post:
-      - cmd: xz -k -9 {{ .Path }}
-        dir: ./dist/
-  main: ./cmd/codegpt
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+      - freebsd
+    goarch:
+      - amd64
+      - arm
+      - arm64
+    goarm:
+      - "5"
+      - "6"
+      - "7"
+    ignore:
+      - goos: darwin
+        goarch: arm
+      - goos: darwin
+        goarch: ppc64le
+      - goos: darwin
+        goarch: s390x
+      - goos: windows
+        goarch: ppc64le
+      - goos: windows
+        goarch: s390x
+      - goos: windows
+        goarch: arm
+        goarm: "5"
+      - goos: windows
+        goarch: arm
+        goarm: "6"
+      - goos: windows
+        goarch: arm
+        goarm: "7"
+      - goos: windows
+        goarch: arm64
+      - goos: freebsd
+        goarch: ppc64le
+      - goos: freebsd
+        goarch: s390x
+      - goos: freebsd
+        goarch: arm
+        goarm: "5"
+      - goos: freebsd
+        goarch: arm
+        goarm: "6"
+      - goos: freebsd
+        goarch: arm
+        goarm: "7"
+      - goos: freebsd
+        goarch: arm64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X github.com/appleboy/CodeGPT/cmd.Version={{.Version}}
+      - -X github.com/appleboy/CodeGPT/cmd.Commit={{.ShortCommit}}
+    binary: >-
+      {{ .ProjectName }}-
+      {{- if .IsSnapshot }}{{ .Branch }}-
+      {{- else }}{{- .Version }}-{{ end }}
+      {{- .Os }}-
+      {{- if eq .Arch "amd64" }}amd64
+      {{- else if eq .Arch "amd64_v1" }}amd64
+      {{- else if eq .Arch "386" }}386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}-{{ .Arm }}{{ end }}
+    no_unique_dist_dir: true
+    hooks:
+      post:
+        - cmd: xz -k -9 {{ .Path }}
+          dir: ./dist/
+    main: ./cmd/codegpt
 
 archives:
   - format: binary
@@ -84,9 +84,9 @@ archives:
     allow_different_binary_count: true
 
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
   extra_files:
-      - glob: ./**.xz
+    - glob: ./**.xz
 
 snapshot:
   name_template: "{{ incpatch .Version }}"
@@ -99,3 +99,18 @@ release:
   # Templates: allowed
   extra_files:
     - glob: ./**.xz
+
+changelog:
+  use: github
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: "Bug fixes"
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: "Refactor"
+      regexp: '^.*?refactor(\([[:word:]]+\))??!?:.+$'
+      order: 2
+    - title: Others
+      order: 999
