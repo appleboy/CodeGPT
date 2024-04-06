@@ -211,8 +211,11 @@ var commitCmd = &cobra.Command{
 					return err
 				}
 				if len(resp.Choices) > 0 {
-					args := openai.GetSummaryPrefixArgs(resp.Choices[0].Message.FunctionCall.Arguments)
-					summaryPrix = args.Prefix
+					summaryPrix = strings.TrimSpace(resp.Choices[0].Message.Content)
+					if resp.Choices[0].Message.FunctionCall != nil {
+						args := openai.GetSummaryPrefixArgs(resp.Choices[0].Message.FunctionCall.Arguments)
+						summaryPrix = args.Prefix
+					}
 				}
 				color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
 					", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
