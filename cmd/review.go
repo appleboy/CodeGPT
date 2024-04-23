@@ -25,6 +25,7 @@ func init() {
 	reviewCmd.Flags().StringVar(&commitLang, "lang", "en", "summarizing language uses English by default")
 	reviewCmd.Flags().StringSliceVar(&excludeList, "exclude_list", []string{}, "exclude file from git diff command")
 	reviewCmd.Flags().BoolVar(&commitAmend, "amend", false, "replace the tip of the current branch by creating a new commit.")
+	reviewCmd.Flags().BoolVar(&commitAmend, "latest_tags_2", false, "review latest two tags commit changes diff")
 }
 
 var reviewCmd = &cobra.Command{

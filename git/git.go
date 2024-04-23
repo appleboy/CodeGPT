@@ -23,9 +23,10 @@ var excludeFromDiff = []string{
 
 type Command struct {
 	// Generate diffs with <n> lines of context instead of the usual three
-	diffUnified int
-	excludeList []string
-	isAmend     bool
+	diffUnified     int
+	excludeList     []string
+	isAmend         bool
+	isLatestTwoTags bool // review latest two tags commit changes diff
 }
 
 func (c *Command) excludeFiles() []string {
@@ -42,10 +43,14 @@ func (c *Command) diffNames() *exec.Cmd {
 		"--name-only",
 	}
 
-	if c.isAmend {
-		args = append(args, "HEAD^", "HEAD")
+	if c.isLatestTwoTags {
+		args = append(args, "$(git tag --sort=-creatordate | head -n 2 | tr '\\n' ' ')")
 	} else {
-		args = append(args, "--staged")
+		if c.isAmend {
+			args = append(args, "HEAD^", "HEAD")
+		} else {
+			args = append(args, "--staged")
+		}
 	}
 
 	excludedFiles := c.excludeFiles()
@@ -65,10 +70,14 @@ func (c *Command) diffFiles() *exec.Cmd {
 		"--unified=" + strconv.Itoa(c.diffUnified),
 	}
 
-	if c.isAmend {
-		args = append(args, "HEAD^", "HEAD")
+	if c.isLatestTwoTags {
+		args = append(args, "$(git tag --sort=-creatordate | head -n 2 | tr '\\n' ' ')")
 	} else {
-		args = append(args, "--staged")
+		if c.isAmend {
+			args = append(args, "HEAD^", "HEAD")
+		} else {
+			args = append(args, "--staged")
+		}
 	}
 
 	excludedFiles := c.excludeFiles()

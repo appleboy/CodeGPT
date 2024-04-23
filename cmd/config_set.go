@@ -47,6 +47,7 @@ func init() {
 	_ = viper.BindPFlag("git.exclude_list", configSetCmd.Flags().Lookup("exclude_list"))
 	_ = viper.BindPFlag("git.template_file", configSetCmd.Flags().Lookup("template_file"))
 	_ = viper.BindPFlag("git.template_string", configSetCmd.Flags().Lookup("template_string"))
+	_ = viper.BindPFlag("git.latest_tags_2", configSetCmd.Flags().Lookup("latest_tags_2"))
 	_ = viper.BindPFlag("openai.provider", configSetCmd.Flags().Lookup("provider"))
 	_ = viper.BindPFlag("openai.model_name", configSetCmd.Flags().Lookup("model_name"))
 	_ = viper.BindPFlag("openai.skip_verify", configSetCmd.Flags().Lookup("skip_verify"))
