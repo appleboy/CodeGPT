@@ -382,3 +382,10 @@ Suggestions for improvement:
 
 * [OpenAI Chat completions documentation](https://platform.openai.com/docs/guides/chat).
 * [Introducing ChatGPT and Whisper APIs](https://openai.com/blog/introducing-chatgpt-and-whisper-apis)
+
+## make tag
+```
+make tag t=v0.0.X m=这次发布的说明
+```
+`v0.0.X`为tag名称
+make tag t=v1.2.1 m='新特性说明'

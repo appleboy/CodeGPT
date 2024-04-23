@@ -42,3 +42,11 @@ build_mac_intel:
 
 build_windows_64:
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 $(GO) build -a -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)' -o release/windows/intel/$(EXECUTABLE).exe ./cmd/$(EXECUTABLE)
+
+tag:
+	git tag $(t) -m $(m)
+	git push origin $(t)
+
+tag_del:
+	git tag -d $(t)
+	git push origin :$(t)
