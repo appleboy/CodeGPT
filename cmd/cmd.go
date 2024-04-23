@@ -33,7 +33,7 @@ const (
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/codegpt/.codegpt.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/zcode/.zcode.yaml)")
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(configCmd)
 	rootCmd.AddCommand(commitCmd)
@@ -62,11 +62,11 @@ func initConfig() {
 		cobra.CheckErr(err)
 
 		// Search config in home directory with name ".cobra" (without extension).
-		configFolder := path.Join(home, ".config", "codegpt")
+		configFolder := path.Join(home, ".config", "zcode")
 		viper.AddConfigPath(configFolder)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".codegpt")
-		cfgFile = path.Join(configFolder, ".codegpt.yaml")
+		viper.SetConfigName(".zcode")
+		cfgFile = path.Join(configFolder, ".zcode.yaml")
 
 		if !file.IsDir(configFolder) {
 			if err := os.MkdirAll(configFolder, os.ModePerm); err != nil {
