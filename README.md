@@ -55,7 +55,7 @@ version: v0.4.3 commit: xxxxxxx
 Install from source code:
 
 ```sh
-go install github.com/appleboy/CodeGPT/cmd/codegpt@latest
+go install github.com/carsonfeng/CodeGPT/cmd/zcode@latest
 ```
 
 ## Setup
