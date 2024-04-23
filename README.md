@@ -78,7 +78,7 @@ or store your API key in custom config file.
 codegpt config set openai.api_key sk-xxxxxxx
 ```
 
-This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/codegpt/.codegpt.yaml). The following options are available.
+This will create a `.zcode.yaml` file in your home directory ($HOME/.config/zcode/.zcode.yaml). The following options are available.
 
 * **openai.base_url**: replace the default base URL (`https://api.openai.com/v1`).
 * **openai.api_key**: generate API key from [openai platform page](https://platform.openai.com/account/api-keys).
