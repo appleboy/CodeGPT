@@ -59,8 +59,8 @@ builds:
       - -trimpath
     ldflags:
       - -s -w
-      - -X github.com/appleboy/CodeGPT/cmd.Version={{.Version}}
-      - -X github.com/appleboy/CodeGPT/cmd.Commit={{.ShortCommit}}
+      - -X github.com/carsonfeng/CodeGPT/cmd.Version={{.Version}}
+      - -X github.com/carsonfeng/CodeGPT/cmd.Commit={{.ShortCommit}}
     binary: >-
       {{ .ProjectName }}-
       {{- if .IsSnapshot }}{{ .Branch }}-

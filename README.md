@@ -1,8 +1,8 @@
 # CodeGPT
 
-[![Lint and Testing](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml/badge.svg?branch=main)](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml)
-[![codecov](https://codecov.io/gh/appleboy/CodeGPT/branch/main/graph/badge.svg)](https://codecov.io/gh/appleboy/CodeGPT)
-[![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/CodeGPT)](https://goreportcard.com/report/github.com/appleboy/CodeGPT)
+[![Lint and Testing](https://github.com/carsonfeng/CodeGPT/actions/workflows/testing.yml/badge.svg?branch=main)](https://github.com/carsonfeng/CodeGPT/actions/workflows/testing.yml)
+[![codecov](https://codecov.io/gh/carsonfeng/CodeGPT/branch/main/graph/badge.svg)](https://codecov.io/gh/carsonfeng/CodeGPT)
+[![Go Report Card](https://goreportcard.com/badge/github.com/carsonfeng/CodeGPT)](https://goreportcard.com/report/github.com/carsonfeng/CodeGPT)
 
 ![cover](./images/cover.png)
 
@@ -25,7 +25,7 @@ A CLI written in [Go](https://go.dev) language that writes git commit messages o
 * Support for excluding files from the git diff command.
 * Support commit message translation into another language (support `en`, `zh-tw` or `zh-cn`).
 * Support socks proxy or custom network HTTP proxy.
-* Support [model lists](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) like `gpt-4`, `gpt-3.5-turbo` ...etc.
+* Support [model lists](https://github.com/carsonfeng/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) like `gpt-4`, `gpt-3.5-turbo` ...etc.
 * Support do a brief code review.
 
 ![code review](./images/code_review.png)
@@ -45,7 +45,7 @@ Install from [Chocolatey](https://chocolatey.org/install) on Windows
 choco install codegpt
 ```
 
-The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/CodeGPT/releases).Change the binary permissions to `755` and copy the binary to the system bin directory. Use the `codegpt` command as shown below.
+The pre-compiled binaries can be downloaded from [release page](https://github.com/carsonfeng/CodeGPT/releases).Change the binary permissions to `755` and copy the binary to the system bin directory. Use the `codegpt` command as shown below.
 
 ```sh
 $ codegpt version
@@ -83,7 +83,7 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 * **openai.base_url**: replace the default base URL (`https://api.openai.com/v1`).
 * **openai.api_key**: generate API key from [openai platform page](https://platform.openai.com/account/api-keys).
 * **openai.org_id**: Identifier for this organization sometimes used in API requests. see [organization settings](https://platform.openai.com/account/org-settings). only for `openai` service.
-* **openai.model**: default model is `gpt-3.5-turbo`, you can change to `gpt-4` or [other available model list](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38).
+* **openai.model**: default model is `gpt-3.5-turbo`, you can change to `gpt-4` or [other available model list](https://github.com/carsonfeng/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38).
 * **openai.proxy**: http/https client proxy.
 * **openai.socks**: socks client proxy.
 * **openai.timeout**: default http timeout is `10s` (ten seconds).
@@ -376,7 +376,7 @@ Suggestions for improvement:
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=appleboy/codegpt&type=Date)](https://star-history.com/#appleboy/codegpt&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=carsonfeng/CodeGPT&type=Date)](https://star-history.com/#carsonfeng/CodeGPT&Date)
 
 ## Reference
 
