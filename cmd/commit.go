@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/appleboy/CodeGPT/git"
-	"github.com/appleboy/CodeGPT/openai"
-	"github.com/appleboy/CodeGPT/prompt"
-	"github.com/appleboy/CodeGPT/util"
+	"github.com/carsonfeng/CodeGPT/git"
+	"github.com/carsonfeng/CodeGPT/openai"
+	"github.com/carsonfeng/CodeGPT/prompt"
+	"github.com/carsonfeng/CodeGPT/util"
 
 	"github.com/fatih/color"
 	"github.com/joho/godotenv"

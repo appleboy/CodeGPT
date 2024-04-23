@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/appleboy/CodeGPT/util"
 	"github.com/appleboy/com/file"
+	"github.com/carsonfeng/CodeGPT/util"
 )
 
 var excludeFromDiff = []string{

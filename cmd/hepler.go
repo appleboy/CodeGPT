@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/appleboy/CodeGPT/openai"
-	"github.com/appleboy/CodeGPT/prompt"
-	"github.com/appleboy/CodeGPT/util"
 	"github.com/appleboy/com/file"
+	"github.com/carsonfeng/CodeGPT/openai"
+	"github.com/carsonfeng/CodeGPT/prompt"
+	"github.com/carsonfeng/CodeGPT/util"
 
 	"github.com/spf13/viper"
 )

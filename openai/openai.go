@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/appleboy/CodeGPT/groq"
+	"github.com/carsonfeng/CodeGPT/groq"
 
 	openai "github.com/sashabaranov/go-openai"
 	"golang.org/x/net/proxy"
