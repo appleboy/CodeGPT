@@ -101,7 +101,7 @@ release:
     - glob: ./**.xz
 
 changelog:
-  use: git
+  use: github
   groups:
     - title: Features
       regexp: "^.*feat[(\\w)]*:+.*$"
