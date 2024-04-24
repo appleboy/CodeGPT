@@ -23,6 +23,8 @@ var modelMaps = map[string]string{
 	"gpt-4-32k":                          openai.GPT432K,
 	"gpt-4-0613":                         openai.GPT40613,
 	"gpt-4-0314":                         openai.GPT40314,
+	"gpt-4-turbo":                        openai.GPT4Turbo,
+	"gpt-4-turbo-2024-04-09":             openai.GPT4Turbo20240409,
 	"gpt-4-0125-preview":                 openai.GPT4Turbo0125,
 	"gpt-4-1106-preview":                 openai.GPT4Turbo1106,
 	"gpt-4-turbo-preview":                openai.GPT4TurboPreview,
@@ -190,6 +192,8 @@ func (c *Client) Completion(
 		openai.GPT4Turbo0125,
 		openai.GPT4TurboPreview,
 		openai.GPT4VisionPreview,
+		openai.GPT4Turbo,
+		openai.GPT4Turbo20240409,
 		groq.LLaMA270bChat.GetModel(),
 		groq.Mixtral8x7bInstructV01.GetModel(),
 		groq.Gemma7bIt.GetModel():
@@ -310,7 +314,9 @@ func (c *Client) allowFuncCall(cfg *config) bool {
 	}
 
 	switch c.model {
-	case openai.GPT4TurboPreview,
+	case openai.GPT4Turbo,
+		openai.GPT4Turbo20240409,
+		openai.GPT4TurboPreview,
 		openai.GPT4Turbo0125,
 		openai.GPT4Turbo1106,
 		openai.GPT40613,
