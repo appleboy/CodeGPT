@@ -8,7 +8,7 @@ require (
 	github.com/fatih/color v1.16.0
 	github.com/joho/godotenv v1.5.1
 	github.com/rodaine/table v1.2.0
-	github.com/sashabaranov/go-openai v1.22.0
+	github.com/sashabaranov/go-openai v1.23.0
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
 	golang.org/x/net v0.24.0
