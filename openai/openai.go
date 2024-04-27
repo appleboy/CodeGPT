@@ -18,37 +18,38 @@ var DefaultModel = openai.GPT3Dot5Turbo
 
 // modelMaps maps model names to their corresponding model ID strings.
 var modelMaps = map[string]string{
-	"gpt-4-32k-0613":                     openai.GPT432K0613,
-	"gpt-4-32k-0314":                     openai.GPT432K0314,
-	"gpt-4-32k":                          openai.GPT432K,
-	"gpt-4-0613":                         openai.GPT40613,
-	"gpt-4-0314":                         openai.GPT40314,
-	"gpt-4-turbo":                        openai.GPT4Turbo,
-	"gpt-4-turbo-2024-04-09":             openai.GPT4Turbo20240409,
-	"gpt-4-0125-preview":                 openai.GPT4Turbo0125,
-	"gpt-4-1106-preview":                 openai.GPT4Turbo1106,
-	"gpt-4-turbo-preview":                openai.GPT4TurboPreview,
-	"gpt-4-vision-preview":               openai.GPT4VisionPreview,
-	"gpt-4":                              openai.GPT4,
-	"gpt-3.5-turbo-0125":                 openai.GPT3Dot5Turbo0125,
-	"gpt-3.5-turbo-1106":                 openai.GPT3Dot5Turbo1106,
-	"gpt-3.5-turbo-0613":                 openai.GPT3Dot5Turbo0613,
-	"gpt-3.5-turbo-0301":                 openai.GPT3Dot5Turbo0301,
-	"gpt-3.5-turbo-16k":                  openai.GPT3Dot5Turbo16K,
-	"gpt-3.5-turbo-16k-0613":             openai.GPT3Dot5Turbo16K0613,
-	"gpt-3.5-turbo":                      openai.GPT3Dot5Turbo,
-	"gpt-3.5-turbo-instruct":             openai.GPT3Dot5TurboInstruct,
-	"davinci":                            openai.GPT3Davinci,
-	"davinci-002":                        openai.GPT3Davinci002,
-	"curie":                              openai.GPT3Curie,
-	"curie-002":                          openai.GPT3Curie002,
-	"ada":                                openai.GPT3Ada,
-	"ada-002":                            openai.GPT3Ada002,
-	"babbage":                            openai.GPT3Babbage,
-	"babbage-002":                        openai.GPT3Babbage002,
-	groq.LLaMA270bChat.String():          groq.LLaMA270bChat.GetModel(),
-	groq.Mixtral8x7bInstructV01.String(): groq.Mixtral8x7bInstructV01.GetModel(),
-	groq.Gemma7bIt.String():              groq.Gemma7bIt.GetModel(),
+	"gpt-4-32k-0613":          openai.GPT432K0613,
+	"gpt-4-32k-0314":          openai.GPT432K0314,
+	"gpt-4-32k":               openai.GPT432K,
+	"gpt-4-0613":              openai.GPT40613,
+	"gpt-4-0314":              openai.GPT40314,
+	"gpt-4-turbo":             openai.GPT4Turbo,
+	"gpt-4-turbo-2024-04-09":  openai.GPT4Turbo20240409,
+	"gpt-4-0125-preview":      openai.GPT4Turbo0125,
+	"gpt-4-1106-preview":      openai.GPT4Turbo1106,
+	"gpt-4-turbo-preview":     openai.GPT4TurboPreview,
+	"gpt-4-vision-preview":    openai.GPT4VisionPreview,
+	"gpt-4":                   openai.GPT4,
+	"gpt-3.5-turbo-0125":      openai.GPT3Dot5Turbo0125,
+	"gpt-3.5-turbo-1106":      openai.GPT3Dot5Turbo1106,
+	"gpt-3.5-turbo-0613":      openai.GPT3Dot5Turbo0613,
+	"gpt-3.5-turbo-0301":      openai.GPT3Dot5Turbo0301,
+	"gpt-3.5-turbo-16k":       openai.GPT3Dot5Turbo16K,
+	"gpt-3.5-turbo-16k-0613":  openai.GPT3Dot5Turbo16K0613,
+	"gpt-3.5-turbo":           openai.GPT3Dot5Turbo,
+	"gpt-3.5-turbo-instruct":  openai.GPT3Dot5TurboInstruct,
+	"davinci":                 openai.GPT3Davinci,
+	"davinci-002":             openai.GPT3Davinci002,
+	"curie":                   openai.GPT3Curie,
+	"curie-002":               openai.GPT3Curie002,
+	"ada":                     openai.GPT3Ada,
+	"ada-002":                 openai.GPT3Ada002,
+	"babbage":                 openai.GPT3Babbage,
+	"babbage-002":             openai.GPT3Babbage002,
+	groq.LLaMA38b.String():    groq.LLaMA38b.String(),
+	groq.LLaMA370b.String():   groq.LLaMA370b.String(),
+	groq.Mixtral8x7b.String(): groq.Mixtral8x7b.String(),
+	groq.Gemma7b.String():     groq.Gemma7b.String(),
 }
 
 // GetModel returns the model ID corresponding to the given model name.
@@ -194,9 +195,10 @@ func (c *Client) Completion(
 		openai.GPT4VisionPreview,
 		openai.GPT4Turbo,
 		openai.GPT4Turbo20240409,
-		groq.LLaMA270bChat.GetModel(),
-		groq.Mixtral8x7bInstructV01.GetModel(),
-		groq.Gemma7bIt.GetModel():
+		groq.LLaMA38b.String(),
+		groq.LLaMA370b.String(),
+		groq.Mixtral8x7b.String(),
+		groq.Gemma7b.String():
 		r, err := c.CreateChatCompletion(ctx, content)
 		if err != nil {
 			return nil, err
@@ -323,7 +325,11 @@ func (c *Client) allowFuncCall(cfg *config) bool {
 		openai.GPT3Dot5Turbo,
 		openai.GPT3Dot5Turbo0125,
 		openai.GPT3Dot5Turbo0613,
-		openai.GPT3Dot5Turbo1106:
+		openai.GPT3Dot5Turbo1106,
+		groq.LLaMA38b.String(),
+		groq.LLaMA370b.String(),
+		groq.Mixtral8x7b.String(),
+		groq.Gemma7b.String():
 		return true
 	default:
 		return false
