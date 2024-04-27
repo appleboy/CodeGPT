@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"html"
 	"log"
 	"os"
@@ -218,11 +217,12 @@ var commitCmd = &cobra.Command{
 
 				msg := resp.Choices[0].Message
 				if len(msg.ToolCalls) == 0 {
-					return fmt.Errorf("current model doesn't support function call")
+					color.Red("No tool calls found in the message")
+					summaryPrix = msg.Content
+				} else {
+					args := openai.GetSummaryPrefixArgs(msg.ToolCalls[len(msg.ToolCalls)-1].Function.Arguments)
+					summaryPrix = args.Prefix
 				}
-
-				args := openai.GetSummaryPrefixArgs(msg.ToolCalls[len(msg.ToolCalls)-1].Function.Arguments)
-				summaryPrix = args.Prefix
 
 				color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
 					", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
