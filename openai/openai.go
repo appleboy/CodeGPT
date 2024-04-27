@@ -109,11 +109,21 @@ func (c *Client) CreateFunctionCall(
 		PresencePenalty:  c.presencePenalty,
 		Messages: []openai.ChatCompletionMessage{
 			{
+				Role:    openai.ChatMessageRoleSystem,
+				Content: "You are a helpful assistant.",
+			},
+			{
 				Role:    openai.ChatMessageRoleUser,
 				Content: content,
 			},
 		},
 		Tools: []openai.Tool{t},
+		ToolChoice: openai.ToolChoice{
+			Type: openai.ToolTypeFunction,
+			Function: openai.ToolFunction{
+				Name: f.Name,
+			},
+		},
 	}
 
 	return c.client.CreateChatCompletion(ctx, req)
