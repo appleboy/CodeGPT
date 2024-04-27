@@ -93,8 +93,13 @@ type Response struct {
 func (c *Client) CreateFunctionCall(
 	ctx context.Context,
 	content string,
-	funcs ...openai.FunctionDefinition,
+	f openai.FunctionDefinition,
 ) (resp openai.ChatCompletionResponse, err error) {
+	t := openai.Tool{
+		Type:     openai.ToolTypeFunction,
+		Function: &f,
+	}
+
 	req := openai.ChatCompletionRequest{
 		Model:            c.model,
 		MaxTokens:        c.maxTokens,
@@ -104,17 +109,13 @@ func (c *Client) CreateFunctionCall(
 		PresencePenalty:  c.presencePenalty,
 		Messages: []openai.ChatCompletionMessage{
 			{
-				Role:    openai.ChatMessageRoleSystem,
-				Content: "You are a helpful assistant.",
-			},
-			{
 				Role:    openai.ChatMessageRoleUser,
 				Content: content,
 			},
 		},
-		Functions:    funcs,
-		FunctionCall: "auto",
+		Tools: []openai.Tool{t},
 	}
+
 	return c.client.CreateChatCompletion(ctx, req)
 }
 
@@ -326,10 +327,7 @@ func (c *Client) allowFuncCall(cfg *config) bool {
 		openai.GPT3Dot5Turbo0125,
 		openai.GPT3Dot5Turbo0613,
 		openai.GPT3Dot5Turbo1106,
-		groq.LLaMA38b.String(),
-		groq.LLaMA370b.String(),
-		groq.Mixtral8x7b.String(),
-		groq.Gemma7b.String():
+		groq.LLaMA38b.String():
 		return true
 	default:
 		return false
