@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"fmt"
 	"html"
+	"log"
 	"os"
 	"path"
 	"strconv"
@@ -203,25 +205,31 @@ var commitCmd = &cobra.Command{
 			if err != nil {
 				return err
 			}
-			color.Cyan("We are trying to get conventional commit prefix")
+			message := "We are trying to get conventional commit prefix"
 			summaryPrix := ""
 			if client.AllowFuncCall() {
+				color.Cyan(message + " (Tools)")
 				resp, err := client.CreateFunctionCall(cmd.Context(), out, openai.SummaryPrefixFunc)
-				if err != nil {
+				if err != nil || len(resp.Choices) != 1 {
+					log.Printf("Completion error: err:%v len(choices):%v\n", err,
+						len(resp.Choices))
 					return err
 				}
-				if len(resp.Choices) > 0 {
-					summaryPrix = strings.TrimSpace(resp.Choices[0].Message.Content)
-					if resp.Choices[0].Message.FunctionCall != nil {
-						args := openai.GetSummaryPrefixArgs(resp.Choices[0].Message.FunctionCall.Arguments)
-						summaryPrix = args.Prefix
-					}
+
+				msg := resp.Choices[0].Message
+				if len(msg.ToolCalls) == 0 {
+					return fmt.Errorf("current model doesn't support function call")
 				}
+
+				args := openai.GetSummaryPrefixArgs(msg.ToolCalls[len(msg.ToolCalls)-1].Function.Arguments)
+				summaryPrix = args.Prefix
+
 				color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
 					", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
 					", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
 				)
 			} else {
+				color.Cyan(message)
 				resp, err := client.Completion(cmd.Context(), out)
 				if err != nil {
 					return err
