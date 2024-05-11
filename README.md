@@ -137,6 +137,41 @@ Support the [following models][32]:
 [31]: https://console.groq.com/keys
 [32]: https://console.groq.com/docs/models
 
+### How to change to ollama API Service
+
+We can use the Llama3 model from the [ollama][41] API Service, please visit [here][40]. Update the `base_url` in your config file.
+
+[40]: https://github.com/ollama/ollama/blob/main/docs/openai.md#models
+[41]: https://github.com/ollama/ollama
+
+```sh
+# pull llama3 8b model
+ollama pull llama3
+ollama cp llama3 gpt-3.5-turbo
+```
+
+Try to use the `ollama` API Service.
+
+```sh
+curl http://localhost:11434/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-3.5-turbo",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Hello!"
+      }
+    ]
+  }'
+```
+
+Update the `base_url` in your config file. You don't need to set the `api_key` in the config file.
+
+```sh
+codegpt config set openai.base_url http://localhost:11434/v1
+```
+
 ## Usage
 
 There are two methods for generating a commit message using the `codegpt` command. The first is CLI mode, and the second is Git Hook.
