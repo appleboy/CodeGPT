@@ -83,7 +83,7 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 * **openai.base_url**: replace the default base URL (`https://api.openai.com/v1`).
 * **openai.api_key**: generate API key from [openai platform page](https://platform.openai.com/account/api-keys).
 * **openai.org_id**: Identifier for this organization sometimes used in API requests. see [organization settings](https://platform.openai.com/account/org-settings). only for `openai` service.
-* **openai.model**: default model is `gpt-3.5-turbo`, you can change to `gpt-4` or [other available model list](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38).
+* **openai.model**: default model is `gpt-3.5-turbo`, you can change to `gpt-4-turbo` or other custom model (Groq or OpenRouter provider).
 * **openai.proxy**: http/https client proxy.
 * **openai.socks**: socks client proxy.
 * **openai.timeout**: default http timeout is `10s` (ten seconds).
@@ -92,7 +92,6 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 * **git.diff_unified**: generate diffs with `<n>` lines of context, default is `3`.
 * **git.exclude_list**: exclude file from `git diff` command.
 * **openai.provider**: default service provider is `openai`, you can change to `azure`.
-* **openai.model_name**: model deployment name (for azure).
 * **output.lang**: default language is `en` and available languages `zh-tw`, `zh-cn`, `ja`.
 * **openai.top_p**: default top_p is `1.0`. see reference [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p).
 * **openai.frequency_penalty**: default frequency_penalty is `0.0`. see reference [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty).
@@ -112,7 +111,7 @@ Update your config file.
 codegpt config set openai.provider azure
 codegpt config set openai.base_url https://xxxxxxxxx.openai.azure.com/
 codegpt config set openai.api_key xxxxxxxxxxxxxxxx
-codegpt config set openai.model_name xxxxx-gpt-35-turbo
+codegpt config set openai.model xxxxx-gpt-35-turbo
 ```
 
 ### How to change to [Groq][30] API Service
