@@ -31,7 +31,7 @@ func check() error {
 		viper.Set("output.lang", commitLang)
 	}
 
-	if openai.GetModel(commitModel) != openai.DefaultModel {
+	if commitModel != openai.DefaultModel {
 		viper.Set("openai.model", commitModel)
 	}
 

@@ -8,9 +8,8 @@ import (
 )
 
 var (
-	errorsMissingToken       = errors.New("please set OPENAI_API_KEY environment variable")
-	errorsMissingModel       = errors.New("missing model")
-	errorsMissingCustomModel = errors.New("missing custom model name")
+	errorsMissingToken = errors.New("please set OPENAI_API_KEY environment variable")
+	errorsMissingModel = errors.New("missing model")
 )
 
 type Provider string
@@ -21,21 +20,16 @@ func (p Provider) String() string {
 
 func (p Provider) IsValid() bool {
 	switch p {
-	case OPENAI, AZURE, OPENROUTER:
+	case OPENAI, AZURE:
 		return true
 	default:
 		return false
 	}
 }
 
-func (p Provider) IsCustomModel() bool {
-	return p != OPENAI
-}
-
 var (
-	OPENAI     Provider = "openai"
-	AZURE      Provider = "azure"
-	OPENROUTER Provider = "openrouter"
+	OPENAI Provider = "openai"
+	AZURE  Provider = "azure"
 )
 
 const (
@@ -152,15 +146,6 @@ func WithProvider(val string) Option {
 	})
 }
 
-// WithModelName sets the `modelName` variable to the provided `val` parameter.
-// This function returns an `Option` object.
-func WithModelName(val string) Option {
-	// Return an `optionFunc` object with `c.modelName` set to `val`.
-	return optionFunc(func(c *config) {
-		c.modelName = val
-	})
-}
-
 // WithSkipVerify returns a new Option that sets the skipVerify for the client configuration.
 func WithSkipVerify(val bool) Option {
 	return optionFunc(func(c *config) {
@@ -220,7 +205,6 @@ type config struct {
 	frequencyPenalty float32
 
 	provider   Provider
-	modelName  string
 	skipVerify bool
 	headers    []string
 	apiVersion string
@@ -233,15 +217,8 @@ func (cfg *config) valid() error {
 		return errorsMissingToken
 	}
 
-	// Check that the model exists in the model maps.
-	modelExists := modelMaps[cfg.model] != ""
-	if !modelExists {
+	if cfg.model == "" {
 		return errorsMissingModel
-	}
-
-	// If the provider is Azure, check that the model name is not empty.
-	if cfg.provider.IsCustomModel() && cfg.modelName == "" {
-		return errorsMissingCustomModel
 	}
 
 	// If all checks pass, return nil (no error).
