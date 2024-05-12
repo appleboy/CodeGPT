@@ -195,8 +195,8 @@ For including your app on openrouter.ai rankings and Shows in rankings on openro
 codegpt config set openai.headers "HTTP-Referer=https://github.com/appleboy/CodeGPT X-Title=CodeGPT"
 ```
 
-**HTTP-Refer**: Optional, for including your app on openrouter.ai rankings.
-**X-Title**: Optional, for Shows in rankings on openrouter.ai.
+* **HTTP-Refer**: Optional, for including your app on openrouter.ai rankings.
+* **X-Title**: Optional, for Shows in rankings on openrouter.ai.
 
 ## Usage
 
