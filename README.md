@@ -171,6 +171,33 @@ Update the `base_url` in your config file. You don't need to set the `api_key` i
 codegpt config set openai.base_url http://localhost:11434/v1
 ```
 
+### How to change to [OpenRouter][50] API Service
+
+You can see the [supported models list][51], model usage can be paid by users, developers, or both, and may shift in [availability][52]. You can also fetch models, prices, and limits [via API][53].
+
+The following example use free model name: `meta-llama/llama-3-8b-instruct:free`
+
+```sh
+codegpt config ser openai.provider openai
+codegpt config set openai.base_url https://openrouter.ai/api/v1
+codegpt config set openai.api_key sk-or-v1-xxxxxxxxxxxxxxxx
+codegpt config set openai.model meta-llama/llama-3-8b-instruct:free
+```
+
+[50]:https://openrouter.ai/
+[51]:https://openrouter.ai/docs#models
+[52]:https://openrouter.ai/terms#services
+[53]:https://openrouter.ai/api/v1/models
+
+For including your app on openrouter.ai rankings and Shows in rankings on openrouter.ai, you can set the `openai.headers` in your config file.
+
+```sh
+codegpt config set openai.headers "HTTP-Referer=https://github.com/appleboy/CodeGPT X-Title=CodeGPT"
+```
+
+**HTTP-Refer**: Optional, for including your app on openrouter.ai rankings.
+**X-Title**: Optional, for Shows in rankings on openrouter.ai.
+
 ## Usage
 
 There are two methods for generating a commit message using the `codegpt` command. The first is CLI mode, and the second is Git Hook.
