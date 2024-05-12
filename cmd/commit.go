@@ -85,7 +85,7 @@ var commitCmd = &cobra.Command{
 		}
 
 		currentModel := viper.GetString("openai.model")
-		if viper.GetString("openai.provider") == openai.AZURE {
+		if viper.GetString("openai.provider") == openai.AZURE.String() {
 			currentModel = viper.GetString("openai.model_name")
 		}
 
