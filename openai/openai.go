@@ -68,7 +68,6 @@ type Client struct {
 	model       string
 	maxTokens   int
 	temperature float32
-	isFuncCall  bool
 
 	// An alternative to sampling with temperature, called nucleus sampling,
 	// where the model considers the results of the tokens with top_p probability mass.
@@ -156,29 +155,6 @@ func (c *Client) CreateChatCompletion(
 	return c.client.CreateChatCompletion(ctx, req)
 }
 
-// CreateCompletion is an API call to create a completion.
-// This is the main endpoint of the API. It returns new text, as well as, if requested,
-// the probabilities over each alternative token at each position.
-//
-// If using a fine-tuned model, simply provide the model's ID in the CompletionRequest object,
-// and the server will use the model's parameters to generate the completion.
-func (c *Client) CreateCompletion(
-	ctx context.Context,
-	content string,
-) (resp openai.CompletionResponse, err error) {
-	req := openai.CompletionRequest{
-		Model:            c.model,
-		MaxTokens:        c.maxTokens,
-		Temperature:      c.temperature,
-		TopP:             c.topP,
-		FrequencyPenalty: c.frequencyPenalty,
-		PresencePenalty:  c.presencePenalty,
-		Prompt:           content,
-	}
-
-	return c.client.CreateCompletion(ctx, req)
-}
-
 // Completion is a method on the Client struct that takes a context.Context and a string argument
 // and returns a string and an error.
 func (c *Client) Completion(
@@ -186,44 +162,12 @@ func (c *Client) Completion(
 	content string,
 ) (*Response, error) {
 	resp := &Response{}
-	switch c.model {
-	case openai.GPT3Dot5Turbo,
-		openai.GPT3Dot5Turbo0301,
-		openai.GPT3Dot5Turbo0613,
-		openai.GPT3Dot5Turbo16K,
-		openai.GPT3Dot5Turbo16K0613,
-		openai.GPT3Dot5Turbo1106,
-		openai.GPT3Dot5Turbo0125,
-		openai.GPT4,
-		openai.GPT40314,
-		openai.GPT40613,
-		openai.GPT432K,
-		openai.GPT432K0314,
-		openai.GPT432K0613,
-		openai.GPT4Turbo1106,
-		openai.GPT4Turbo0125,
-		openai.GPT4TurboPreview,
-		openai.GPT4VisionPreview,
-		openai.GPT4Turbo,
-		openai.GPT4Turbo20240409,
-		groq.LLaMA38b.String(),
-		groq.LLaMA370b.String(),
-		groq.Mixtral8x7b.String(),
-		groq.Gemma7b.String():
-		r, err := c.CreateChatCompletion(ctx, content)
-		if err != nil {
-			return nil, err
-		}
-		resp.Content = r.Choices[0].Message.Content
-		resp.Usage = r.Usage
-	default:
-		r, err := c.CreateCompletion(ctx, content)
-		if err != nil {
-			return nil, err
-		}
-		resp.Content = r.Choices[0].Text
-		resp.Usage = r.Usage
+	r, err := c.CreateChatCompletion(ctx, content)
+	if err != nil {
+		return nil, err
 	}
+	resp.Content = r.Choices[0].Message.Content
+	resp.Usage = r.Usage
 	return resp, nil
 }
 
@@ -302,51 +246,13 @@ func New(opts ...Option) (*Client, error) {
 		if cfg.apiVersion != "" {
 			c.APIVersion = cfg.apiVersion
 		}
+
+		if cfg.provider.IsCustomModel() {
+			engine.model = cfg.modelName
+		}
 		engine.client = openai.NewClientWithConfig(c)
 	}
 
-	engine.isFuncCall = engine.allowFuncCall(cfg)
-
 	// Return the resulting client engine.
 	return engine, nil
-}
-
-// allowFuncCall returns true if the model supports function calls.
-// https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/function-calling
-// https://platform.openai.com/docs/guides/function-calling/supported-models
-// Not all model versions are trained with function calling data.
-// Function calling is supported with the following models:
-// gpt-4, gpt-4-turbo-preview, gpt-4-0125-preview, gpt-4-1106-preview, gpt-4-0613,
-// gpt-3.5-turbo, gpt-3.5-turbo-0125, gpt-3.5-turbo-1106, and gpt-3.5-turbo-0613
-// In addition, parallel function calls is supported on the following models:
-// gpt-4-turbo-preview, gpt-4-0125-preview, gpt-4-1106-preview,
-// gpt-3.5-turbo-0125, and gpt-3.5-turbo-1106
-func (c *Client) allowFuncCall(cfg *config) bool {
-	if cfg.provider == AZURE && cfg.apiVersion == "2023-07-01-preview" {
-		return true
-	}
-
-	switch c.model {
-	case openai.GPT4Turbo,
-		openai.GPT4Turbo20240409,
-		openai.GPT4TurboPreview,
-		openai.GPT4Turbo0125,
-		openai.GPT4Turbo1106,
-		openai.GPT40613,
-		openai.GPT3Dot5Turbo,
-		openai.GPT3Dot5Turbo0125,
-		openai.GPT3Dot5Turbo0613,
-		openai.GPT3Dot5Turbo1106,
-		groq.LLaMA38b.String():
-		return true
-	default:
-		return false
-	}
-}
-
-// AllowFuncCall returns true if the model supports function calls.
-// In an API call, you can describe functions to gpt-3.5-turbo-0613 and gpt-4-0613
-// https://platform.openai.com/docs/guides/gpt/chat-completions-api
-func (c *Client) AllowFuncCall() bool {
-	return c.isFuncCall
 }

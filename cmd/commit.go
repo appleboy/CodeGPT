@@ -85,7 +85,7 @@ var commitCmd = &cobra.Command{
 		}
 
 		currentModel := viper.GetString("openai.model")
-		if viper.GetString("openai.provider") == openai.AZURE.String() {
+		if openai.Provider(viper.GetString("openai.provider")).IsCustomModel() {
 			currentModel = viper.GetString("openai.model_name")
 		}
 
@@ -206,40 +206,28 @@ var commitCmd = &cobra.Command{
 			}
 			message := "We are trying to get conventional commit prefix"
 			summaryPrix := ""
-			if client.AllowFuncCall() {
-				color.Cyan(message + " (Tools)")
-				resp, err := client.CreateFunctionCall(cmd.Context(), out, openai.SummaryPrefixFunc)
-				if err != nil || len(resp.Choices) != 1 {
-					log.Printf("Completion error: err:%v len(choices):%v\n", err,
-						len(resp.Choices))
-					return err
-				}
-
-				msg := resp.Choices[0].Message
-				if len(msg.ToolCalls) == 0 {
-					color.Red("No tool calls found in the message")
-					summaryPrix = msg.Content
-				} else {
-					args := openai.GetSummaryPrefixArgs(msg.ToolCalls[len(msg.ToolCalls)-1].Function.Arguments)
-					summaryPrix = args.Prefix
-				}
-
-				color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
-					", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
-					", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
-				)
-			} else {
-				color.Cyan(message)
-				resp, err := client.Completion(cmd.Context(), out)
-				if err != nil {
-					return err
-				}
-				summaryPrix = strings.TrimSpace(resp.Content)
-				color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
-					", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
-					", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
-				)
+			color.Cyan(message + " (Tools)")
+			resp, err := client.CreateFunctionCall(cmd.Context(), out, openai.SummaryPrefixFunc)
+			if err != nil || len(resp.Choices) != 1 {
+				log.Printf("Completion error: err:%v len(choices):%v\n", err,
+					len(resp.Choices))
+				return err
 			}
+
+			msg := resp.Choices[0].Message
+			if len(msg.ToolCalls) == 0 {
+				color.Red("No tool calls found in the message")
+				summaryPrix = msg.Content
+			} else {
+				args := openai.GetSummaryPrefixArgs(msg.ToolCalls[len(msg.ToolCalls)-1].Function.Arguments)
+				summaryPrix = args.Prefix
+			}
+
+			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
+				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
+				", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
+			)
+
 			data[prompt.SummarizePrefixKey] = summaryPrix
 		}
 
