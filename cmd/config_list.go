@@ -30,7 +30,6 @@ var availableKeys = map[string]string{
 	"openai.max_tokens":        "the maximum number of tokens to generate in the chat completion.",
 	"openai.temperature":       "What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
 	"openai.provider":          "service provider, only support 'openai' or 'azure'",
-	"openai.model_name":        "model deployment name for Azure cognitive service",
 	"openai.skip_verify":       "skip verify TLS certificate",
 	"openai.headers":           "custom headers for openai request",
 	"openai.api_version":       "openai api version",
