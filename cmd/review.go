@@ -52,10 +52,6 @@ var reviewCmd = &cobra.Command{
 		}
 
 		currentModel := viper.GetString("openai.model")
-		if openai.Provider(viper.GetString("openai.provider")).IsCustomModel() {
-			currentModel = viper.GetString("openai.model_name")
-		}
-
 		color.Green("Code review your changes using " + currentModel + " model")
 		client, err := openai.New(
 			openai.WithToken(viper.GetString("openai.api_key")),
@@ -68,7 +64,6 @@ var reviewCmd = &cobra.Command{
 			openai.WithMaxTokens(viper.GetInt("openai.max_tokens")),
 			openai.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
 			openai.WithProvider(viper.GetString("openai.provider")),
-			openai.WithModelName(viper.GetString("openai.model_name")),
 			openai.WithSkipVerify(viper.GetBool("openai.skip_verify")),
 			openai.WithHeaders(viper.GetStringSlice("openai.headers")),
 			openai.WithApiVersion(viper.GetString("openai.api_version")),

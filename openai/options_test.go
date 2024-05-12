@@ -30,7 +30,7 @@ func Test_config_valid(t *testing.T) {
 			name: "missing model",
 			cfg: newConfig(
 				WithToken("test"),
-				WithModel("test"),
+				WithModel(""),
 				WithProvider(OPENAI.String()),
 			),
 			wantErr: errorsMissingModel,
@@ -39,19 +39,10 @@ func Test_config_valid(t *testing.T) {
 			name: "missing Azure deployment model",
 			cfg: newConfig(
 				WithToken("test"),
-				WithModel(openai.GPT3Dot5Turbo),
+				WithModel(""),
 				WithProvider(AZURE.String()),
 			),
-			wantErr: errorsMissingCustomModel,
-		},
-		{
-			name: "missing OpenRouter Custom model",
-			cfg: newConfig(
-				WithToken("test"),
-				WithModel(openai.GPT3Dot5Turbo),
-				WithProvider(OPENROUTER.String()),
-			),
-			wantErr: errorsMissingCustomModel,
+			wantErr: errorsMissingModel,
 		},
 	}
 	for _, tt := range tests {
