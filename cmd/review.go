@@ -45,7 +45,18 @@ var reviewCmd = &cobra.Command{
 			return err
 		}
 
-		color.Green("Code review your changes using " + viper.GetString("openai.model") + " model")
+		// Update the OpenAI client request timeout if the timeout value is greater than the default openai.timeout
+		if timeout > viper.GetDuration("openai.timeout") ||
+			timeout != defaultTimeout {
+			viper.Set("openai.timeout", timeout)
+		}
+
+		currentModel := viper.GetString("openai.model")
+		if openai.Provider(viper.GetString("openai.provider")).IsCustomModel() {
+			currentModel = viper.GetString("openai.model_name")
+		}
+
+		color.Green("Code review your changes using " + currentModel + " model")
 		client, err := openai.New(
 			openai.WithToken(viper.GetString("openai.api_key")),
 			openai.WithModel(viper.GetString("openai.model")),

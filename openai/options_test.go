@@ -42,7 +42,16 @@ func Test_config_valid(t *testing.T) {
 				WithModel(openai.GPT3Dot5Turbo),
 				WithProvider(AZURE.String()),
 			),
-			wantErr: errorsMissingAzureModel,
+			wantErr: errorsMissingCustomModel,
+		},
+		{
+			name: "missing OpenRouter Custom model",
+			cfg: newConfig(
+				WithToken("test"),
+				WithModel(openai.GPT3Dot5Turbo),
+				WithProvider(OPENROUTER.String()),
+			),
+			wantErr: errorsMissingCustomModel,
 		},
 	}
 	for _, tt := range tests {

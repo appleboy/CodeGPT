@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	errorsMissingToken      = errors.New("please set OPENAI_API_KEY environment variable")
-	errorsMissingModel      = errors.New("missing model")
-	errorsMissingAzureModel = errors.New("missing Azure deployments model name")
+	errorsMissingToken       = errors.New("please set OPENAI_API_KEY environment variable")
+	errorsMissingModel       = errors.New("missing model")
+	errorsMissingCustomModel = errors.New("missing custom model name")
 )
 
 type Provider string
@@ -21,16 +21,21 @@ func (p Provider) String() string {
 
 func (p Provider) IsValid() bool {
 	switch p {
-	case OPENAI, AZURE:
+	case OPENAI, AZURE, OPENROUTER:
 		return true
 	default:
 		return false
 	}
 }
 
+func (p Provider) IsCustomModel() bool {
+	return p != OPENAI
+}
+
 var (
-	OPENAI Provider = "openai"
-	AZURE  Provider = "azure"
+	OPENAI     Provider = "openai"
+	AZURE      Provider = "azure"
+	OPENROUTER Provider = "openrouter"
 )
 
 const (
@@ -235,8 +240,8 @@ func (cfg *config) valid() error {
 	}
 
 	// If the provider is Azure, check that the model name is not empty.
-	if cfg.provider == AZURE && cfg.modelName == "" {
-		return errorsMissingAzureModel
+	if cfg.provider.IsCustomModel() && cfg.modelName == "" {
+		return errorsMissingCustomModel
 	}
 
 	// If all checks pass, return nil (no error).
