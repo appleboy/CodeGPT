@@ -17,7 +17,7 @@ func Test_config_valid(t *testing.T) {
 			cfg: newConfig(
 				WithToken("test"),
 				WithModel(openai.GPT3Dot5Turbo),
-				WithProvider(OPENAI),
+				WithProvider(OPENAI.String()),
 			),
 			wantErr: nil,
 		},
@@ -31,7 +31,7 @@ func Test_config_valid(t *testing.T) {
 			cfg: newConfig(
 				WithToken("test"),
 				WithModel("test"),
-				WithProvider(OPENAI),
+				WithProvider(OPENAI.String()),
 			),
 			wantErr: errorsMissingModel,
 		},
@@ -40,7 +40,7 @@ func Test_config_valid(t *testing.T) {
 			cfg: newConfig(
 				WithToken("test"),
 				WithModel(openai.GPT3Dot5Turbo),
-				WithProvider(AZURE),
+				WithProvider(AZURE.String()),
 			),
 			wantErr: errorsMissingAzureModel,
 		},

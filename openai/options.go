@@ -13,16 +13,30 @@ var (
 	errorsMissingAzureModel = errors.New("missing Azure deployments model name")
 )
 
-const (
-	OPENAI = "openai"
-	AZURE  = "azure"
+type Provider string
+
+func (p Provider) String() string {
+	return string(p)
+}
+
+func (p Provider) IsValid() bool {
+	switch p {
+	case OPENAI, AZURE:
+		return true
+	default:
+		return false
+	}
+}
+
+var (
+	OPENAI Provider = "openai"
+	AZURE  Provider = "azure"
 )
 
 const (
 	defaultMaxTokens   = 300
 	defaultModel       = openai.GPT3Dot5Turbo
 	defaultTemperature = 1.0
-	defaultProvider    = OPENAI
 	defaultTopP        = 1.0
 )
 
@@ -121,20 +135,15 @@ func WithTemperature(val float32) Option {
 	})
 }
 
-// WithProvider sets the `provider` variable based on the value of the `val` parameter.
-// If `val` is not set to `OPENAI` or `AZURE`, it will be set to the default value `defaultProvider`.
-// This function returns an `Option` object.
+// WithProvider returns a new Option that sets the provider for the client configuration.
 func WithProvider(val string) Option {
-	// Check if `val` is set to `OPENAI` or `AZURE`. If not, set it to the default value.
-	switch val {
-	case OPENAI, AZURE:
-	default:
-		val = defaultProvider
+	provider := Provider(val)
+	if !provider.IsValid() {
+		provider = OPENAI
 	}
 
-	// Return an `optionFunc` object with `c.provider` set to `val`.
 	return optionFunc(func(c *config) {
-		c.provider = val
+		c.provider = provider
 	})
 }
 
@@ -205,7 +214,7 @@ type config struct {
 	presencePenalty  float32
 	frequencyPenalty float32
 
-	provider   string
+	provider   Provider
 	modelName  string
 	skipVerify bool
 	headers    []string
@@ -241,7 +250,7 @@ func newConfig(opts ...Option) *config {
 		model:       defaultModel,
 		maxTokens:   defaultMaxTokens,
 		temperature: defaultTemperature,
-		provider:    defaultProvider,
+		provider:    OPENAI,
 		topP:        defaultTopP,
 	}
 
