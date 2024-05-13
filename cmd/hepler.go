@@ -15,7 +15,7 @@ import (
 func check() error {
 	// Check if the Git command is available on the system's PATH
 	if !util.IsCommandAvailable("git") {
-		return errors.New("Git command not found on your system's PATH. Please install Git and try again.")
+		return errors.New("git command not found on your system's PATH. Please install Git and try again")
 	}
 
 	// Update Viper configuration values based on the CLI flags

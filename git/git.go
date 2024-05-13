@@ -170,7 +170,7 @@ func (c *Command) InstallHook() error {
 
 	target := path.Join(strings.TrimSpace(string(hookPath)), HookPrepareCommitMessageTemplate)
 	if file.IsFile(target) {
-		return errors.New("hook file prepare-commit-msg exist.")
+		return errors.New("hook file prepare-commit-msg exist")
 	}
 
 	content, err := util.GetTemplateByBytes(HookPrepareCommitMessageTemplate, nil)
@@ -178,7 +178,7 @@ func (c *Command) InstallHook() error {
 		return err
 	}
 
-	return os.WriteFile(target, content, 0o755)
+	return os.WriteFile(target, content, 0o600)
 }
 
 func (c *Command) UninstallHook() error {
@@ -189,7 +189,7 @@ func (c *Command) UninstallHook() error {
 
 	target := path.Join(strings.TrimSpace(string(hookPath)), HookPrepareCommitMessageTemplate)
 	if !file.IsFile(target) {
-		return errors.New("hook file prepare-commit-msg is not exist.")
+		return errors.New("hook file prepare-commit-msg is not exist")
 	}
 	return os.Remove(target)
 }
