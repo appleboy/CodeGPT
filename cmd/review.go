@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/appleboy/CodeGPT/git"
-	"github.com/appleboy/CodeGPT/openai"
 	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/util"
 
@@ -19,12 +18,15 @@ import (
 var maxTokens int
 
 func init() {
-	reviewCmd.Flags().IntVar(&diffUnified, "diff_unified", 3, "generate diffs with <n> lines of context, default is 3")
-	reviewCmd.Flags().IntVar(&maxTokens, "max_tokens", 300, "the maximum number of tokens to generate in the chat completion.")
+	reviewCmd.Flags().IntVar(&diffUnified, "diff_unified", 3,
+		"generate diffs with <n> lines of context, default is 3")
+	reviewCmd.Flags().IntVar(&maxTokens, "max_tokens", 300,
+		"the maximum number of tokens to generate in the chat completion.")
 	reviewCmd.Flags().StringVar(&commitModel, "model", "gpt-3.5-turbo", "select openai model")
 	reviewCmd.Flags().StringVar(&commitLang, "lang", "en", "summarizing language uses English by default")
 	reviewCmd.Flags().StringSliceVar(&excludeList, "exclude_list", []string{}, "exclude file from git diff command")
-	reviewCmd.Flags().BoolVar(&commitAmend, "amend", false, "replace the tip of the current branch by creating a new commit.")
+	reviewCmd.Flags().BoolVar(&commitAmend, "amend", false,
+		"replace the tip of the current branch by creating a new commit.")
 }
 
 var reviewCmd = &cobra.Command{
@@ -53,24 +55,7 @@ var reviewCmd = &cobra.Command{
 
 		currentModel := viper.GetString("openai.model")
 		color.Green("Code review your changes using " + currentModel + " model")
-		client, err := openai.New(
-			openai.WithToken(viper.GetString("openai.api_key")),
-			openai.WithModel(viper.GetString("openai.model")),
-			openai.WithOrgID(viper.GetString("openai.org_id")),
-			openai.WithProxyURL(viper.GetString("openai.proxy")),
-			openai.WithSocksURL(viper.GetString("openai.socks")),
-			openai.WithBaseURL(viper.GetString("openai.base_url")),
-			openai.WithTimeout(viper.GetDuration("openai.timeout")),
-			openai.WithMaxTokens(viper.GetInt("openai.max_tokens")),
-			openai.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
-			openai.WithProvider(viper.GetString("openai.provider")),
-			openai.WithSkipVerify(viper.GetBool("openai.skip_verify")),
-			openai.WithHeaders(viper.GetStringSlice("openai.headers")),
-			openai.WithApiVersion(viper.GetString("openai.api_version")),
-			openai.WithTopP(float32(viper.GetFloat64("openai.top_p"))),
-			openai.WithFrequencyPenalty(float32(viper.GetFloat64("openai.frequency_penalty"))),
-			openai.WithPresencePenalty(float32(viper.GetFloat64("openai.presence_penalty"))),
-		)
+		client, err := NewOpenAI()
 		if err != nil {
 			return err
 		}
@@ -110,7 +95,8 @@ var reviewCmd = &cobra.Command{
 			}
 
 			// translate a git commit message
-			color.Cyan("We are trying to translate code review to " + prompt.GetLanguage(viper.GetString("output.lang")) + " language")
+			color.Cyan("we are trying to translate code review to " +
+				prompt.GetLanguage(viper.GetString("output.lang")) + " language")
 			resp, err := client.Completion(cmd.Context(), out)
 			if err != nil {
 				return err
