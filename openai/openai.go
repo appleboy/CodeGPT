@@ -152,7 +152,7 @@ func New(opts ...Option) (*Client, error) {
 	// Create a new HTTP transport.
 	tr := &http.Transport{}
 	if cfg.skipVerify {
-		tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+		tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true} //nolint:gosec
 	}
 
 	// Create a new HTTP client with the specified timeout and proxy, if any.
