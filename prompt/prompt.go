@@ -23,7 +23,7 @@ const (
 )
 
 // Initializes the prompt package by loading the templates from the embedded file system.
-func init() {
+func init() { //nolint:gochecknoinits
 	if err := util.LoadTemplates(templatesFS); err != nil {
 		log.Fatal(err)
 	}

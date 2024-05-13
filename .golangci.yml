@@ -9,7 +9,6 @@ linters:
     - errcheck
     - exportloopref
     - exhaustive
-    - gochecknoinits
     - goconst
     - gocritic
     - gocyclo
@@ -20,7 +19,6 @@ linters:
     - gosimple
     - govet
     - ineffassign
-    - lll
     - misspell
     - nakedret
     - noctx

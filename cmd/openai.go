@@ -20,7 +20,7 @@ func NewOpenAI() (*openai.Client, error) {
 		openai.WithProvider(viper.GetString("openai.provider")),
 		openai.WithSkipVerify(viper.GetBool("openai.skip_verify")),
 		openai.WithHeaders(viper.GetStringSlice("openai.headers")),
-		openai.WithApiVersion(viper.GetString("openai.api_version")),
+		openai.WithAPIVersion(viper.GetString("openai.api_version")),
 		openai.WithTopP(float32(viper.GetFloat64("openai.top_p"))),
 		openai.WithFrequencyPenalty(float32(viper.GetFloat64("openai.frequency_penalty"))),
 		openai.WithPresencePenalty(float32(viper.GetFloat64("openai.presence_penalty"))),

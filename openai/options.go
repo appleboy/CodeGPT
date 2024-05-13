@@ -160,8 +160,8 @@ func WithHeaders(headers []string) Option {
 	})
 }
 
-// WithApiVersion returns a new Option that sets the apiVersion for OpenAI Model.
-func WithApiVersion(apiVersion string) Option {
+// WithAPIVersion returns a new Option that sets the apiVersion for OpenAI Model.
+func WithAPIVersion(apiVersion string) Option {
 	return optionFunc(func(c *config) {
 		c.apiVersion = apiVersion
 	})
