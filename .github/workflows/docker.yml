@@ -62,6 +62,10 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
 
+      - name: downcase REPO
+        run: |
+          echo "REPO=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -71,3 +75,5 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.docker-meta.outputs.tags }}
           labels: ${{ steps.docker-meta.outputs.labels }}
+          cache-from: type=registry,ref=ghcr.io/${{ env.REPO }}:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ env.REPO }}:buildcache,mode=max
