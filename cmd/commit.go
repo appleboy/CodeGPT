@@ -1,16 +1,16 @@
 package cmd
 
 import (
+	"errors"
 	"html"
-	"log"
 	"os"
 	"path"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/appleboy/CodeGPT/core"
 	"github.com/appleboy/CodeGPT/git"
-	"github.com/appleboy/CodeGPT/openai"
 	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/util"
 
@@ -88,12 +88,25 @@ var commitCmd = &cobra.Command{
 			viper.Set("openai.timeout", timeout)
 		}
 
-		currentModel := viper.GetString("openai.model")
-		color.Green("Summarize the commit message use " + currentModel + " model")
-		client, err := NewOpenAI()
+		// check provider
+		provider := core.Platform(viper.GetString("openai.provider"))
+		if !provider.IsValid() {
+			return errors.New("invalid provider")
+		}
+
+		var client core.Generative
+		switch provider {
+		case core.Gemini:
+			// TODO: implement Gemini
+		case core.OpenAI, core.Azure:
+			client, err = NewOpenAI()
+		}
 		if err != nil && !promptOnly {
 			return err
 		}
+
+		currentModel := viper.GetString("openai.model")
+		color.Green("Summarize the commit message use " + currentModel + " model")
 
 		data := util.Data{}
 		// add template vars
@@ -189,21 +202,11 @@ var commitCmd = &cobra.Command{
 			message := "We are trying to get conventional commit prefix"
 			summaryPrix := ""
 			color.Cyan(message + " (Tools)")
-			resp, err := client.CreateFunctionCall(cmd.Context(), out, openai.SummaryPrefixFunc)
-			if err != nil || len(resp.Choices) != 1 {
-				log.Printf("Completion error: err:%v len(choices):%v\n", err,
-					len(resp.Choices))
+			resp, err := client.GetSummaryPrefix(cmd.Context(), out)
+			if err != nil {
 				return err
 			}
-
-			msg := resp.Choices[0].Message
-			if len(msg.ToolCalls) == 0 {
-				color.Red("No tool calls found in the message")
-				summaryPrix = msg.Content
-			} else {
-				args := openai.GetSummaryPrefixArgs(msg.ToolCalls[len(msg.ToolCalls)-1].Function.Arguments)
-				summaryPrix = args.Prefix
-			}
+			summaryPrix = resp.Content
 
 			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
 				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +

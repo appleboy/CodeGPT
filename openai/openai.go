@@ -7,12 +7,16 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/appleboy/CodeGPT/core"
+
 	openai "github.com/sashabaranov/go-openai"
 	"golang.org/x/net/proxy"
 )
 
 // DefaultModel is the default OpenAI model to use if one is not provided.
 var DefaultModel = openai.GPT3Dot5Turbo
+
+var _ core.Generative = (*Client)(nil)
 
 // Client is a struct that represents an OpenAI client.
 type Client struct {
@@ -38,6 +42,50 @@ type Client struct {
 type Response struct {
 	Content string
 	Usage   openai.Usage
+}
+
+// Completion is a method on the Client struct that takes a context.Context and a string argument
+func (c *Client) Completion(ctx context.Context, content string) (*core.Response, error) {
+	resp, err := c.completion(ctx, content)
+	if err != nil {
+		return nil, err
+	}
+
+	return &core.Response{
+		Content: resp.Content,
+		Usage: core.Usage{
+			PromptTokens:     resp.Usage.PromptTokens,
+			CompletionTokens: resp.Usage.CompletionTokens,
+			TotalTokens:      resp.Usage.TotalTokens,
+		},
+	}, nil
+}
+
+// GetSummaryPrefix is an API call to get a summary prefix using function call.
+func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Response, error) {
+	resp, err := c.CreateFunctionCall(ctx, content, SummaryPrefixFunc)
+	if err != nil || len(resp.Choices) != 1 {
+		return nil, err
+	}
+
+	msg := resp.Choices[0].Message
+	usage := core.Usage{
+		PromptTokens:     resp.Usage.PromptTokens,
+		CompletionTokens: resp.Usage.CompletionTokens,
+		TotalTokens:      resp.Usage.TotalTokens,
+	}
+	if len(msg.ToolCalls) == 0 {
+		return &core.Response{
+			Content: msg.Content,
+			Usage:   usage,
+		}, nil
+	}
+
+	args := GetSummaryPrefixArgs(msg.ToolCalls[len(msg.ToolCalls)-1].Function.Arguments)
+	return &core.Response{
+		Content: args.Prefix,
+		Usage:   usage,
+	}, nil
 }
 
 // CreateChatCompletion is an API call to create a function call for a chat message.
@@ -109,7 +157,7 @@ func (c *Client) CreateChatCompletion(
 
 // Completion is a method on the Client struct that takes a context.Context and a string argument
 // and returns a string and an error.
-func (c *Client) Completion(
+func (c *Client) completion(
 	ctx context.Context,
 	content string,
 ) (*Response, error) {
