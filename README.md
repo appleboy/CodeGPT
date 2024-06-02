@@ -18,7 +18,7 @@ A CLI written in [Go](https://go.dev) language that writes git commit messages o
 
 ## Feature
 
-* Support [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service) or [OpenAI API](https://platform.openai.com/docs/api-reference).
+* Support [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service), [OpenAI API](https://platform.openai.com/docs/api-reference), [Gemini][60], [Groq][30] and [OpenRouter][50].
 * Support [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
 * Support Git prepare-commit-msg Hook, see the [Git Hooks documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
 * Support customize generate diffs with n lines of context, the default is three.
@@ -188,6 +188,20 @@ codegpt config set openai.model meta-llama/llama-3-8b-instruct:free
 [51]:https://openrouter.ai/docs#models
 [52]:https://openrouter.ai/terms#services
 [53]:https://openrouter.ai/api/v1/models
+
+### Support [Gemni][60] API Service
+
+Build with the Gemini API, you can see the [Gemini API documentation][61]. Update the `provider` and `api_key` in your config file. Please create an API key from the [Gemini API][62] page.
+
+```sh
+codegpt config ser openai.provider gemini
+codegpt config set openai.api_key xxxxxxx
+codegpt config set openai.model gemini-1.5-flash-latest
+```
+
+[60]: https://ai.google.dev/gemini-api
+[61]: https://ai.google.dev/gemini-api/docs
+[62]: https://aistudio.google.com/app/apikey
 
 For including your app on openrouter.ai rankings and Shows in rankings on openrouter.ai, you can set the `openai.headers` in your config file.
 
