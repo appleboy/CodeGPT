@@ -3,6 +3,7 @@ package openai
 import (
 	"testing"
 
+	"github.com/appleboy/CodeGPT/core"
 	openai "github.com/sashabaranov/go-openai"
 )
 
@@ -17,7 +18,7 @@ func Test_config_valid(t *testing.T) {
 			cfg: newConfig(
 				WithToken("test"),
 				WithModel(openai.GPT3Dot5Turbo),
-				WithProvider(OPENAI.String()),
+				WithProvider(core.OpenAI),
 			),
 			wantErr: nil,
 		},
@@ -31,7 +32,7 @@ func Test_config_valid(t *testing.T) {
 			cfg: newConfig(
 				WithToken("test"),
 				WithModel(""),
-				WithProvider(OPENAI.String()),
+				WithProvider(core.OpenAI),
 			),
 			wantErr: errorsMissingModel,
 		},
@@ -40,7 +41,7 @@ func Test_config_valid(t *testing.T) {
 			cfg: newConfig(
 				WithToken("test"),
 				WithModel(""),
-				WithProvider(AZURE.String()),
+				WithProvider(core.Azure),
 			),
 			wantErr: errorsMissingModel,
 		},
