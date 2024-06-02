@@ -4,32 +4,14 @@ import (
 	"errors"
 	"time"
 
+	"github.com/appleboy/CodeGPT/core"
+
 	"github.com/sashabaranov/go-openai"
 )
 
 var (
 	errorsMissingToken = errors.New("please set OPENAI_API_KEY environment variable")
 	errorsMissingModel = errors.New("missing model")
-)
-
-type Provider string
-
-func (p Provider) String() string {
-	return string(p)
-}
-
-func (p Provider) IsValid() bool {
-	switch p {
-	case OPENAI, AZURE:
-		return true
-	default:
-		return false
-	}
-}
-
-var (
-	OPENAI Provider = "openai"
-	AZURE  Provider = "azure"
 )
 
 const (
@@ -135,14 +117,9 @@ func WithTemperature(val float32) Option {
 }
 
 // WithProvider returns a new Option that sets the provider for the client configuration.
-func WithProvider(val string) Option {
-	provider := Provider(val)
-	if !provider.IsValid() {
-		provider = OPENAI
-	}
-
+func WithProvider(val core.Platform) Option {
 	return optionFunc(func(c *config) {
-		c.provider = provider
+		c.provider = val
 	})
 }
 
@@ -204,7 +181,7 @@ type config struct {
 	presencePenalty  float32
 	frequencyPenalty float32
 
-	provider   Provider
+	provider   core.Platform
 	skipVerify bool
 	headers    []string
 	apiVersion string
@@ -232,7 +209,7 @@ func newConfig(opts ...Option) *config {
 		model:       defaultModel,
 		maxTokens:   defaultMaxTokens,
 		temperature: defaultTemperature,
-		provider:    OPENAI,
+		provider:    core.OpenAI,
 		topP:        defaultTopP,
 	}
 
