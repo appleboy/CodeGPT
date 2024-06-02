@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"html"
 	"os"
 	"path"
@@ -90,17 +89,7 @@ var commitCmd = &cobra.Command{
 
 		// check provider
 		provider := core.Platform(viper.GetString("openai.provider"))
-		if !provider.IsValid() {
-			return errors.New("invalid provider")
-		}
-
-		var client core.Generative
-		switch provider {
-		case core.Gemini:
-			// TODO: implement Gemini
-		case core.OpenAI, core.Azure:
-			client, err = NewOpenAI()
-		}
+		client, err := GetClient(provider)
 		if err != nil && !promptOnly {
 			return err
 		}
