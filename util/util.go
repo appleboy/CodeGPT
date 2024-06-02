@@ -22,3 +22,11 @@ func ConvertToMap(args []string) Data {
 	}
 	return m
 }
+
+func Float32Ptr(v float32) *float32 {
+	return &v
+}
+
+func Int32Ptr(v int32) *int32 {
+	return &v
+}

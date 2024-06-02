@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/appleboy/CodeGPT/core"
+	"github.com/appleboy/CodeGPT/gemini"
 	"github.com/appleboy/CodeGPT/openai"
 
 	"github.com/spf13/viper"
@@ -30,11 +31,22 @@ func NewOpenAI() (*openai.Client, error) {
 	)
 }
 
+// NewGemini returns a new Gemini client
+func NewGemini() (*gemini.Client, error) {
+	return gemini.New(
+		gemini.WithToken(viper.GetString("openai.api_key")),
+		gemini.WithModel(viper.GetString("openai.model")),
+		gemini.WithMaxTokens(viper.GetInt("openai.max_tokens")),
+		gemini.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
+		gemini.WithTopP(float32(viper.GetFloat64("openai.top_p"))),
+	)
+}
+
 // GetClient returns the generative client based on the platform
 func GetClient(p core.Platform) (core.Generative, error) {
 	switch p {
 	case core.Gemini:
-		// TODO: implement Gemini
+		return NewGemini()
 	case core.OpenAI, core.Azure:
 		return NewOpenAI()
 	}
