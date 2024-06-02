@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"errors"
+
+	"github.com/appleboy/CodeGPT/core"
 	"github.com/appleboy/CodeGPT/openai"
 
 	"github.com/spf13/viper"
@@ -25,4 +28,15 @@ func NewOpenAI() (*openai.Client, error) {
 		openai.WithFrequencyPenalty(float32(viper.GetFloat64("openai.frequency_penalty"))),
 		openai.WithPresencePenalty(float32(viper.GetFloat64("openai.presence_penalty"))),
 	)
+}
+
+// GetClient returns the generative client based on the platform
+func GetClient(p core.Platform) (core.Generative, error) {
+	switch p {
+	case core.Gemini:
+		// TODO: implement Gemini
+	case core.OpenAI, core.Azure:
+		return NewOpenAI()
+	}
+	return nil, errors.New("invalid provider")
 }

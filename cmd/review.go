@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/appleboy/CodeGPT/core"
 	"github.com/appleboy/CodeGPT/git"
 	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/util"
@@ -53,12 +54,15 @@ var reviewCmd = &cobra.Command{
 			viper.Set("openai.timeout", timeout)
 		}
 
-		currentModel := viper.GetString("openai.model")
-		color.Green("Code review your changes using " + currentModel + " model")
-		client, err := NewOpenAI()
+		// check provider
+		provider := core.Platform(viper.GetString("openai.provider"))
+		client, err := GetClient(provider)
 		if err != nil {
 			return err
 		}
+
+		currentModel := viper.GetString("openai.model")
+		color.Green("Code review your changes using " + currentModel + " model")
 
 		out, err := util.GetTemplateByString(
 			prompt.CodeReviewTemplate,
