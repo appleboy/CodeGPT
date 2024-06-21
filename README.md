@@ -119,7 +119,7 @@ codegpt config set openai.model xxxxx-gpt-35-turbo
 Build with the Gemini API, you can see the [Gemini API documentation][61]. Update the `provider` and `api_key` in your config file. Please create an API key from the [Gemini API][62] page.
 
 ```sh
-codegpt config ser openai.provider gemini
+codegpt config set openai.provider gemini
 codegpt config set openai.api_key xxxxxxx
 codegpt config set openai.model gemini-1.5-flash-latest
 ```
