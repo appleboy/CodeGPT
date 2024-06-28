@@ -114,7 +114,7 @@ codegpt config set openai.api_key xxxxxxxxxxxxxxxx
 codegpt config set openai.model xxxxx-gpt-35-turbo
 ```
 
-### Support [Gemni][60] API Service
+### Support [Gemini][60] API Service
 
 Build with the Gemini API, you can see the [Gemini API documentation][61]. Update the `provider` and `api_key` in your config file. Please create an API key from the [Gemini API][62] page.
 
