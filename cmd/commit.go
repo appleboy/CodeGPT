@@ -13,6 +13,7 @@ import (
 	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/util"
 
+	"github.com/erikgeiser/promptkit/confirmation"
 	"github.com/fatih/color"
 	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
@@ -285,7 +286,14 @@ var commitCmd = &cobra.Command{
 		}
 
 		if preview {
-			return nil
+			input := confirmation.New("Commit preview summary?", confirmation.Undecided)
+			ready, err := input.RunPrompt()
+			if err != nil {
+				return err
+			}
+			if !ready {
+				return nil
+			}
 		}
 
 		// git commit automatically
