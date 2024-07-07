@@ -19,15 +19,17 @@ import (
 var maxTokens int
 
 func init() {
-	reviewCmd.Flags().IntVar(&diffUnified, "diff_unified", 3,
+	reviewCmd.PersistentFlags().IntVar(&diffUnified, "diff_unified", 3,
 		"generate diffs with <n> lines of context, default is 3")
-	reviewCmd.Flags().IntVar(&maxTokens, "max_tokens", 300,
+	reviewCmd.PersistentFlags().IntVar(&maxTokens, "max_tokens", 300,
 		"the maximum number of tokens to generate in the chat completion.")
-	reviewCmd.Flags().StringVar(&commitModel, "model", "gpt-3.5-turbo", "select openai model")
-	reviewCmd.Flags().StringVar(&commitLang, "lang", "en", "summarizing language uses English by default")
-	reviewCmd.Flags().StringSliceVar(&excludeList, "exclude_list", []string{}, "exclude file from git diff command")
-	reviewCmd.Flags().BoolVar(&commitAmend, "amend", false,
+	reviewCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-3.5-turbo", "select openai model")
+	reviewCmd.PersistentFlags().StringVar(&commitLang, "lang", "en", "summarizing language uses English by default")
+	reviewCmd.PersistentFlags().StringSliceVar(&excludeList, "exclude_list", []string{}, "exclude file from git diff command")
+	reviewCmd.PersistentFlags().BoolVar(&commitAmend, "amend", false,
 		"replace the tip of the current branch by creating a new commit.")
+	reviewCmd.PersistentFlags().BoolVar(&promptOnly, "prompt_only", false,
+		"show prompt only, don't send request to openai")
 }
 
 var reviewCmd = &cobra.Command{
@@ -70,8 +72,16 @@ var reviewCmd = &cobra.Command{
 				"file_diffs": diff,
 			},
 		)
-		if err != nil {
+		if err != nil && !promptOnly {
 			return err
+		}
+
+		// determine if the user wants to use the prompt only
+		if promptOnly {
+			color.Yellow("====================Prompt========================")
+			color.Yellow("\n" + strings.TrimSpace(out) + "\n\n")
+			color.Yellow("==================================================")
+			return nil
 		}
 
 		// Get summarize comment from diff datas
