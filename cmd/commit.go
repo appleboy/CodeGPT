@@ -13,6 +13,7 @@ import (
 	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/util"
 
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/erikgeiser/promptkit/confirmation"
 	"github.com/fatih/color"
 	"github.com/joho/godotenv"
@@ -264,10 +265,11 @@ var commitCmd = &cobra.Command{
 
 		// unescape html entities in commit message
 		commitMessage = html.UnescapeString(commitMessage)
+		commitMessage = strings.TrimSpace(commitMessage)
 
 		// Output commit summary data from AI
 		color.Yellow("================Commit Summary====================")
-		color.Yellow("\n" + strings.TrimSpace(commitMessage) + "\n\n")
+		color.Yellow("\n" + commitMessage + "\n\n")
 		color.Yellow("==================================================")
 
 		outputFile := viper.GetString("output.file")
@@ -286,7 +288,7 @@ var commitCmd = &cobra.Command{
 		}
 
 		if preview {
-			input := confirmation.New("Commit preview summary?", confirmation.Undecided)
+			input := confirmation.New("Commit preview summary?", confirmation.Yes)
 			ready, err := input.RunPrompt()
 			if err != nil {
 				return err
@@ -294,6 +296,20 @@ var commitCmd = &cobra.Command{
 			if !ready {
 				return nil
 			}
+		}
+
+		input := confirmation.New("Do you want to change the commit message?", confirmation.No)
+		change, err := input.RunPrompt()
+		if err != nil {
+			return err
+		}
+
+		if change {
+			p := tea.NewProgram(initialPrompt(commitMessage))
+			if _, err := p.Run(); err != nil {
+				return err
+			}
+			p.Wait()
 		}
 
 		// git commit automatically
