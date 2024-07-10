@@ -40,6 +40,7 @@ var (
 	templateVarsFile string
 
 	defaultTimeout = 30 * time.Second
+	noConfirm      = false
 )
 
 func init() {
@@ -62,9 +63,12 @@ func init() {
 	commitCmd.PersistentFlags().DurationVarP(&timeout, "timeout", "t", defaultTimeout, "request timeout")
 	commitCmd.PersistentFlags().BoolVar(&promptOnly, "prompt_only", false,
 		"show prompt only, don't send request to openai")
+	commitCmd.PersistentFlags().BoolVar(&noConfirm, "no_confirm", false,
+		"skip confirmation prompt")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
 
+// commitCmd represents the commit command.
 var commitCmd = &cobra.Command{
 	Use:   "commit",
 	Short: "Auto generate commit message",
@@ -287,7 +291,7 @@ var commitCmd = &cobra.Command{
 			return err
 		}
 
-		if preview {
+		if preview && !noConfirm {
 			input := confirmation.New("Commit preview summary?", confirmation.Yes)
 			ready, err := input.RunPrompt()
 			if err != nil {
@@ -298,18 +302,20 @@ var commitCmd = &cobra.Command{
 			}
 		}
 
-		input := confirmation.New("Do you want to change the commit message?", confirmation.No)
-		change, err := input.RunPrompt()
-		if err != nil {
-			return err
-		}
-
-		if change {
-			p := tea.NewProgram(initialPrompt(commitMessage))
-			if _, err := p.Run(); err != nil {
+		if !noConfirm {
+			input := confirmation.New("Do you want to change the commit message?", confirmation.No)
+			change, err := input.RunPrompt()
+			if err != nil {
 				return err
 			}
-			p.Wait()
+
+			if change {
+				p := tea.NewProgram(initialPrompt(commitMessage))
+				if _, err := p.Run(); err != nil {
+					return err
+				}
+				p.Wait()
+			}
 		}
 
 		// git commit automatically
