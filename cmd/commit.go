@@ -310,11 +310,13 @@ var commitCmd = &cobra.Command{
 			}
 
 			if change {
-				p := tea.NewProgram(initialPrompt(commitMessage))
+				m := initialPrompt(commitMessage)
+				p := tea.NewProgram(m)
 				if _, err := p.Run(); err != nil {
 					return err
 				}
 				p.Wait()
+				commitMessage = m.textarea.Value()
 			}
 		}
 
