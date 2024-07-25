@@ -141,10 +141,16 @@ codegpt config set openai.model llama3-8b-8192
 
 Support the [following models][32]:
 
-1. `llama3-8b-8192` (Meta) **recommended**
-2. `llama3-70b-8192` (Meta)
-3. `mixtral-8x7b-32768` (Mistral)
-4. `gemma-7b-it` (Google)
+1. `llama-3.1-8b-instant` (Meta)
+2. `llama-3.1-70b-versatile` (Meta)
+3. `llama-3.1-405b-reasoning` (Meta)
+4. `llama3-8b-8192` (Meta)
+5. `llama3-70b-8192` (Meta)
+6. `llama3-groq-8b-8192-tool-use-preview`
+7. `llama3-groq-70b-8192-tool-use-preview`
+8. `mixtral-8x7b-32768` (Mistral)
+9. `gemma2-9b-it` (Google)
+10. `gemma-7b-it` (Google)
 
 [30]: https://groq.com/
 [31]: https://console.groq.com/keys
