@@ -320,13 +320,17 @@ var commitCmd = &cobra.Command{
 			}
 		}
 
-		// git commit automatically
-		color.Cyan("Git record changes to the repository")
-		output, err := g.Commit(commitMessage)
-		if err != nil {
-			return err
+		noCommit := os.Getenv("GIT_INDEX_FILE") != ""
+
+		// git commit automatically unless running from within hook
+		if !noCommit {
+			color.Cyan("Git record changes to the repository")
+			output, err := g.Commit(commitMessage)
+			if err != nil {
+				return err
+			}
+			color.Yellow(output)
 		}
-		color.Yellow(output)
 		return nil
 	},
 }
