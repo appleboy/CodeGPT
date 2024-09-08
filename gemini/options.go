@@ -50,7 +50,7 @@ func WithModel(val string) Option {
 // WithMaxTokens returns a new Option that sets the max tokens for the client configuration.
 // The maximum number of tokens to generate in the chat completion.
 // The total length of input tokens and generated tokens is limited by the model's context length.
-func WithMaxTokens(val int) Option {
+func WithMaxTokens(val int32) Option {
 	if val <= 0 {
 		val = defaultMaxTokens
 	}
@@ -83,7 +83,7 @@ func WithTopP(val float32) Option {
 type config struct {
 	token       string
 	model       string
-	maxTokens   int
+	maxTokens   int32
 	temperature float32
 	topP        float32
 }

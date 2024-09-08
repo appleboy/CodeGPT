@@ -15,7 +15,7 @@ import (
 type Client struct {
 	client      *genai.GenerativeModel
 	model       string
-	maxTokens   int
+	maxTokens   int32
 	temperature float32
 	topP        float32
 	debug       bool
@@ -106,7 +106,7 @@ func New(opts ...Option) (c *Client, err error) {
 	}
 
 	engine.client = client.GenerativeModel(engine.model)
-	engine.client.MaxOutputTokens = util.Int32Ptr(int32(engine.maxTokens))
+	engine.client.MaxOutputTokens = util.Int32Ptr(engine.maxTokens)
 	engine.client.Temperature = util.Float32Ptr(engine.temperature)
 	engine.client.TopP = util.Float32Ptr(engine.topP)
 

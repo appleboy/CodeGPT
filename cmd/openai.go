@@ -36,7 +36,7 @@ func NewGemini() (*gemini.Client, error) {
 	return gemini.New(
 		gemini.WithToken(viper.GetString("openai.api_key")),
 		gemini.WithModel(viper.GetString("openai.model")),
-		gemini.WithMaxTokens(viper.GetInt("openai.max_tokens")),
+		gemini.WithMaxTokens(viper.GetInt32("openai.max_tokens")),
 		gemini.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
 		gemini.WithTopP(float32(viper.GetFloat64("openai.top_p"))),
 	)
