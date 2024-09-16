@@ -198,7 +198,7 @@ You can see the [supported models list][51], model usage can be paid by users, d
 The following example use free model name: `meta-llama/llama-3-8b-instruct:free`
 
 ```sh
-codegpt config ser openai.provider openai
+codegpt config set openai.provider openai
 codegpt config set openai.base_url https://openrouter.ai/api/v1
 codegpt config set openai.api_key sk-or-v1-xxxxxxxxxxxxxxxx
 codegpt config set openai.model meta-llama/llama-3-8b-instruct:free
