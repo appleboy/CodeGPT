@@ -1,6 +1,6 @@
 module github.com/appleboy/CodeGPT
 
-go 1.21.0
+go 1.22
 
 require (
 	github.com/appleboy/com v0.1.7
