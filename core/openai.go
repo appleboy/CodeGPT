@@ -2,12 +2,15 @@ package core
 
 import (
 	"context"
+
+	"github.com/sashabaranov/go-openai"
 )
 
 type Usage struct {
-	PromptTokens     int
-	CompletionTokens int
-	TotalTokens      int
+	PromptTokens            int
+	CompletionTokens        int
+	TotalTokens             int
+	CompletionTokensDetails *openai.CompletionTokensDetails
 }
 
 type Response struct {

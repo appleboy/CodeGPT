@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"regexp"
 
 	"github.com/appleboy/CodeGPT/core"
 
@@ -54,25 +55,36 @@ func (c *Client) Completion(ctx context.Context, content string) (*core.Response
 	return &core.Response{
 		Content: resp.Content,
 		Usage: core.Usage{
-			PromptTokens:     resp.Usage.PromptTokens,
-			CompletionTokens: resp.Usage.CompletionTokens,
-			TotalTokens:      resp.Usage.TotalTokens,
+			PromptTokens:            resp.Usage.PromptTokens,
+			CompletionTokens:        resp.Usage.CompletionTokens,
+			TotalTokens:             resp.Usage.TotalTokens,
+			CompletionTokensDetails: resp.Usage.CompletionTokensDetails,
 		},
 	}, nil
 }
 
 // GetSummaryPrefix is an API call to get a summary prefix using function call.
 func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Response, error) {
-	resp, err := c.CreateFunctionCall(ctx, content, SummaryPrefixFunc)
-	if err != nil || len(resp.Choices) != 1 {
-		return nil, err
+	var resp openai.ChatCompletionResponse
+	var err error
+	if checkO1Serial.MatchString(c.model) {
+		resp, err = c.CreateChatCompletion(ctx, content)
+		if err != nil || len(resp.Choices) != 1 {
+			return nil, err
+		}
+	} else {
+		resp, err = c.CreateFunctionCall(ctx, content, SummaryPrefixFunc)
+		if err != nil || len(resp.Choices) != 1 {
+			return nil, err
+		}
 	}
 
 	msg := resp.Choices[0].Message
 	usage := core.Usage{
-		PromptTokens:     resp.Usage.PromptTokens,
-		CompletionTokens: resp.Usage.CompletionTokens,
-		TotalTokens:      resp.Usage.TotalTokens,
+		PromptTokens:            resp.Usage.PromptTokens,
+		CompletionTokens:        resp.Usage.CompletionTokens,
+		TotalTokens:             resp.Usage.TotalTokens,
+		CompletionTokensDetails: resp.Usage.CompletionTokensDetails,
 	}
 	if len(msg.ToolCalls) == 0 {
 		return &core.Response{
@@ -87,6 +99,8 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 		Usage:   usage,
 	}, nil
 }
+
+var checkO1Serial = regexp.MustCompile(`o1-(mini|preview)`)
 
 // CreateChatCompletion is an API call to create a function call for a chat message.
 func (c *Client) CreateFunctionCall(
@@ -108,7 +122,7 @@ func (c *Client) CreateFunctionCall(
 		PresencePenalty:  c.presencePenalty,
 		Messages: []openai.ChatCompletionMessage{
 			{
-				Role:    openai.ChatMessageRoleSystem,
+				Role:    openai.ChatMessageRoleAssistant,
 				Content: "You are a helpful assistant.",
 			},
 			{
@@ -123,6 +137,11 @@ func (c *Client) CreateFunctionCall(
 				Name: f.Name,
 			},
 		},
+	}
+
+	if checkO1Serial.MatchString(c.model) {
+		req.MaxTokens = 0
+		req.MaxCompletionsTokens = c.maxTokens
 	}
 
 	return c.client.CreateChatCompletion(ctx, req)
@@ -142,7 +161,7 @@ func (c *Client) CreateChatCompletion(
 		PresencePenalty:  c.presencePenalty,
 		Messages: []openai.ChatCompletionMessage{
 			{
-				Role:    openai.ChatMessageRoleSystem,
+				Role:    openai.ChatMessageRoleAssistant,
 				Content: "You are a helpful assistant.",
 			},
 			{
@@ -150,6 +169,11 @@ func (c *Client) CreateChatCompletion(
 				Content: content,
 			},
 		},
+	}
+
+	if checkO1Serial.MatchString(c.model) {
+		req.MaxTokens = 0
+		req.MaxCompletionsTokens = c.maxTokens
 	}
 
 	return c.client.CreateChatCompletion(ctx, req)
