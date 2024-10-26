@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 if [[ "$2" != "message" && "$2" != "commit" ]]; then
-  codegpt commit --file $1 --preview --no_confirm
+  codegpt commit --file $1 --preview --no_confirm --no_commit
 fi
