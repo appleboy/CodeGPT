@@ -41,6 +41,7 @@ var (
 
 	defaultTimeout = 30 * time.Second
 	noConfirm      = false
+	noCommit       = false
 )
 
 func init() {
@@ -65,6 +66,8 @@ func init() {
 		"show prompt only, don't send request to openai")
 	commitCmd.PersistentFlags().BoolVar(&noConfirm, "no_confirm", false,
 		"skip confirmation prompt")
+	commitCmd.PersistentFlags().BoolVar(&noCommit, "no_commit", false,
+		"skip commit")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
 
@@ -319,6 +322,10 @@ var commitCmd = &cobra.Command{
 
 				commitMessage = m.textarea.Value()
 			}
+		}
+
+		if noCommit {
+			return nil
 		}
 
 		// git commit automatically
