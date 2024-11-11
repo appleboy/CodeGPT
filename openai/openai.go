@@ -141,7 +141,7 @@ func (c *Client) CreateFunctionCall(
 
 	if checkO1Serial.MatchString(c.model) {
 		req.MaxTokens = 0
-		req.MaxCompletionsTokens = c.maxTokens
+		req.MaxCompletionTokens = c.maxTokens
 	}
 
 	return c.client.CreateChatCompletion(ctx, req)
@@ -173,7 +173,7 @@ func (c *Client) CreateChatCompletion(
 
 	if checkO1Serial.MatchString(c.model) {
 		req.MaxTokens = 0
-		req.MaxCompletionsTokens = c.maxTokens
+		req.MaxCompletionTokens = c.maxTokens
 	}
 
 	return c.client.CreateChatCompletion(ctx, req)
