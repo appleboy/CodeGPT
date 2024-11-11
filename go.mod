@@ -9,7 +9,7 @@ require (
 	github.com/charmbracelet/bubbletea v1.1.0
 	github.com/erikgeiser/promptkit v0.9.0
 	github.com/fatih/color v1.17.0
-	github.com/google/generative-ai-go v0.17.0
+	github.com/google/generative-ai-go v0.18.0
 	github.com/joho/godotenv v1.5.1
 	github.com/rodaine/table v1.3.0
 	github.com/sashabaranov/go-openai v1.31.0
