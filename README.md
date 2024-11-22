@@ -220,9 +220,9 @@ codegpt config set openai.headers "HTTP-Referer=https://github.com/appleboy/Code
 
 ## Usage
 
-There are two methods for generating a commit message using the `codegpt` command. The first is CLI mode, and the second is Git Hook.
+There are two methods for generating a commit message using the `codegpt` command: CLI mode and Git Hook.
 
-### CLI mode
+### CLI Mode
 
 You can call `codegpt` directly to generate a commit message for your staged changes:
 
