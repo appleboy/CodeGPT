@@ -6,7 +6,7 @@
 
 ![cover](./images/cover.png)
 
-A CLI written in [Go](https://go.dev) language that writes git commit messages or do a code review brief for you using ChatGPT AI (gpt-3.5-turbo, gpt-4 model) and automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
+A CLI written in [Go](https://go.dev) that writes git commit messages or provides a code review summary for you using ChatGPT AI (gpt-3.5-turbo, gpt-4 model) and automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
 
 * [繁體中文介紹][1]
 * [繁體中文影片][2]
@@ -16,23 +16,23 @@ A CLI written in [Go](https://go.dev) language that writes git commit messages o
 
 ![flow](./images/flow.svg)
 
-## Feature
+## Features
 
-* Support [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service), [OpenAI API](https://platform.openai.com/docs/api-reference), [Gemini][60], [Ollama][41], [Groq][30] and [OpenRouter][50].
-* Support [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
-* Support Git prepare-commit-msg Hook, see the [Git Hooks documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
-* Support customize generate diffs with n lines of context, the default is three.
-* Support for excluding files from the git diff command.
-* Support commit message translation into another language (support `en`, `zh-tw` or `zh-cn`).
-* Support socks proxy or custom network HTTP proxy.
-* Support [model lists](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) like `gpt-4`, `gpt-3.5-turbo` ...etc.
-* Support do a brief code review.
+* Supports [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service), [OpenAI API](https://platform.openai.com/docs/api-reference), [Gemini][60], [Ollama][41], [Groq][30], and [OpenRouter][50].
+* Supports [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
+* Supports Git prepare-commit-msg Hook, see the [Git Hooks documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
+* Supports customizing generated diffs with n lines of context, the default is three.
+* Supports excluding files from the git diff command.
+* Supports commit message translation into another language (supports `en`, `zh-tw`, or `zh-cn`).
+* Supports socks proxy or custom network HTTP proxy.
+* Supports [model lists](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) like `gpt-4`, `gpt-3.5-turbo`, etc.
+* Supports generating a brief code review.
 
 ![code review](./images/code_review.png)
 
 ## Installation
 
-Install from [Homebrew](http://brew.sh/) on MacOS
+Install from [Homebrew](http://brew.sh/) on macOS
 
 ```sh
 brew tap appleboy/tap
@@ -45,7 +45,7 @@ Install from [Chocolatey](https://chocolatey.org/install) on Windows
 choco install codegpt
 ```
 
-The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/CodeGPT/releases).Change the binary permissions to `755` and copy the binary to the system bin directory. Use the `codegpt` command as shown below.
+The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/CodeGPT/releases). Change the binary permissions to `755` and copy the binary to the system bin directory. Use the `codegpt` command as shown below.
 
 ```sh
 $ codegpt version
@@ -64,7 +64,7 @@ Please first create your OpenAI API Key. The [OpenAI Platform](https://platform.
 
 ![register](./images/register.png)
 
-An environment variable is a variable that is set on your operating system, rather than within your application. It consists of a name and value.We recommend that you set the name of the variable to `OPENAI_API_KEY`.
+An environment variable is a variable that is set on your operating system, rather than within your application. It consists of a name and value. We recommend that you set the name of the variable to `OPENAI_API_KEY`.
 
 See the [Best Practices for API Key Safety](https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety).
 
@@ -72,7 +72,7 @@ See the [Best Practices for API Key Safety](https://help.openai.com/en/articles/
 export OPENAI_API_KEY=sk-xxxxxxx
 ```
 
-or store your API key in custom config file.
+or store your API key in a custom config file.
 
 ```sh
 codegpt config set openai.api_key sk-xxxxxxx
@@ -130,7 +130,7 @@ codegpt config set openai.model gemini-1.5-flash-latest
 
 ### How to change to [Groq][30] API Service
 
-Please get the `API key` from Groq API Service, please vist [here][31]. Update the `base_url` and `api_key` in your config file.
+Please get the `API key` from Groq API Service, please visit [here][31]. Update the `base_url` and `api_key` in your config file.
 
 ```sh
 codegpt config set openai.provider openai
