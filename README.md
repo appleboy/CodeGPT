@@ -201,7 +201,7 @@ The following example use free model name: `meta-llama/llama-3-8b-instruct:free`
 codegpt config set openai.provider openai
 codegpt config set openai.base_url https://openrouter.ai/api/v1
 codegpt config set openai.api_key sk-or-v1-xxxxxxxxxxxxxxxx
-codegpt config set openai.model meta-llama/llama-3-8b-instruct:free
+codegpt config set openai.model google/learnlm-1.5-pro-experimental:free
 ```
 
 [50]:https://openrouter.ai/
