@@ -80,22 +80,24 @@ codegpt config set openai.api_key sk-xxxxxxx
 
 This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/codegpt/.codegpt.yaml). The following options are available.
 
-* **openai.base_url**: replace the default base URL (`https://api.openai.com/v1`).
-* **openai.api_key**: generate API key from [openai platform page](https://platform.openai.com/account/api-keys).
-* **openai.org_id**: Identifier for this organization sometimes used in API requests. see [organization settings](https://platform.openai.com/account/org-settings). only for `openai` service.
-* **openai.model**: default model is `gpt-3.5-turbo`, you can change to `gpt-4-turbo` or other custom model (Groq or OpenRouter provider).
-* **openai.proxy**: http/https client proxy.
-* **openai.socks**: socks client proxy.
-* **openai.timeout**: default http timeout is `10s` (ten seconds).
-* **openai.max_tokens**: default max tokens is `300`. see reference [max_tokens](https://platform.openai.com/docs/api-reference/completions/create#completions/create-max_tokens).
-* **openai.temperature**: default temperature is `1`. see reference [temperature](https://platform.openai.com/docs/api-reference/completions/create#completions/create-temperature).
-* **git.diff_unified**: generate diffs with `<n>` lines of context, default is `3`.
-* **git.exclude_list**: exclude file from `git diff` command.
-* **openai.provider**: default service provider is `openai`, you can change to `azure`.
-* **output.lang**: default language is `en` and available languages `zh-tw`, `zh-cn`, `ja`.
-* **openai.top_p**: default top_p is `1.0`. see reference [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p).
-* **openai.frequency_penalty**: default frequency_penalty is `0.0`. see reference [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty).
-* **openai.presence_penalty**: default presence_penalty is `0.0`. see reference [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty).
+| Option                       | Description                                                                                                                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **openai.base_url**          | Replace the default base URL (`https://api.openai.com/v1`).                                                                                                                    |
+| **openai.api_key**           | Generate API key from [openai platform page](https://platform.openai.com/account/api-keys).                                                                                    |
+| **openai.org_id**            | Identifier for this organization sometimes used in API requests. See [organization settings](https://platform.openai.com/account/org-settings). Only for `openai` service.     |
+| **openai.model**             | Default model is `gpt-3.5-turbo`, you can change to `gpt-4-turbo` or other custom model (Groq or OpenRouter provider).                                                         |
+| **openai.proxy**             | HTTP/HTTPS client proxy.                                                                                                                                                       |
+| **openai.socks**             | SOCKS client proxy.                                                                                                                                                            |
+| **openai.timeout**           | Default HTTP timeout is `10s` (ten seconds).                                                                                                                                   |
+| **openai.max_tokens**        | Default max tokens is `300`. See reference [max_tokens](https://platform.openai.com/docs/api-reference/completions/create#completions/create-max_tokens).                      |
+| **openai.temperature**       | Default temperature is `1`. See reference [temperature](https://platform.openai.com/docs/api-reference/completions/create#completions/create-temperature).                     |
+| **git.diff_unified**         | Generate diffs with `<n>` lines of context, default is `3`.                                                                                                                    |
+| **git.exclude_list**         | Exclude file from `git diff` command.                                                                                                                                          |
+| **openai.provider**          | Default service provider is `openai`, you can change to `azure`.                                                                                                               |
+| **output.lang**              | Default language is `en` and available languages `zh-tw`, `zh-cn`, `ja`.                                                                                                       |
+| **openai.top_p**             | Default top_p is `1.0`. See reference [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p).                                     |
+| **openai.frequency_penalty** | Default frequency_penalty is `0.0`. See reference [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty). |
+| **openai.presence_penalty**  | Default presence_penalty is `0.0`. See reference [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty).    |
 
 ### How to change to Azure OpenAI Service
 
