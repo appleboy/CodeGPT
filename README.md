@@ -8,25 +8,25 @@
 
 A CLI written in [Go](https://go.dev) that writes git commit messages or provides a code review summary for you using ChatGPT AI (gpt-3.5-turbo, gpt-4 model) and automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
 
-* [繁體中文介紹][1]
-* [繁體中文影片][2]
+- [繁體中文介紹][1]
+- [繁體中文影片][2]
 
-[1]:https://blog.wu-boy.com/2023/03/writes-git-commit-messages-using-chatgpt/
-[2]:https://www.youtube.com/watch?v=4Yei_t6eMZU
+[1]: https://blog.wu-boy.com/2023/03/writes-git-commit-messages-using-chatgpt/
+[2]: https://www.youtube.com/watch?v=4Yei_t6eMZU
 
 ![flow](./images/flow.svg)
 
 ## Features
 
-* Supports [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service), [OpenAI API](https://platform.openai.com/docs/api-reference), [Gemini][60], [Ollama][41], [Groq][30], and [OpenRouter][50].
-* Supports [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
-* Supports Git prepare-commit-msg Hook, see the [Git Hooks documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
-* Supports customizing generated diffs with n lines of context, the default is three.
-* Supports excluding files from the git diff command.
-* Supports commit message translation into another language (supports `en`, `zh-tw`, or `zh-cn`).
-* Supports socks proxy or custom network HTTP proxy.
-* Supports [model lists](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) like `gpt-4`, `gpt-3.5-turbo`, etc.
-* Supports generating a brief code review.
+- Supports [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service), [OpenAI API](https://platform.openai.com/docs/api-reference), [Gemini][60], [Ollama][41], [Groq][30], and [OpenRouter][50].
+- Supports [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
+- Supports Git prepare-commit-msg Hook, see the [Git Hooks documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
+- Supports customizing generated diffs with n lines of context, the default is three.
+- Supports excluding files from the git diff command.
+- Supports commit message translation into another language (supports `en`, `zh-tw`, or `zh-cn`).
+- Supports socks proxy or custom network HTTP proxy.
+- Supports [model lists](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) like `gpt-4`, `gpt-3.5-turbo`, etc.
+- Supports generating a brief code review.
 
 ![code review](./images/code_review.png)
 
@@ -141,18 +141,10 @@ codegpt config set openai.api_key gsk_xxxxxxxxxxxxxx
 codegpt config set openai.model llama3-8b-8192
 ```
 
-Support the [following models][32]:
+GroqCloud currently supports the [following models][32]:
 
-1. `llama-3.1-8b-instant` (Meta)
-2. `llama-3.1-70b-versatile` (Meta)
-3. `llama-3.1-405b-reasoning` (Meta)
-4. `llama3-8b-8192` (Meta)
-5. `llama3-70b-8192` (Meta)
-6. `llama3-groq-8b-8192-tool-use-preview`
-7. `llama3-groq-70b-8192-tool-use-preview`
-8. `mixtral-8x7b-32768` (Mistral)
-9. `gemma2-9b-it` (Google)
-10. `gemma-7b-it` (Google)
+1. [Production Models](https://console.groq.com/docs/models#production-models)
+2. [Preview Models](https://console.groq.com/docs/models#preview-models)
 
 [30]: https://groq.com/
 [31]: https://console.groq.com/keys
@@ -206,10 +198,10 @@ codegpt config set openai.api_key sk-or-v1-xxxxxxxxxxxxxxxx
 codegpt config set openai.model google/learnlm-1.5-pro-experimental:free
 ```
 
-[50]:https://openrouter.ai/
-[51]:https://openrouter.ai/docs#models
-[52]:https://openrouter.ai/terms#services
-[53]:https://openrouter.ai/api/v1/models
+[50]: https://openrouter.ai/
+[51]: https://openrouter.ai/docs#models
+[52]: https://openrouter.ai/terms#services
+[53]: https://openrouter.ai/api/v1/models
 
 For including your app on openrouter.ai rankings and Shows in rankings on openrouter.ai, you can set the `openai.headers` in your config file.
 
@@ -217,8 +209,8 @@ For including your app on openrouter.ai rankings and Shows in rankings on openro
 codegpt config set openai.headers "HTTP-Referer=https://github.com/appleboy/CodeGPT X-Title=CodeGPT"
 ```
 
-* **HTTP-Refer**: Optional, for including your app on openrouter.ai rankings.
-* **X-Title**: Optional, for Shows in rankings on openrouter.ai.
+- **HTTP-Refer**: Optional, for including your app on openrouter.ai rankings.
+- **X-Title**: Optional, for Shows in rankings on openrouter.ai.
 
 ## Usage
 
@@ -472,5 +464,5 @@ make test
 
 ## Reference
 
-* [OpenAI Chat completions documentation](https://platform.openai.com/docs/guides/chat).
-* [Introducing ChatGPT and Whisper APIs](https://openai.com/blog/introducing-chatgpt-and-whisper-apis)
+- [OpenAI Chat completions documentation](https://platform.openai.com/docs/guides/chat).
+- [Introducing ChatGPT and Whisper APIs](https://openai.com/blog/introducing-chatgpt-and-whisper-apis)
