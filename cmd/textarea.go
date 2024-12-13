@@ -15,10 +15,29 @@ type model struct {
 	err      error
 }
 
+// initialPrompt initializes a textarea model with the given value.
+// It sets the character limit to the length of the value plus 100,
+// inserts the value into the textarea, and adjusts the width and height
+// of the textarea based on the value's content. The textarea is then focused.
+//
+// Parameters:
+//   - value: A string to be inserted into the textarea.
+//
+// Returns:
+//   - model: A struct containing the initialized textarea and any error encountered.
 func initialPrompt(value string) model {
 	ti := textarea.New()
+	// origin defaultCharLimit = 400
+	ti.CharLimit = len(value) + 100
 	ti.InsertString(value)
-	ti.SetWidth(80)
+
+	maxWidth := 0
+	for _, line := range strings.Split(value, "\n") {
+		if len(line) > maxWidth {
+			maxWidth = len(line)
+		}
+	}
+	ti.SetWidth(maxWidth)
 	ti.SetHeight(len(strings.Split(value, "\n")))
 	ti.Focus()
 
@@ -65,8 +84,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	return fmt.Sprintf(
-		"Please confirm the following commit message.\n\n%s\n\n%s",
+		"Please confirm the following commit message:\n\n%s\n\n%s",
 		m.textarea.View(),
-		"(ctrl+c to continue.)",
+		"(Press Ctrl+C to continue.)",
 	) + "\n\n"
 }
