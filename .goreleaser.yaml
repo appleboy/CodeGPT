@@ -89,7 +89,7 @@ checksum:
     - glob: ./**.xz
 
 snapshot:
-  name_template: "{{ incpatch .Version }}"
+  version_template: "{{ incpatch .Version }}"
 
 release:
   # You can add extra pre-existing files to the release.
