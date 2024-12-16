@@ -6,6 +6,8 @@
 
 ![cover](./images/cover.png)
 
+[English](./README.md) | 繁體中文
+
 一個用 [Go](https://go.dev) 編寫的 CLI 工具，使用 ChatGPT AI（gpt-3.5-turbo, gpt-4 模型）為你撰寫 git 提交訊息或提供程式碼審查摘要，並自動安裝 [git prepare-commit-msg hook](https://git-scm.com/docs/githooks)。
 
 - [繁體中文介紹][1]

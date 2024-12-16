@@ -6,6 +6,8 @@
 
 ![cover](./images/cover.png)
 
+English | [繁體中文](./README.zh-tw.md)
+
 A CLI written in [Go](https://go.dev) that writes git commit messages or provides a code review summary for you using ChatGPT AI (gpt-3.5-turbo, gpt-4 model) and automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
 
 - [繁體中文介紹][1]
