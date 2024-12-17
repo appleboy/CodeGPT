@@ -47,6 +47,12 @@ Install from [Chocolatey](https://chocolatey.org/install) on Windows
 choco install codegpt
 ```
 
+Install from [install.sh](./scripts/install.sh) on Linux
+
+```sh
+curl -L https://raw.githubusercontent.com/appleboy/CodeGPT/main/scripts/install.sh | bash
+```
+
 The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/CodeGPT/releases). Change the binary permissions to `755` and copy the binary to the system bin directory. Use the `codegpt` command as shown below.
 
 ```sh
