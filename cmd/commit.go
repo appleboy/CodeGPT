@@ -95,7 +95,7 @@ var commitCmd = &cobra.Command{
 
 		// check provider
 		provider := core.Platform(viper.GetString("openai.provider"))
-		client, err := GetClient(provider)
+		client, err := GetClient(cmd.Context(), provider)
 		if err != nil && !promptOnly {
 			return err
 		}

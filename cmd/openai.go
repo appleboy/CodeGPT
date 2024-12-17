@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 
 	"github.com/appleboy/CodeGPT/core"
@@ -32,8 +33,9 @@ func NewOpenAI() (*openai.Client, error) {
 }
 
 // NewGemini returns a new Gemini client
-func NewGemini() (*gemini.Client, error) {
+func NewGemini(ctx context.Context) (*gemini.Client, error) {
 	return gemini.New(
+		ctx,
 		gemini.WithToken(viper.GetString("openai.api_key")),
 		gemini.WithModel(viper.GetString("openai.model")),
 		gemini.WithMaxTokens(viper.GetInt32("openai.max_tokens")),
@@ -43,10 +45,10 @@ func NewGemini() (*gemini.Client, error) {
 }
 
 // GetClient returns the generative client based on the platform
-func GetClient(p core.Platform) (core.Generative, error) {
+func GetClient(ctx context.Context, p core.Platform) (core.Generative, error) {
 	switch p {
 	case core.Gemini:
-		return NewGemini()
+		return NewGemini(ctx)
 	case core.OpenAI, core.Azure:
 		return NewOpenAI()
 	}
