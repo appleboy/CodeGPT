@@ -132,7 +132,7 @@ codegpt config set openai.model gemini-1.5-flash-latest
 [61]: https://ai.google.dev/gemini-api/docs
 [62]: https://aistudio.google.com/app/apikey
 
-## Support [Anthropic][100] API Service
+### Support [Anthropic][100] API Service
 
 Build with the Anthropic API, you can see the [Anthropic API documentation][101]. Update the `provider` and `api_key` in your config file. Please create an API key from the [Anthropic API][102] page.
 

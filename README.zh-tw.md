@@ -132,7 +132,7 @@ codegpt config set openai.model gemini-1.5-flash-latest
 [61]: https://ai.google.dev/gemini-api/docs
 [62]: https://aistudio.google.com/app/apikey
 
-## 支援 [Anthropic][100] API 服務
+### 支援 [Anthropic][100] API 服務
 
 使用 Anthropic API 構建，你可以參考 [Anthropic API 文件][101]。在你的配置文件中更新 `provider` 和 `api_key`。請從 [Anthropic API][102] 頁面創建 API 金鑰。.
 
