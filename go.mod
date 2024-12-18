@@ -13,6 +13,7 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/google/generative-ai-go v0.18.0
 	github.com/joho/godotenv v1.5.1
+	github.com/liushuangls/go-anthropic/v2 v2.12.2
 	github.com/rodaine/table v1.3.0
 	github.com/sashabaranov/go-openai v1.35.6
 	github.com/spf13/cobra v1.8.1
