@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	"github.com/appleboy/CodeGPT/core"
-	"github.com/appleboy/CodeGPT/gemini"
-	"github.com/appleboy/CodeGPT/openai"
+	"github.com/appleboy/CodeGPT/provider/gemini"
+	"github.com/appleboy/CodeGPT/provider/openai"
 
 	"github.com/spf13/viper"
 )
