@@ -2,6 +2,7 @@ package anthropic
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -68,20 +69,25 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 		return nil, err
 	}
 
-	var toolResult *anthropic.MessageContentToolResult
+	var toolUse *anthropic.MessageContentToolUse
 
 	for _, c := range resp.Content {
-		if c.Type == anthropic.MessagesContentTypeToolResult {
-			toolResult = c.MessageContentToolResult
+		if c.Type == anthropic.MessagesContentTypeToolUse {
+			toolUse = c.MessageContentToolUse
 		}
 	}
 
-	if toolResult == nil {
+	if toolUse == nil {
 		return nil, errors.New("no tool use found in response")
 	}
 
+	var result tool
+	if err := json.Unmarshal(toolUse.Input, &result); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal tool use input: %w", err)
+	}
+
 	return &core.Response{
-		Content: toolResult.Content[0].GetText(),
+		Content: result.Prefix,
 		Usage: core.Usage{
 			PromptTokens:     resp.Usage.InputTokens,
 			CompletionTokens: resp.Usage.OutputTokens,
