@@ -43,9 +43,9 @@ func WithAPIKey(val string) Option {
 }
 
 // WithModel is a function that returns an Option, which sets the model field of the config struct.
-func WithModel(val anthropic.Model) Option {
+func WithModel(val string) Option {
 	return optionFunc(func(c *config) {
-		c.model = val
+		c.model = anthropic.Model(val)
 	})
 }
 
