@@ -20,7 +20,7 @@
 
 ## 功能
 
-- 支援 [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service)、[OpenAI API](https://platform.openai.com/docs/api-reference)、[Gemini][60]、[Ollama][41]、[Groq][30] 和 [OpenRouter][50]。
+- 支援 [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service)、[OpenAI API](https://platform.openai.com/docs/api-reference)、[Gemini][60]、[Anthropic][100][Ollama][41]、[Groq][30] 和 [OpenRouter][50]。
 - 支援 [conventional commits 規範](https://www.conventionalcommits.org/en/v1.0.0/)。
 - 支援 Git prepare-commit-msg Hook，請參閱 [Git Hooks 文件](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)。
 - 支援自訂生成的差異上下文行數，預設為三行。
@@ -131,6 +131,23 @@ codegpt config set openai.model gemini-1.5-flash-latest
 [60]: https://ai.google.dev/gemini-api
 [61]: https://ai.google.dev/gemini-api/docs
 [62]: https://aistudio.google.com/app/apikey
+
+## 支援 [Anthropic][100] API 服務
+
+使用 Anthropic API 構建，你可以參考 [Anthropic API 文件][101]。在你的配置文件中更新 `provider` 和 `api_key`。請從 [Anthropic API][102] 頁面創建 API 金鑰。.
+
+```sh
+codegpt config set openai.provider anthropic
+codegpt config set openai.api_key xxxxxxx
+codegpt config set openai.model claude-3-5-sonnet-20241022
+```
+
+請參閱 [Anthropic API 文件][103] 中的模型列表。
+
+[100]: https://anthropic.com/
+[101]: https://docs.anthropic.com/en/home
+[102]: https://anthropic.com/
+[103]: https://docs.anthropic.com/en/docs/about-claude/models
 
 ### 如何切換到 [Groq][30] API 服務
 

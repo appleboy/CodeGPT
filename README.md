@@ -20,7 +20,7 @@ A CLI written in [Go](https://go.dev) that writes git commit messages or provide
 
 ## Features
 
-- Supports [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service), [OpenAI API](https://platform.openai.com/docs/api-reference), [Gemini][60], [Ollama][41], [Groq][30], and [OpenRouter][50].
+- Supports [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service), [OpenAI API](https://platform.openai.com/docs/api-reference), [Gemini][60], [Anthropic][100], [Ollama][41], [Groq][30], and [OpenRouter][50].
 - Supports [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
 - Supports Git prepare-commit-msg Hook, see the [Git Hooks documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
 - Supports customizing generated diffs with n lines of context, the default is three.
@@ -131,6 +131,23 @@ codegpt config set openai.model gemini-1.5-flash-latest
 [60]: https://ai.google.dev/gemini-api
 [61]: https://ai.google.dev/gemini-api/docs
 [62]: https://aistudio.google.com/app/apikey
+
+## Support [Anthropic][100] API Service
+
+Build with the Anthropic API, you can see the [Anthropic API documentation][101]. Update the `provider` and `api_key` in your config file. Please create an API key from the [Anthropic API][102] page.
+
+```sh
+codegpt config set openai.provider anthropic
+codegpt config set openai.api_key xxxxxxx
+codegpt config set openai.model claude-3-5-sonnet-20241022
+```
+
+See the model list from the [Anthropic API documentation][103].
+
+[100]: https://anthropic.com/
+[101]: https://docs.anthropic.com/en/home
+[102]: https://anthropic.com/
+[103]: https://docs.anthropic.com/en/docs/about-claude/models
 
 ### How to change to [Groq][30] API Service
 
