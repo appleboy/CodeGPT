@@ -18,3 +18,4 @@ dist
 **/.DS_Store
 bin
 release
+.codegpt.yaml
