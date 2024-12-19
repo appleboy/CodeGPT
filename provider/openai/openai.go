@@ -2,6 +2,7 @@ package openai
 
 import (
 	"context"
+	"fmt"
 	"regexp"
 
 	"github.com/appleboy/CodeGPT/core"
@@ -225,7 +226,7 @@ func New(opts ...Option) (*Client, error) {
 		proxy.WithHeaders(cfg.headers),
 	)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("can't create a new HTTP client: %w", err)
 	}
 
 	// Set the OpenAI client to use the default configuration with Azure-specific options, if the provider is Azure.
