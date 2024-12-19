@@ -10,7 +10,9 @@ import (
 	"golang.org/x/net/proxy"
 )
 
-// convertHeaders creates a new http.Header from the given slice of headers.
+// convertHeaders takes a slice of strings representing HTTP headers in the format "key=value"
+// and converts them into an http.Header type. If a header string does not contain exactly one "=",
+// it is ignored. The resulting http.Header map is returned.
 func convertHeaders(headers []string) http.Header {
 	h := make(http.Header)
 	for _, header := range headers {
@@ -24,13 +26,19 @@ func convertHeaders(headers []string) http.Header {
 	return h
 }
 
-// DefaultHeaderTransport is an http.RoundTripper that adds the given headers to
+// defaultHeaderTransport is a custom implementation of http.RoundTripper
+// that allows setting default headers for each request. It wraps an existing
+// http.RoundTripper (origin) and adds the specified headers (header) to each
+// outgoing request.
 type defaultHeaderTransport struct {
 	origin http.RoundTripper
 	header http.Header
 }
 
-// RoundTrip implements the http.RoundTripper interface.
+// RoundTrip executes a single HTTP transaction and returns
+// a Response for the provided Request. It adds custom headers
+// from the defaultHeaderTransport to the request before
+// delegating the actual round-trip to the original transport.
 func (t *defaultHeaderTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	for key, values := range t.header {
 		for _, value := range values {
