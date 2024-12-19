@@ -81,6 +81,27 @@ func WithTopP(val float32) Option {
 	})
 }
 
+// WithProxyURL is a function that returns an Option, which sets the proxyURL field of the config struct.
+func WithProxyURL(val string) Option {
+	return optionFunc(func(c *config) {
+		c.proxyURL = val
+	})
+}
+
+// WithSocksURL is a function that returns an Option, which sets the socksURL field of the config struct.
+func WithSocksURL(val string) Option {
+	return optionFunc(func(c *config) {
+		c.socksURL = val
+	})
+}
+
+// WithSkipVerify returns a new Option that sets the skipVerify for the client configuration.
+func WithSkipVerify(val bool) Option {
+	return optionFunc(func(c *config) {
+		c.skipVerify = val
+	})
+}
+
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
 	apiKey      string
@@ -88,6 +109,9 @@ type config struct {
 	maxTokens   int
 	temperature float32
 	topP        float32
+	proxyURL    string
+	socksURL    string
+	skipVerify  bool
 }
 
 // valid checks whether a config object is valid, returning an error if it is not.

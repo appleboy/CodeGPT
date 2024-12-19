@@ -2,11 +2,15 @@ package anthropic
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"net/url"
 
 	"github.com/appleboy/CodeGPT/core"
+	"golang.org/x/net/proxy"
 
 	"github.com/appleboy/com/convert"
 	"github.com/liushuangls/go-anthropic/v2"
@@ -96,6 +100,22 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 	}, nil
 }
 
+// DefaultHeaderTransport is an http.RoundTripper that adds the given headers to
+type DefaultHeaderTransport struct {
+	Origin http.RoundTripper
+	Header http.Header
+}
+
+// RoundTrip implements the http.RoundTripper interface.
+func (t *DefaultHeaderTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	for key, values := range t.Header {
+		for _, value := range values {
+			req.Header.Add(key, value)
+		}
+	}
+	return t.Origin.RoundTrip(req)
+}
+
 func New(opts ...Option) (c *Client, err error) {
 	// Create a new config object with the given options.
 	cfg := newConfig(opts...)
@@ -105,9 +125,40 @@ func New(opts ...Option) (c *Client, err error) {
 		return nil, err
 	}
 
+	// Create a new HTTP transport.
+	tr := &http.Transport{}
+	if cfg.skipVerify {
+		tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true} //nolint:gosec
+	}
+
+	// Create a new HTTP client with the specified timeout and proxy, if any.
+	httpClient := http.DefaultClient
+
+	if cfg.proxyURL != "" {
+		proxyURL, err := url.Parse(cfg.proxyURL)
+		if err != nil {
+			return nil, fmt.Errorf("can't parse the proxy URL: %s", err)
+		}
+		tr.Proxy = http.ProxyURL(proxyURL)
+	} else if cfg.socksURL != "" {
+		dialer, err := proxy.SOCKS5("tcp", cfg.socksURL, nil, proxy.Direct)
+		if err != nil {
+			return nil, fmt.Errorf("can't connect to the proxy: %s", err)
+		}
+		tr.DialContext = dialer.(proxy.ContextDialer).DialContext
+	}
+
+	// Set the HTTP client to use the default header transport with the specified headers.
+	httpClient.Transport = &DefaultHeaderTransport{
+		Origin: tr,
+	}
+
 	// Create a new client instance with the necessary fields.
 	engine := &Client{
-		client:      anthropic.NewClient(cfg.apiKey),
+		client: anthropic.NewClient(
+			cfg.apiKey,
+			anthropic.WithHTTPClient(httpClient),
+		),
 		model:       cfg.model,
 		maxTokens:   cfg.maxTokens,
 		temperature: cfg.temperature,

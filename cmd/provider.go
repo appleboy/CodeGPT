@@ -62,6 +62,9 @@ func NewAnthropic(ctx context.Context) (*anthropic.Client, error) {
 		anthropic.WithMaxTokens(viper.GetInt("openai.max_tokens")),
 		anthropic.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
 		anthropic.WithTopP(float32(viper.GetFloat64("openai.top_p"))),
+		anthropic.WithProxyURL(viper.GetString("openai.proxy")),
+		anthropic.WithSocksURL(viper.GetString("openai.socks")),
+		anthropic.WithSkipVerify(viper.GetBool("openai.skip_verify")),
 	)
 }
 
