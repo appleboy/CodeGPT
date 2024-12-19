@@ -137,31 +137,27 @@ func New(opts ...Option) (c *Client, err error) {
 	if err := cfg.valid(); err != nil {
 		return nil, err
 	}
-
-	// Create a new HTTP transport.
-	tr := &http.Transport{}
-	if cfg.skipVerify {
-		tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true} //nolint:gosec
+	// Create a new HTTP transport with optional TLS configuration.
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: cfg.skipVerify}, //nolint:gosec
 	}
 
 	// Create a new HTTP client with the specified timeout and proxy, if any.
-	httpClient := http.DefaultClient
+	httpClient := &http.Client{Transport: tr}
 
 	if cfg.proxyURL != "" {
 		proxyURL, err := url.Parse(cfg.proxyURL)
 		if err != nil {
-			return nil, fmt.Errorf("can't parse the proxy URL: %s", err)
+			return nil, fmt.Errorf("can't parse the proxy URL: %w", err)
 		}
 		tr.Proxy = http.ProxyURL(proxyURL)
 	} else if cfg.socksURL != "" {
 		dialer, err := proxy.SOCKS5("tcp", cfg.socksURL, nil, proxy.Direct)
 		if err != nil {
-			return nil, fmt.Errorf("can't connect to the proxy: %s", err)
+			return nil, fmt.Errorf("can't connect to the proxy: %w", err)
 		}
 		tr.DialContext = dialer.(proxy.ContextDialer).DialContext
 	}
-
-	httpClient.Transport = tr
 
 	// Create a new client instance with the necessary fields.
 	engine := &Client{

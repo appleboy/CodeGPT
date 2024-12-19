@@ -221,24 +221,28 @@ func New(opts ...Option) (*Client, error) {
 		c.BaseURL = cfg.baseURL
 	}
 
-	// Create a new HTTP transport.
-	tr := &http.Transport{}
-	if cfg.skipVerify {
-		tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true} //nolint:gosec
+	// Create a new HTTP transport with optional TLS configuration.
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: cfg.skipVerify}, //nolint:gosec
 	}
 
-	// Create a new HTTP client with the specified timeout and proxy, if any.
+	// Create a new HTTP client with the specified timeout.
 	httpClient := &http.Client{
-		Timeout: cfg.timeout,
+		Timeout:   cfg.timeout,
+		Transport: tr,
 	}
 
+	// Configure proxy settings if provided.
 	if cfg.proxyURL != "" {
-		proxyURL, _ := url.Parse(cfg.proxyURL)
+		proxyURL, err := url.Parse(cfg.proxyURL)
+		if err != nil {
+			return nil, fmt.Errorf("invalid proxy URL: %s", err)
+		}
 		tr.Proxy = http.ProxyURL(proxyURL)
 	} else if cfg.socksURL != "" {
 		dialer, err := proxy.SOCKS5("tcp", cfg.socksURL, nil, proxy.Direct)
 		if err != nil {
-			return nil, fmt.Errorf("can't connect to the proxy: %s", err)
+			return nil, fmt.Errorf("can't connect to the SOCKS5 proxy: %s", err)
 		}
 		tr.DialContext = dialer.(proxy.ContextDialer).DialContext
 	}
