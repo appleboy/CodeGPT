@@ -2,15 +2,13 @@ package anthropic
 
 import (
 	"context"
-	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 
 	"github.com/appleboy/CodeGPT/core"
-	"golang.org/x/net/proxy"
+	"github.com/appleboy/CodeGPT/proxy"
 
 	"github.com/appleboy/com/convert"
 	"github.com/liushuangls/go-anthropic/v2"
@@ -137,26 +135,15 @@ func New(opts ...Option) (c *Client, err error) {
 	if err := cfg.valid(); err != nil {
 		return nil, err
 	}
-	// Create a new HTTP transport with optional TLS configuration.
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: cfg.skipVerify}, //nolint:gosec
-	}
 
-	// Create a new HTTP client with the specified timeout and proxy, if any.
-	httpClient := &http.Client{Transport: tr}
-
-	if cfg.proxyURL != "" {
-		proxyURL, err := url.Parse(cfg.proxyURL)
-		if err != nil {
-			return nil, fmt.Errorf("can't parse the proxy URL: %w", err)
-		}
-		tr.Proxy = http.ProxyURL(proxyURL)
-	} else if cfg.socksURL != "" {
-		dialer, err := proxy.SOCKS5("tcp", cfg.socksURL, nil, proxy.Direct)
-		if err != nil {
-			return nil, fmt.Errorf("can't connect to the proxy: %w", err)
-		}
-		tr.DialContext = dialer.(proxy.ContextDialer).DialContext
+	httpClient, err := proxy.New(
+		proxy.WithProxyURL(cfg.proxyURL),
+		proxy.WithSocksURL(cfg.socksURL),
+		proxy.WithSkipVerify(cfg.skipVerify),
+		proxy.WithTimeout(cfg.timeout),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("can't create a new HTTP client: %w", err)
 	}
 
 	// Create a new client instance with the necessary fields.
