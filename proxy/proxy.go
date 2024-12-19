@@ -40,6 +40,9 @@ type defaultHeaderTransport struct {
 // from the defaultHeaderTransport to the request before
 // delegating the actual round-trip to the original transport.
 func (t *defaultHeaderTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	if t.origin == nil {
+		return nil, fmt.Errorf("origin RoundTripper is nil")
+	}
 	for key, values := range t.header {
 		for _, value := range values {
 			req.Header.Add(key, value)
