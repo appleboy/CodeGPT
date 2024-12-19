@@ -65,6 +65,7 @@ func NewAnthropic(ctx context.Context) (*anthropic.Client, error) {
 		anthropic.WithProxyURL(viper.GetString("openai.proxy")),
 		anthropic.WithSocksURL(viper.GetString("openai.socks")),
 		anthropic.WithSkipVerify(viper.GetBool("openai.skip_verify")),
+		anthropic.WithTimeout(viper.GetDuration("openai.timeout")),
 	)
 }
 

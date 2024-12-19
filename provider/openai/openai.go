@@ -2,16 +2,12 @@ package openai
 
 import (
 	"context"
-	"crypto/tls"
-	"fmt"
-	"net/http"
-	"net/url"
 	"regexp"
 
 	"github.com/appleboy/CodeGPT/core"
+	"github.com/appleboy/CodeGPT/proxy"
 
 	openai "github.com/sashabaranov/go-openai"
-	"golang.org/x/net/proxy"
 )
 
 // DefaultModel is the default OpenAI model to use if one is not provided.
@@ -221,36 +217,15 @@ func New(opts ...Option) (*Client, error) {
 		c.BaseURL = cfg.baseURL
 	}
 
-	// Create a new HTTP transport with optional TLS configuration.
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: cfg.skipVerify}, //nolint:gosec
-	}
-
-	// Create a new HTTP client with the specified timeout.
-	httpClient := &http.Client{
-		Timeout:   cfg.timeout,
-		Transport: tr,
-	}
-
-	// Configure proxy settings if provided.
-	if cfg.proxyURL != "" {
-		proxyURL, err := url.Parse(cfg.proxyURL)
-		if err != nil {
-			return nil, fmt.Errorf("invalid proxy URL: %s", err)
-		}
-		tr.Proxy = http.ProxyURL(proxyURL)
-	} else if cfg.socksURL != "" {
-		dialer, err := proxy.SOCKS5("tcp", cfg.socksURL, nil, proxy.Direct)
-		if err != nil {
-			return nil, fmt.Errorf("can't connect to the SOCKS5 proxy: %s", err)
-		}
-		tr.DialContext = dialer.(proxy.ContextDialer).DialContext
-	}
-
-	// Set the HTTP client to use the default header transport with the specified headers.
-	httpClient.Transport = &DefaultHeaderTransport{
-		Origin: tr,
-		Header: NewHeaders(cfg.headers),
+	httpClient, err := proxy.New(
+		proxy.WithProxyURL(cfg.proxyURL),
+		proxy.WithSocksURL(cfg.socksURL),
+		proxy.WithSkipVerify(cfg.skipVerify),
+		proxy.WithTimeout(cfg.timeout),
+		proxy.WithHeaders(cfg.headers),
+	)
+	if err != nil {
+		return nil, err
 	}
 
 	// Set the OpenAI client to use the default configuration with Azure-specific options, if the provider is Azure.
