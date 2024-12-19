@@ -116,6 +116,19 @@ func (t *DefaultHeaderTransport) RoundTrip(req *http.Request) (*http.Response, e
 	return t.Origin.RoundTrip(req)
 }
 
+// New creates a new Client instance with the provided options.
+// It validates the configuration, sets up the HTTP transport with optional
+// proxy settings, and initializes the Client with the specified parameters.
+//
+// Parameters:
+//
+//	opts - A variadic list of Option functions to configure the Client.
+//
+// Returns:
+//
+//	c - A pointer to the newly created Client instance.
+//	err - An error if the configuration is invalid or if there is an issue
+//	      setting up the HTTP transport or proxy.
 func New(opts ...Option) (c *Client, err error) {
 	// Create a new config object with the given options.
 	cfg := newConfig(opts...)
@@ -148,10 +161,7 @@ func New(opts ...Option) (c *Client, err error) {
 		tr.DialContext = dialer.(proxy.ContextDialer).DialContext
 	}
 
-	// Set the HTTP client to use the default header transport with the specified headers.
-	httpClient.Transport = &DefaultHeaderTransport{
-		Origin: tr,
-	}
+	httpClient.Transport = tr
 
 	// Create a new client instance with the necessary fields.
 	engine := &Client{
