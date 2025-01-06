@@ -119,7 +119,7 @@ func (c *Client) CreateFunctionCall(
 		PresencePenalty:  c.presencePenalty,
 		Messages: []openai.ChatCompletionMessage{
 			{
-				Role:    openai.ChatMessageRoleAssistant,
+				Role:    openai.ChatMessageRoleSystem,
 				Content: "You are a helpful assistant.",
 			},
 			{
@@ -158,7 +158,7 @@ func (c *Client) CreateChatCompletion(
 		PresencePenalty:  c.presencePenalty,
 		Messages: []openai.ChatCompletionMessage{
 			{
-				Role:    openai.ChatMessageRoleAssistant,
+				Role:    openai.ChatMessageRoleSystem,
 				Content: "You are a helpful assistant.",
 			},
 			{
