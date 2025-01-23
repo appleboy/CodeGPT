@@ -12,6 +12,16 @@ type DefaultHeaderTransport struct {
 }
 
 // RoundTrip implements the http.RoundTripper interface.
+// It adds the headers from DefaultHeaderTransport to the request before sending it.
+// Usage:
+//   transport := &DefaultHeaderTransport{
+//       Origin: http.DefaultTransport,
+//       Header: http.Header{
+//           "Authorization": {"Bearer token"},
+//       },
+//   }
+//   client := &http.Client{Transport: transport}
+//   resp, err := client.Get("https://example.com")
 func (t *DefaultHeaderTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	for key, values := range t.Header {
 		for _, value := range values {
@@ -22,6 +32,12 @@ func (t *DefaultHeaderTransport) RoundTrip(req *http.Request) (*http.Response, e
 }
 
 // NewHeaders creates a new http.Header from the given slice of headers.
+// Each header in the slice should be in the format "key=value".
+// If a header is not in the correct format, it is skipped.
+// Usage:
+//   headers := []string{"Authorization=Bearer token", "Content-Type=application/json"}
+//   httpHeaders := NewHeaders(headers)
+//   fmt.Println(httpHeaders.Get("Authorization")) // Output: Bearer token
 func NewHeaders(headers []string) http.Header {
 	h := make(http.Header)
 	for _, header := range headers {
