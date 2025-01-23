@@ -16,6 +16,8 @@ var (
 	templatesDir = "templates"
 )
 
+// NewTemplateByString parses a template from a string and executes it with the provided data.
+// It returns the resulting string or an error if the template parsing or execution fails.
 func NewTemplateByString(format string, data map[string]interface{}) (string, error) {
 	t, err := template.New("message").Parse(format)
 	if err != nil {
@@ -32,6 +34,7 @@ func NewTemplateByString(format string, data map[string]interface{}) (string, er
 }
 
 // processTemplate processes the template with the given name and data.
+// It returns the resulting bytes.Buffer or an error if the template execution fails.
 func processTemplate(name string, data map[string]interface{}) (*bytes.Buffer, error) {
 	t, ok := templates[name]
 	if !ok {
@@ -48,18 +51,21 @@ func processTemplate(name string, data map[string]interface{}) (*bytes.Buffer, e
 }
 
 // GetTemplateByString returns the parsed template as a string.
+// It returns an error if the template processing fails.
 func GetTemplateByString(name string, data map[string]interface{}) (string, error) {
 	tpl, err := processTemplate(name, data)
 	return tpl.String(), err
 }
 
-// GetTemplateByBytes returns the parsed template as a byte.
+// GetTemplateByBytes returns the parsed template as a byte slice.
+// It returns an error if the template processing fails.
 func GetTemplateByBytes(name string, data map[string]interface{}) ([]byte, error) {
 	tpl, err := processTemplate(name, data)
 	return tpl.Bytes(), err
 }
 
-// LoadTemplates loads all the templates found in the templates directory.
+// LoadTemplates loads all the templates found in the templates directory from the embedded filesystem.
+// It returns an error if reading the directory or parsing any template fails.
 func LoadTemplates(files embed.FS) error {
 	if templates == nil {
 		templates = make(map[string]*template.Template)
