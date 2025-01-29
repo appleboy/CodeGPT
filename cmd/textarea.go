@@ -11,7 +11,7 @@ import (
 type errMsg error
 
 type model struct {
-	textarea textarea.Model
+	textarea *textarea.Model
 	err      error
 }
 
@@ -42,7 +42,7 @@ func initialPrompt(value string) model {
 	ti.Focus()
 
 	return model{
-		textarea: ti,
+		textarea: &ti,
 		err:      nil,
 	}
 }
@@ -77,7 +77,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 	}
 
-	m.textarea, cmd = m.textarea.Update(msg)
+	*m.textarea, cmd = m.textarea.Update(msg)
 	cmds = append(cmds, cmd)
 	return m, tea.Batch(cmds...)
 }

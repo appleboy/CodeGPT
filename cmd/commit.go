@@ -316,6 +316,7 @@ var commitCmd = &cobra.Command{
 					return err
 				}
 				p.Wait()
+
 				commitMessage = m.textarea.Value()
 			}
 		}
