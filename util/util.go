@@ -19,10 +19,12 @@ func IsCommandAvailable(cmd string) bool {
 // The resulting map contains the keys and values from the input slice.
 //
 // Args:
-//   args ([]string): A slice of strings where each string is in the format "key=value".
+//
+//	args ([]string): A slice of strings where each string is in the format "key=value".
 //
 // Returns:
-//   Data: A map where the keys and values are derived from the input slice.
+//
+//	Data: A map where the keys and values are derived from the input slice.
 func ConvertToMap(args []string) Data {
 	m := make(Data)
 	for _, arg := range args {
