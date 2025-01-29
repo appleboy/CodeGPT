@@ -10,18 +10,35 @@ import (
 	"golang.org/x/net/proxy"
 )
 
-// convertHeaders takes a slice of strings representing HTTP headers in the format "key=value"
-// and converts them into an http.Header type. If a header string does not contain exactly one "=",
-// it is ignored. The resulting http.Header map is returned.
+// convertHeaders converts a slice of strings representing HTTP headers
+// into an http.Header map. Each string in the input slice should be in
+// the format "key=value". If a string cannot be split into exactly two
+// parts, or if either the key or value is empty after trimming whitespace,
+// that string is ignored.
+//
+// Parameters:
+//
+//	headers []string - A slice of strings where each string represents an
+//	                   HTTP header in the format "key=value".
+//
+// Returns:
+//
+//	http.Header - A map of HTTP headers where the keys are header names
+//	              and the values are header values.
 func convertHeaders(headers []string) http.Header {
 	h := make(http.Header)
 	for _, header := range headers {
 		// split header into key and value with = as delimiter
-		vals := strings.Split(header, "=")
-		if len(vals) != 2 {
+		parts := strings.SplitN(header, "=", 2)
+		if len(parts) != 2 {
 			continue
 		}
-		h.Add(vals[0], vals[1])
+		key := strings.TrimSpace(parts[0])
+		value := strings.TrimSpace(parts[1])
+		if key == "" || value == "" {
+			continue
+		}
+		h.Add(key, value)
 	}
 	return h
 }
