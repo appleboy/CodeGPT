@@ -64,7 +64,7 @@ func (c *Client) Completion(ctx context.Context, content string) (*core.Response
 func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Response, error) {
 	var resp openai.ChatCompletionResponse
 	var err error
-	if checkO1Serial.MatchString(c.model) {
+	if checkOSeriesModels.MatchString(c.model) {
 		resp, err = c.CreateChatCompletion(ctx, content)
 		if err != nil || len(resp.Choices) != 1 {
 			return nil, err
@@ -97,7 +97,7 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 	}, nil
 }
 
-var checkO1Serial = regexp.MustCompile(`o1-(mini|preview)`)
+var checkOSeriesModels = regexp.MustCompile(`o\d(-(mini|preview))?`)
 
 // CreateChatCompletion is an API call to create a function call for a chat message.
 func (c *Client) CreateFunctionCall(
@@ -136,7 +136,7 @@ func (c *Client) CreateFunctionCall(
 		},
 	}
 
-	if checkO1Serial.MatchString(c.model) {
+	if checkOSeriesModels.MatchString(c.model) {
 		req.MaxTokens = 0
 		req.MaxCompletionTokens = c.maxTokens
 	}
@@ -168,7 +168,7 @@ func (c *Client) CreateChatCompletion(
 		},
 	}
 
-	if checkO1Serial.MatchString(c.model) {
+	if checkOSeriesModels.MatchString(c.model) {
 		req.MaxTokens = 0
 		req.MaxCompletionTokens = c.maxTokens
 	}
