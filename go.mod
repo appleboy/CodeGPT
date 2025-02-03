@@ -2,8 +2,6 @@ module github.com/appleboy/CodeGPT
 
 go 1.22.7
 
-toolchain go1.23.1
-
 require (
 	github.com/appleboy/com v0.2.1
 	github.com/appleboy/graceful v1.1.1
