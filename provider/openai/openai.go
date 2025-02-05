@@ -12,7 +12,7 @@ import (
 )
 
 // DefaultModel is the default OpenAI model to use if one is not provided.
-var DefaultModel = openai.GPT3Dot5Turbo
+var DefaultModel = openai.GPT4o
 
 var _ core.Generative = (*Client)(nil)
 
