@@ -291,14 +291,18 @@ var commitCmd = &cobra.Command{
 			return err
 		}
 
-		if preview && !noConfirm {
-			input := confirmation.New("Commit preview summary?", confirmation.Yes)
-			ready, err := input.RunPrompt()
-			if err != nil {
-				return err
-			}
-			if !ready {
+		if preview {
+			if noConfirm {
 				return nil
+			} else {
+				input := confirmation.New("Commit preview summary?", confirmation.Yes)
+				ready, err := input.RunPrompt()
+				if err != nil {
+					return err
+				}
+				if !ready {
+					return nil
+				}
 			}
 		}
 
