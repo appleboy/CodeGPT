@@ -23,7 +23,7 @@ func init() {
 		"generate diffs with <n> lines of context, default is 3")
 	reviewCmd.PersistentFlags().IntVar(&maxTokens, "max_tokens", 300,
 		"the maximum number of tokens to generate in the chat completion.")
-	reviewCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-3.5-turbo", "select openai model")
+	reviewCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-4o", "select openai model")
 	reviewCmd.PersistentFlags().StringVar(&commitLang, "lang", "en", "summarizing language uses English by default")
 	reviewCmd.PersistentFlags().StringSliceVar(&excludeList, "exclude_list", []string{}, "exclude file from git diff command")
 	reviewCmd.PersistentFlags().BoolVar(&commitAmend, "amend", false,

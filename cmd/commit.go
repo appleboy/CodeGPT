@@ -291,36 +291,30 @@ var commitCmd = &cobra.Command{
 			return err
 		}
 
+		// Handle preview: if preview and noConfirm, or preview prompt declined, then exit early
 		if preview {
 			if noConfirm {
 				return nil
-			} else {
-				input := confirmation.New("Commit preview summary?", confirmation.Yes)
-				ready, err := input.RunPrompt()
+			}
+			if ready, err := confirmation.New("Commit preview summary?", confirmation.Yes).RunPrompt(); err != nil || !ready {
 				if err != nil {
 					return err
 				}
-				if !ready {
-					return nil
-				}
+				return nil
 			}
 		}
 
+		// Handle commit message change prompt when confirmation is enabled
 		if !noConfirm {
-			input := confirmation.New("Do you want to change the commit message?", confirmation.No)
-			change, err := input.RunPrompt()
-			if err != nil {
+			if change, err := confirmation.New("Do you want to change the commit message?", confirmation.No).RunPrompt(); err != nil {
 				return err
-			}
-
-			if change {
+			} else if change {
 				m := initialPrompt(commitMessage)
 				p := tea.NewProgram(m, tea.WithContext(cmd.Context()))
 				if _, err := p.Run(); err != nil {
 					return err
 				}
 				p.Wait()
-
 				commitMessage = m.textarea.Value()
 			}
 		}

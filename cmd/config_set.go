@@ -13,7 +13,7 @@ func init() {
 	configCmd.AddCommand(configSetCmd)
 	configSetCmd.Flags().StringP("base_url", "b", "", availableKeys["openai.base_url"])
 	configSetCmd.Flags().StringP("api_key", "k", "", availableKeys["openai.api_key"])
-	configSetCmd.Flags().StringP("model", "m", "gpt-3.5-turbo", availableKeys["openai.model"])
+	configSetCmd.Flags().StringP("model", "m", "gpt-4o", availableKeys["openai.model"])
 	configSetCmd.Flags().StringP("lang", "l", "en", availableKeys["openai.lang"])
 	configSetCmd.Flags().StringP("org_id", "o", "", availableKeys["openai.org_id"])
 	configSetCmd.Flags().StringP("proxy", "", "", availableKeys["openai.proxy"])
