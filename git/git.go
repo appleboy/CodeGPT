@@ -178,7 +178,8 @@ func (c *Command) InstallHook() error {
 		return err
 	}
 
-	return os.WriteFile(target, content, 0o600)
+	// Write the hook file with executable permissions (0o755)
+	return os.WriteFile(target, content, 0o755) //nolint:gosec
 }
 
 func (c *Command) UninstallHook() error {
