@@ -8,7 +8,7 @@
 
 English | [繁體中文](./README.zh-tw.md)
 
-A CLI written in [Go](https://go.dev) that writes git commit messages or provides a code review summary for you using ChatGPT AI (gpt-3.5-turbo, gpt-4 model) and automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
+A CLI written in [Go](https://go.dev) that writes git commit messages or provides a code review summary for you using ChatGPT AI (gpt-4o, gpt-4 model) and automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
 
 - [繁體中文介紹][1]
 - [繁體中文影片][2]
@@ -27,7 +27,7 @@ A CLI written in [Go](https://go.dev) that writes git commit messages or provide
 - Supports excluding files from the git diff command.
 - Supports commit message translation into another language (supports `en`, `zh-tw`, or `zh-cn`).
 - Supports socks proxy or custom network HTTP proxy.
-- Supports [model lists](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) like `gpt-4`, `gpt-3.5-turbo`, etc.
+- Supports [model lists](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) like `gpt-4`, `gpt-4o`, etc.
 - Supports generating a brief code review.
 
 ![code review](./images/code_review.png)
@@ -87,7 +87,7 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 | **openai.base_url**          | Replace the default base URL (`https://api.openai.com/v1`).                                                                                                                    |
 | **openai.api_key**           | Generate API key from [openai platform page](https://platform.openai.com/account/api-keys).                                                                                    |
 | **openai.org_id**            | Identifier for this organization sometimes used in API requests. See [organization settings](https://platform.openai.com/account/org-settings). Only for `openai` service.     |
-| **openai.model**             | Default model is `gpt-3.5-turbo`, you can change to `gpt-4-turbo` or other custom model (Groq or OpenRouter provider).                                                         |
+| **openai.model**             | Default model is `gpt-4o`, you can change to other custom model (Groq or OpenRouter provider).                                                                                 |
 | **openai.proxy**             | HTTP/HTTPS client proxy.                                                                                                                                                       |
 | **openai.socks**             | SOCKS client proxy.                                                                                                                                                            |
 | **openai.timeout**           | Default HTTP timeout is `10s` (ten seconds).                                                                                                                                   |
@@ -179,7 +179,7 @@ We can use the Llama3 model from the [ollama][41] API Service, please visit [her
 ```sh
 # pull llama3 8b model
 ollama pull llama3
-ollama cp llama3 gpt-3.5-turbo
+ollama cp llama3 gpt-4o
 ```
 
 Try to use the `ollama` API Service.
@@ -188,7 +188,7 @@ Try to use the `ollama` API Service.
 curl http://localhost:11434/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-3.5-turbo",
+    "model": "gpt-4o",
     "messages": [
       {
         "role": "user",
@@ -247,7 +247,7 @@ codegpt commit --preview
 The commit message is shown below.
 
 ```sh
-Summarize the commit message use gpt-3.5-turbo model
+Summarize the commit message use gpt-4o model
 We are trying to summarize a git diff
 We are trying to summarize a title for pull request
 ================Commit Summary====================
@@ -270,7 +270,7 @@ codegpt commit --lang zh-tw --preview
 Consider the following outcome:
 
 ```sh
-Summarize the commit message use gpt-3.5-turbo model
+Summarize the commit message use gpt-4o model
 We are trying to summarize a git diff
 We are trying to summarize a title for pull request
 We are trying to translate a git commit message to Traditional Chinese language
@@ -374,7 +374,7 @@ git commit
 
 ```sh
 $ git commit
-Summarize the commit message use gpt-3.5-turbo model
+Summarize the commit message use gpt-4o model
 We are trying to summarize a git diff
 We are trying to summarize a title for pull request
 ================Commit Summary====================
@@ -409,7 +409,7 @@ codegpt review --lang zh-tw
 See the following result:
 
 ```sh
-Code review your changes using gpt-3.5-turbo model
+Code review your changes using gpt-4o model
 We are trying to review code changes
 PromptTokens: 1021, CompletionTokens: 200, TotalTokens: 1221
 We are trying to translate core review to Traditional Chinese language

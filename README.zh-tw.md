@@ -8,7 +8,7 @@
 
 [English](./README.md) | 繁體中文
 
-一個用 [Go](https://go.dev) 編寫的 CLI 工具，使用 ChatGPT AI（gpt-3.5-turbo, gpt-4 模型）為你撰寫 git 提交訊息或提供程式碼審查摘要，並自動安裝 [git prepare-commit-msg hook](https://git-scm.com/docs/githooks)。
+一個用 [Go](https://go.dev) 編寫的 CLI 工具，使用 ChatGPT AI（gpt-4o, gpt-4 模型）為你撰寫 git 提交訊息或提供程式碼審查摘要，並自動安裝 [git prepare-commit-msg hook](https://git-scm.com/docs/githooks)。
 
 - [繁體中文介紹][1]
 - [繁體中文影片][2]
@@ -27,7 +27,7 @@
 - 支援從 git diff 命令中排除文件。
 - 支援將提交訊息翻譯成其他語言（支援 `en`、`zh-tw` 或 `zh-cn`）。
 - 支援 socks 代理或自訂網路 HTTP 代理。
-- 支援 [模型列表](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38)，如 `gpt-4`、`gpt-3.5-turbo` 等。
+- 支援 [模型列表](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38)，如 `gpt-4`、`gpt-4o` 等。
 - 支援生成簡要的程式碼審查。
 
 ![code review](./images/code_review.png)
@@ -87,7 +87,7 @@ codegpt config set openai.api_key sk-xxxxxxx
 | **openai.base_url**          | 替換默認的基礎 URL (`https://api.openai.com/v1`)。                                                                                                                      |
 | **openai.api_key**           | 從 [openai 平台頁面](https://platform.openai.com/account/api-keys) 生成 API 金鑰。                                                                                      |
 | **openai.org_id**            | 在 API 請求中有時使用的組織標識符。請參閱 [組織設置](https://platform.openai.com/account/org-settings)。僅適用於 `openai` 服務。                                        |
-| **openai.model**             | 默認模型是 `gpt-3.5-turbo`，你可以更改為 `gpt-4-turbo` 或其他自訂模型（Groq 或 OpenRouter 提供者）。                                                                    |
+| **openai.model**             | 默認模型是 `gpt-4o`，你可以更改為 `gpt-4-turbo` 或其他自訂模型（Groq 或 OpenRouter 提供者）。                                                                           |
 | **openai.proxy**             | HTTP/HTTPS 客戶端代理。                                                                                                                                                 |
 | **openai.socks**             | SOCKS 客戶端代理。                                                                                                                                                      |
 | **openai.timeout**           | 默認 HTTP 超時為 `10s`（十秒）。                                                                                                                                        |
@@ -179,7 +179,7 @@ GroqCloud 目前支援[以下模型][32]：
 ```sh
 # 拉取 llama3 8b 模型
 ollama pull llama3
-ollama cp llama3 gpt-3.5-turbo
+ollama cp llama3 gpt-4o
 ```
 
 嘗試使用 `ollama` API 服務。
@@ -188,7 +188,7 @@ ollama cp llama3 gpt-3.5-turbo
 curl http://localhost:11434/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-3.5-turbo",
+    "model": "gpt-4o",
     "messages": [
       {
         "role": "user",
@@ -247,7 +247,7 @@ codegpt commit --preview
 提交訊息如下所示。
 
 ```sh
-Summarize the commit message use gpt-3.5-turbo model
+Summarize the commit message use gpt-4o model
 We are trying to summarize a git diff
 We are trying to summarize a title for pull request
 ================Commit Summary====================
@@ -270,7 +270,7 @@ codegpt commit --lang zh-tw --preview
 Consider the following outcome:
 
 ```sh
-Summarize the commit message use gpt-3.5-turbo model
+Summarize the commit message use gpt-4o model
 We are trying to summarize a git diff
 We are trying to summarize a title for pull request
 We are trying to translate a git commit message to Traditional Chinese language
@@ -374,7 +374,7 @@ git commit
 
 ```sh
 $ git commit
-Summarize the commit message use gpt-3.5-turbo model
+Summarize the commit message use gpt-4o model
 We are trying to summarize a git diff
 We are trying to summarize a title for pull request
 ================Commit Summary====================
@@ -409,7 +409,7 @@ codegpt review --lang zh-tw
 請參閱以下結果：
 
 ```sh
-Code review your changes using gpt-3.5-turbo model
+Code review your changes using gpt-4o model
 We are trying to review code changes
 PromptTokens: 1021, CompletionTokens: 200, TotalTokens: 1221
 We are trying to translate core review to Traditional Chinese language
