@@ -6,14 +6,15 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-// Usage represents the token usage details for an OpenAI API request.
-// It includes the number of tokens used for the prompt, the completion,
-// and the total tokens used. Additionally, it may include detailed
-// information about the completion tokens.
+// Usage represents the token usage statistics for a given request.
+// It includes counts for the prompt tokens, the completion tokens, and the overall total tokens.
+// In addition, it may provide detailed breakdowns for both prompt and completion tokens,
+// allowing for deeper insights into token distribution if the corresponding details are available.
 type Usage struct {
 	PromptTokens            int
 	CompletionTokens        int
 	TotalTokens             int
+	PromptTokensDetails     *openai.PromptTokensDetails
 	CompletionTokensDetails *openai.CompletionTokensDetails
 }
 
