@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"strconv"
 	"strings"
 
 	"github.com/appleboy/CodeGPT/core"
@@ -91,10 +90,7 @@ var reviewCmd = &cobra.Command{
 			return err
 		}
 		summarizeMessage := resp.Content
-		color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
-			", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
-			", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
-		)
+		color.Magenta(resp.Usage.String())
 
 		if prompt.GetLanguage(viper.GetString("output.lang")) != prompt.DefaultLanguage {
 			out, err = util.GetTemplateByString(
@@ -115,10 +111,7 @@ var reviewCmd = &cobra.Command{
 			if err != nil {
 				return err
 			}
-			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
-				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
-				", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
-			)
+			color.Magenta(resp.Usage.String())
 			summarizeMessage = resp.Content
 		}
 
