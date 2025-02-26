@@ -4,7 +4,6 @@ import (
 	"html"
 	"os"
 	"path"
-	"strconv"
 	"strings"
 	"time"
 
@@ -149,10 +148,7 @@ var commitCmd = &cobra.Command{
 				return err
 			}
 			data[prompt.SummarizeMessageKey] = strings.TrimSpace(resp.Content)
-			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
-				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
-				", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
-			)
+			color.Magenta(resp.Usage.String())
 		}
 
 		// Get summarize title from diff datas
@@ -174,10 +170,7 @@ var commitCmd = &cobra.Command{
 				return err
 			}
 			summarizeTitle := resp.Content
-			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
-				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
-				", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
-			)
+			color.Magenta(resp.Usage.String())
 
 			// lowercase the first character of first word of the commit message and remove last period
 			summarizeTitle = strings.TrimRight(strings.ToLower(string(summarizeTitle[0]))+summarizeTitle[1:], ".")
@@ -203,10 +196,7 @@ var commitCmd = &cobra.Command{
 			}
 			summaryPrix = resp.Content
 
-			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
-				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
-				", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
-			)
+			color.Magenta(resp.Usage.String())
 
 			data[prompt.SummarizePrefixKey] = summaryPrix
 		}
@@ -260,10 +250,7 @@ var commitCmd = &cobra.Command{
 			if err != nil {
 				return err
 			}
-			color.Magenta("PromptTokens: " + strconv.Itoa(resp.Usage.PromptTokens) +
-				", CompletionTokens: " + strconv.Itoa(resp.Usage.CompletionTokens) +
-				", TotalTokens: " + strconv.Itoa(resp.Usage.TotalTokens),
-			)
+			color.Magenta(resp.Usage.String())
 			commitMessage = resp.Content
 		}
 
