@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strings"
 
 	"github.com/appleboy/CodeGPT/core"
 	"github.com/appleboy/CodeGPT/proxy"
@@ -64,7 +65,7 @@ func (c *Client) Completion(ctx context.Context, content string) (*core.Response
 func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Response, error) {
 	var resp openai.ChatCompletionResponse
 	var err error
-	if checkOSeriesModels.MatchString(c.model) {
+	if checkOSeriesModels.MatchString(c.model) || strings.Contains(strings.ToLower(c.model), "deepseek") {
 		resp, err = c.CreateChatCompletion(ctx, content)
 		if err != nil || len(resp.Choices) != 1 {
 			return nil, err
