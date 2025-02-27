@@ -9,6 +9,7 @@ var languageMaps = map[string]string{
 	"ja":    "Japanese",
 	"pt":    "Portuguese",
 	"pt-br": "Brazilian Portuguese",
+	"ru":    "Russian",
 }
 
 // GetLanguage returns the language name for the given language code,
