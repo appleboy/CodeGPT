@@ -21,8 +21,9 @@ var rootCmd = &cobra.Command{
 
 // Used for flags.
 var (
-	cfgFile  string
-	replacer = strings.NewReplacer("-", "_", ".", "_")
+	cfgFile      string
+	promptFolder string
+	replacer     = strings.NewReplacer("-", "_", ".", "_")
 )
 
 const (
@@ -34,12 +35,14 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/codegpt/.codegpt.yaml)")
+	rootCmd.PersistentFlags().StringVar(&promptFolder, "prompt_folder", "", "prompt folder (default is $HOME/.config/codegpt/prompt)")
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(configCmd)
 	rootCmd.AddCommand(commitCmd)
 	rootCmd.AddCommand(hookCmd)
 	rootCmd.AddCommand(reviewCmd)
 	rootCmd.AddCommand(CompletionCmd)
+	rootCmd.AddCommand(promptCmd)
 
 	// hide completion command
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
@@ -73,6 +76,30 @@ func initConfig() {
 				log.Fatal(err)
 			}
 		}
+	}
+
+	if promptFolder != "" {
+		viper.Set("prompt_folder", promptFolder)
+		if file.IsFile(promptFolder) {
+			log.Fatalf("prompt folder %s is a file", promptFolder)
+		}
+		// create the prompt folder if it doesn't exist
+		if !file.IsDir(promptFolder) {
+			if err := os.MkdirAll(promptFolder, os.ModePerm); err != nil {
+				log.Fatal(err)
+			}
+		}
+	} else {
+		// Find home directory.
+		home, err := os.UserHomeDir()
+		cobra.CheckErr(err)
+		targetFolder := path.Join(home, ".config", "codegpt", "prompt")
+		if !file.IsDir(targetFolder) {
+			if err := os.MkdirAll(targetFolder, os.ModePerm); err != nil {
+				log.Fatal(err)
+			}
+		}
+		viper.Set("prompt_folder", targetFolder)
 	}
 
 	viper.AutomaticEnv()

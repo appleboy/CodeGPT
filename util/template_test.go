@@ -1,7 +1,9 @@
 package util
 
 import (
+	"bytes"
 	"html/template"
+	"os"
 	"testing"
 )
 
@@ -65,6 +67,45 @@ func TestProcessTemplate(t *testing.T) {
 
 	// Check the output
 	expected := "Hello World!"
+	if buf.String() != expected {
+		t.Errorf("Unexpected output. Got: %v, Want: %v", buf.String(), expected)
+	}
+}
+
+func TestLoadTemplatesFromDir(t *testing.T) {
+	// Create a temporary directory for testing
+	tempDir := t.TempDir()
+
+	// Create a sample template file in the temporary directory
+	templateContent := "Hello, {{.Name}}!"
+	templateFile := "test.tmpl"
+	err := os.WriteFile(tempDir+"/"+templateFile, []byte(templateContent), 0o600)
+	if err != nil {
+		t.Fatalf("Failed to create test template file: %v", err)
+	}
+
+	// Load templates from the temporary directory
+	err = LoadTemplatesFromDir(tempDir)
+	if err != nil {
+		t.Fatalf("Failed to load templates from directory: %v", err)
+	}
+
+	// Check if the template was loaded correctly
+	tmpl, ok := templates[templateFile]
+	if !ok {
+		t.Fatalf("Template %s not found in loaded templates", templateFile)
+	}
+
+	// Process the loaded template
+	data := Data{"Name": "World"}
+	var buf bytes.Buffer
+	err = tmpl.Execute(&buf, data)
+	if err != nil {
+		t.Fatalf("Failed to execute loaded template: %v", err)
+	}
+
+	// Check the output
+	expected := "Hello, World!"
 	if buf.String() != expected {
 		t.Errorf("Unexpected output. Got: %v, Want: %v", buf.String(), expected)
 	}

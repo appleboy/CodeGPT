@@ -65,5 +65,13 @@ func check() error {
 		return fmt.Errorf("template variables file not found: %s", templateVarsFile)
 	}
 
+	// load custom prompt
+	promptFolder := viper.GetString("prompt_folder")
+	if promptFolder != "" {
+		if err := util.LoadTemplatesFromDir(promptFolder); err != nil {
+			return fmt.Errorf("failed to load custom prompt templates: %s", err)
+		}
+	}
+
 	return nil
 }

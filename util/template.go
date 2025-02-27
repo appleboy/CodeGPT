@@ -6,13 +6,14 @@ import (
 	"fmt"
 	"html/template"
 	"io/fs"
+	"os"
 )
 
 // Data defines a custom type for the template data.
 type Data map[string]interface{}
 
 var (
-	templates    map[string]*template.Template
+	templates    = make(map[string]*template.Template)
 	templatesDir = "templates"
 )
 
@@ -67,9 +68,6 @@ func GetTemplateByBytes(name string, data map[string]interface{}) ([]byte, error
 // LoadTemplates loads all the templates found in the templates directory from the embedded filesystem.
 // It returns an error if reading the directory or parsing any template fails.
 func LoadTemplates(files embed.FS) error {
-	if templates == nil {
-		templates = make(map[string]*template.Template)
-	}
 	tmplFiles, err := fs.ReadDir(files, templatesDir)
 	if err != nil {
 		return err
@@ -81,6 +79,27 @@ func LoadTemplates(files embed.FS) error {
 		}
 
 		pt, err := template.ParseFS(files, templatesDir+"/"+tmpl.Name())
+		if err != nil {
+			return err
+		}
+
+		templates[tmpl.Name()] = pt
+	}
+	return nil
+}
+
+func LoadTemplatesFromDir(dir string) error {
+	tmplFiles, err := fs.ReadDir(os.DirFS(dir), ".")
+	if err != nil {
+		return err
+	}
+
+	for _, tmpl := range tmplFiles {
+		if tmpl.IsDir() {
+			continue
+		}
+
+		pt, err := template.ParseFS(os.DirFS(dir), tmpl.Name())
 		if err != nil {
 			return err
 		}
