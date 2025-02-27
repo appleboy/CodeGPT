@@ -12,6 +12,7 @@ import (
 
 	"github.com/appleboy/com/convert"
 	"github.com/liushuangls/go-anthropic/v2"
+	"github.com/sashabaranov/go-openai"
 )
 
 var _ core.Generative = (*Client)(nil)
@@ -45,13 +46,21 @@ func (c *Client) Completion(ctx context.Context, content string) (*core.Response
 		return nil, err
 	}
 
+	usage := core.Usage{
+		PromptTokens:     resp.Usage.InputTokens,
+		CompletionTokens: resp.Usage.OutputTokens,
+		TotalTokens:      resp.Usage.InputTokens + resp.Usage.OutputTokens,
+	}
+
+	if resp.Usage.CacheCreationInputTokens > 0 || resp.Usage.CacheReadInputTokens > 0 {
+		usage.PromptTokensDetails = &openai.PromptTokensDetails{
+			CachedTokens: resp.Usage.CacheCreationInputTokens + resp.Usage.CacheReadInputTokens,
+		}
+	}
+
 	return &core.Response{
 		Content: resp.Content[0].GetText(),
-		Usage: core.Usage{
-			PromptTokens:     resp.Usage.InputTokens,
-			CompletionTokens: resp.Usage.OutputTokens,
-			TotalTokens:      resp.Usage.InputTokens + resp.Usage.OutputTokens,
-		},
+		Usage:   usage,
 	}, nil
 }
 
@@ -88,13 +97,21 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 		return nil, fmt.Errorf("failed to unmarshal tool use input: %w", err)
 	}
 
+	usage := core.Usage{
+		PromptTokens:     resp.Usage.InputTokens,
+		CompletionTokens: resp.Usage.OutputTokens,
+		TotalTokens:      resp.Usage.InputTokens + resp.Usage.OutputTokens,
+	}
+
+	if resp.Usage.CacheCreationInputTokens > 0 || resp.Usage.CacheReadInputTokens > 0 {
+		usage.PromptTokensDetails = &openai.PromptTokensDetails{
+			CachedTokens: resp.Usage.CacheCreationInputTokens + resp.Usage.CacheReadInputTokens,
+		}
+	}
+
 	return &core.Response{
 		Content: result.Prefix,
-		Usage: core.Usage{
-			PromptTokens:     resp.Usage.InputTokens,
-			CompletionTokens: resp.Usage.OutputTokens,
-			TotalTokens:      resp.Usage.InputTokens + resp.Usage.OutputTokens,
-		},
+		Usage:   usage,
 	}, nil
 }
 

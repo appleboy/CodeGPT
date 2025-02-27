@@ -9,6 +9,7 @@ import (
 	"github.com/appleboy/com/convert"
 
 	"github.com/google/generative-ai-go/genai"
+	"github.com/sashabaranov/go-openai"
 	"google.golang.org/api/option"
 )
 
@@ -36,13 +37,21 @@ func (c *Client) Completion(ctx context.Context, content string) (*core.Response
 		}
 	}
 
+	usage := core.Usage{
+		PromptTokens:     int(resp.UsageMetadata.PromptTokenCount),
+		CompletionTokens: int(resp.UsageMetadata.CandidatesTokenCount),
+		TotalTokens:      int(resp.UsageMetadata.TotalTokenCount),
+	}
+
+	if resp.UsageMetadata.CachedContentTokenCount > 0 {
+		usage.PromptTokensDetails = &openai.PromptTokensDetails{
+			CachedTokens: int(resp.UsageMetadata.CachedContentTokenCount),
+		}
+	}
+
 	return &core.Response{
 		Content: ret,
-		Usage: core.Usage{
-			PromptTokens:     int(resp.UsageMetadata.PromptTokenCount),
-			CompletionTokens: int(resp.UsageMetadata.CandidatesTokenCount),
-			TotalTokens:      int(resp.UsageMetadata.TotalTokenCount),
-		},
+		Usage:   usage,
 	}, nil
 }
 
@@ -61,13 +70,21 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 
 	part := resp.Candidates[0].Content.Parts[0]
 
+	usage := core.Usage{
+		PromptTokens:     int(resp.UsageMetadata.PromptTokenCount),
+		CompletionTokens: int(resp.UsageMetadata.CandidatesTokenCount),
+		TotalTokens:      int(resp.UsageMetadata.TotalTokenCount),
+	}
+
+	if resp.UsageMetadata.CachedContentTokenCount > 0 {
+		usage.PromptTokensDetails = &openai.PromptTokensDetails{
+			CachedTokens: int(resp.UsageMetadata.CachedContentTokenCount),
+		}
+	}
+
 	r := &core.Response{
 		Content: strings.TrimSpace(strings.TrimSuffix(fmt.Sprintf("%v", part), "\n")),
-		Usage: core.Usage{
-			PromptTokens:     int(resp.UsageMetadata.PromptTokenCount),
-			CompletionTokens: int(resp.UsageMetadata.CandidatesTokenCount),
-			TotalTokens:      int(resp.UsageMetadata.TotalTokenCount),
-		},
+		Usage:   usage,
 	}
 
 	if c.debug {
