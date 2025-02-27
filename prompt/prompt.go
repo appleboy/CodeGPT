@@ -28,3 +28,9 @@ func init() { //nolint:gochecknoinits
 		log.Fatal(err)
 	}
 }
+
+// GetRawData returns the raw data of the template with the given name.
+func GetRawData(name string) ([]byte, error) {
+	key := "templates/" + name
+	return templatesFS.ReadFile(key)
+}
