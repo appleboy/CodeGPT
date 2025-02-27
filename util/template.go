@@ -68,30 +68,26 @@ func GetTemplateByBytes(name string, data map[string]interface{}) ([]byte, error
 // LoadTemplates loads all the templates found in the templates directory from the embedded filesystem.
 // It returns an error if reading the directory or parsing any template fails.
 func LoadTemplates(files embed.FS) error {
-	tmplFiles, err := fs.ReadDir(files, templatesDir)
-	if err != nil {
-		return err
-	}
-
-	for _, tmpl := range tmplFiles {
-		if tmpl.IsDir() {
-			continue
-		}
-
-		pt, err := template.ParseFS(files, templatesDir+"/"+tmpl.Name())
-		if err != nil {
-			return err
-		}
-
-		templates[tmpl.Name()] = pt
-	}
-	return nil
+	return loadTemplatesFromFS(files, templatesDir)
 }
 
+// LoadTemplatesFromDir loads all the templates found in the specified directory from the filesystem.
+// It returns an error if reading the directory or parsing any template fails.
 func LoadTemplatesFromDir(dir string) error {
-	tmplFiles, err := fs.ReadDir(os.DirFS(dir), ".")
+	return loadTemplatesFromFS(os.DirFS(dir), ".")
+}
+
+// loadTemplatesFromFS is a helper function that loads templates from the given filesystem and directory.
+// It returns an error if reading the directory or parsing any template fails.
+func loadTemplatesFromFS(fsys fs.FS, dir string) error {
+	tmplFiles, err := fs.ReadDir(fsys, dir)
 	if err != nil {
 		return err
+	}
+
+	pattern := dir + "/"
+	if dir == "." {
+		pattern = ""
 	}
 
 	for _, tmpl := range tmplFiles {
@@ -99,7 +95,7 @@ func LoadTemplatesFromDir(dir string) error {
 			continue
 		}
 
-		pt, err := template.ParseFS(os.DirFS(dir), tmpl.Name())
+		pt, err := template.ParseFS(fsys, pattern+tmpl.Name())
 		if err != nil {
 			return err
 		}

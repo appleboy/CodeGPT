@@ -2,6 +2,7 @@ package util
 
 import (
 	"bytes"
+	"embed"
 	"html/template"
 	"os"
 	"testing"
@@ -45,7 +46,7 @@ func TestNewTemplateByStringWithCustomVars(t *testing.T) {
 
 func TestProcessTemplate(t *testing.T) {
 	// Set up test data
-	testTemplateName := "test.tmpl"
+	testTemplateName := "foo.tmpl"
 	testTemplateText := "Hello {{.Name}}!"
 	testData := Data{"Name": "World"}
 
@@ -91,6 +92,40 @@ func TestLoadTemplatesFromDir(t *testing.T) {
 	}
 
 	// Check if the template was loaded correctly
+	tmpl, ok := templates[templateFile]
+	if !ok {
+		t.Fatalf("Template %s not found in loaded templates", templateFile)
+	}
+
+	// Process the loaded template
+	data := Data{"Name": "World"}
+	var buf bytes.Buffer
+	err = tmpl.Execute(&buf, data)
+	if err != nil {
+		t.Fatalf("Failed to execute loaded template: %v", err)
+	}
+
+	// Check the output
+	expected := "Hello, World!"
+	if buf.String() != expected {
+		t.Errorf("Unexpected output. Got: %v, Want: %v", buf.String(), expected)
+	}
+}
+
+// Create an embedded filesystem with a sample template
+//
+//go:embed templates/*
+var testFiles embed.FS
+
+func TestLoadTemplates(t *testing.T) {
+	// Load templates from the embedded filesystem
+	err := LoadTemplates(testFiles)
+	if err != nil {
+		t.Fatalf("Failed to load templates from embedded filesystem: %v", err)
+	}
+
+	// Check if the template was loaded correctly
+	templateFile := "test.tmpl"
 	tmpl, ok := templates[templateFile]
 	if !ok {
 		t.Fatalf("Template %s not found in loaded templates", templateFile)
