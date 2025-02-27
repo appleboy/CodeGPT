@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/appleboy/CodeGPT/core"
-	"github.com/appleboy/CodeGPT/util"
+	"github.com/appleboy/com/convert"
 
 	"github.com/google/generative-ai-go/genai"
 	"google.golang.org/api/option"
@@ -106,9 +106,9 @@ func New(ctx context.Context, opts ...Option) (c *Client, err error) {
 	}
 
 	engine.client = client.GenerativeModel(engine.model)
-	engine.client.MaxOutputTokens = util.Int32Ptr(engine.maxTokens)
-	engine.client.Temperature = util.Float32Ptr(engine.temperature)
-	engine.client.TopP = util.Float32Ptr(engine.topP)
+	engine.client.MaxOutputTokens = convert.ToPtr(engine.maxTokens)
+	engine.client.Temperature = convert.ToPtr(engine.temperature)
+	engine.client.TopP = convert.ToPtr(engine.topP)
 
 	return engine, nil
 }
