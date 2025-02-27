@@ -36,6 +36,9 @@ type Client struct {
 	// Positive values penalize new tokens based on their existing frequency in the text so far,
 	// decreasing the model's likelihood to repeat the same line verbatim.
 	frequencyPenalty float32
+
+	// stream is a flag that indicates whether the client is using a stream or not.
+	stream bool
 }
 
 type Response struct {
@@ -145,6 +148,38 @@ func (c *Client) CreateFunctionCall(
 	return c.client.CreateChatCompletion(ctx, req)
 }
 
+// CreateChatCompletionStream is an API call to create a stream for a chat message.
+func (c *Client) CreateChatCompletionStream(
+	ctx context.Context,
+	content string,
+) (stream *openai.ChatCompletionStream, err error) {
+	req := openai.ChatCompletionRequest{
+		Model:            c.model,
+		MaxTokens:        c.maxTokens,
+		Temperature:      c.temperature,
+		TopP:             c.topP,
+		FrequencyPenalty: c.frequencyPenalty,
+		PresencePenalty:  c.presencePenalty,
+		Messages: []openai.ChatCompletionMessage{
+			{
+				Role:    openai.ChatMessageRoleAssistant,
+				Content: "You are a helpful assistant.",
+			},
+			{
+				Role:    openai.ChatMessageRoleUser,
+				Content: content,
+			},
+		},
+	}
+
+	if checkOSeriesModels.MatchString(c.model) {
+		req.MaxTokens = 0
+		req.MaxCompletionTokens = c.maxTokens
+	}
+
+	return c.client.CreateChatCompletionStream(ctx, req)
+}
+
 // CreateChatCompletion is an API call to create a completion for a chat message.
 func (c *Client) CreateChatCompletion(
 	ctx context.Context,
@@ -208,6 +243,7 @@ func New(opts ...Option) (*Client, error) {
 		model:       cfg.model,
 		maxTokens:   cfg.maxTokens,
 		temperature: cfg.temperature,
+		stream:      cfg.stream,
 	}
 
 	// Create a new OpenAI config object with the given API token and other optional fields.

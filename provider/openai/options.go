@@ -165,6 +165,13 @@ func WithFrequencyPenalty(val float32) Option {
 	})
 }
 
+// WithStream returns a new Option that sets the stream for the client configuration.
+func WithStream(val bool) Option {
+	return optionFunc(func(c *config) {
+		c.stream = val
+	})
+}
+
 // config is a struct that stores configuration options for the instrumentation.
 type config struct {
 	baseURL     string
@@ -183,6 +190,7 @@ type config struct {
 
 	provider   core.Platform
 	skipVerify bool
+	stream     bool
 	headers    []string
 	apiVersion string
 }
@@ -211,6 +219,7 @@ func newConfig(opts ...Option) *config {
 		temperature: defaultTemperature,
 		provider:    core.OpenAI,
 		topP:        defaultTopP,
+		stream:      false,
 	}
 
 	// Apply each of the given options to the config object.

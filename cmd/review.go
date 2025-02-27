@@ -29,6 +29,7 @@ func init() {
 		"replace the tip of the current branch by creating a new commit.")
 	reviewCmd.PersistentFlags().BoolVar(&promptOnly, "prompt_only", false,
 		"show prompt only, don't send request to openai")
+	reviewCmd.PersistentFlags().BoolVar(&isStream, "stream", false, "streaming mode")
 }
 
 var reviewCmd = &cobra.Command{

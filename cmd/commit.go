@@ -40,6 +40,7 @@ var (
 
 	defaultTimeout = 30 * time.Second
 	noConfirm      = false
+	isStream       = false
 )
 
 func init() {
@@ -64,6 +65,8 @@ func init() {
 		"show prompt only, don't send request to openai")
 	commitCmd.PersistentFlags().BoolVar(&noConfirm, "no_confirm", false,
 		"skip confirmation prompt")
+	commitCmd.PersistentFlags().BoolVar(&isStream, "stream", false,
+		"streaming completion")
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
 }
 
