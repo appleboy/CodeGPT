@@ -29,6 +29,7 @@ A CLI written in [Go](https://go.dev) that writes git commit messages or provide
 - Supports socks proxy or custom network HTTP proxy.
 - Supports [model lists](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) like `gpt-4`, `gpt-4o`, etc.
 - Supports generating a brief code review.
+- Supports customizing prompt template and variables.
 
 ![code review](./images/code_review.png)
 
@@ -100,6 +101,30 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 | **openai.top_p**             | Default top_p is `1.0`. See reference [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p).                                     |
 | **openai.frequency_penalty** | Default frequency_penalty is `0.0`. See reference [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty). |
 | **openai.presence_penalty**  | Default presence_penalty is `0.0`. See reference [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty).    |
+| **prompt.folder**            | Default prompt folder is `$HOME/.config/codegpt/prompt`.                                                                                                                       |
+
+### How to Customize the Default Prompt Folder
+
+The default prompt folder is located at `$HOME/.config/codegpt/prompt`. You can change this to another directory by executing:
+
+```sh
+codegpt config set prompt.folder /path/to/your/prompt
+```
+
+To load the prompt files from the custom folder, run:
+
+```sh
+codegpt prompt --load
+```
+
+Upon execution, you will see messages similar to the following:
+
+```sh
+save code_review_file_diff.tmpl to /Users/xxxxx/.config/codegpt/prompt/code_review_file_diff.tmpl
+save summarize_file_diff.tmpl to /Users/xxxxx/.config/codegpt/prompt/summarize_file_diff.tmpl
+save summarize_title.tmpl to /Users/xxxxx/.config/codegpt/prompt/summarize_title.tmpl
+save conventional_commit.tmpl to /Users/xxxxx/.config/codegpt/prompt/conventional_commit.tmpl
+```
 
 ### How to change to Azure OpenAI Service
 
@@ -115,7 +140,7 @@ Update your config file.
 codegpt config set openai.provider azure
 codegpt config set openai.base_url https://xxxxxxxxx.openai.azure.com/
 codegpt config set openai.api_key xxxxxxxxxxxxxxxx
-codegpt config set openai.model xxxxx-gpt-35-turbo
+codegpt config set openai.model xxxxx-gpt-4o
 ```
 
 ### Support [Gemini][60] API Service
