@@ -29,6 +29,7 @@
 - 支援 socks 代理或自訂網路 HTTP 代理。
 - 支援 [模型列表](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38)，如 `gpt-4`、`gpt-4o` 等。
 - 支援生成簡要的程式碼審查。
+- Supports customizing prompt template and variables.
 
 ![code review](./images/code_review.png)
 
@@ -100,6 +101,30 @@ codegpt config set openai.api_key sk-xxxxxxx
 | **openai.top_p**             | 默認 top_p 為 `1.0`。參見參考 [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p)。                                     |
 | **openai.frequency_penalty** | 默認 frequency_penalty 為 `0.0`。參見參考 [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty)。 |
 | **openai.presence_penalty**  | 默認 presence_penalty 為 `0.0`。參見參考 [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty)。    |
+| **prompt.folder**            | 預設提示文件夾位於 `$HOME/.config/codegpt/prompt`。                                                                                                                     |
+
+### 如何自訂預設提示文件夾
+
+預設提示文件夾位於 `$HOME/.config/codegpt/prompt`。您可以通過執行以下命令將其更改為其他目錄：
+
+```sh
+codegpt config set prompt.folder /path/to/your/prompt
+```
+
+要從自訂文件夾加載提示文件，請運行：
+
+```sh
+codegpt prompt --load
+```
+
+執行後，您將看到類似以下的消息：
+
+```sh
+save code_review_file_diff.tmpl to /Users/xxxxx/.config/codegpt/prompt/code_review_file_diff.tmpl
+save summarize_file_diff.tmpl to /Users/xxxxx/.config/codegpt/prompt/summarize_file_diff.tmpl
+save summarize_title.tmpl to /Users/xxxxx/.config/codegpt/prompt/summarize_title.tmpl
+save conventional_commit.tmpl to /Users/xxxxx/.config/codegpt/prompt/conventional_commit.tmpl
+```
 
 ### 如何切換到 Azure OpenAI 服務
 
