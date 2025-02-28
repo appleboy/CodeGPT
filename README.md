@@ -126,6 +126,11 @@ save summarize_title.tmpl to /Users/xxxxx/.config/codegpt/prompt/summarize_title
 save conventional_commit.tmpl to /Users/xxxxx/.config/codegpt/prompt/conventional_commit.tmpl
 ```
 
+- [code_review_file_diff.tmpl](./prompt/templates/code_review_file_diff.tmpl)
+- [summarize_file_diff.tmpl](./prompt/templates/summarize_file_diff.tmpl)
+- [summarize_title.tmpl](./prompt/templates/summarize_title.tmpl)
+- [conventional_commit.tmpl](./prompt/templates/conventional_commit.tmpl)
+
 ### How to change to Azure OpenAI Service
 
 Please get the `API key`, `Endpoint` and `Model deployments` list from Azure Resource Management Portal on left menu.

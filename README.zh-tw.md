@@ -126,6 +126,11 @@ save summarize_title.tmpl to /Users/xxxxx/.config/codegpt/prompt/summarize_title
 save conventional_commit.tmpl to /Users/xxxxx/.config/codegpt/prompt/conventional_commit.tmpl
 ```
 
+- [code_review_file_diff.tmpl](./prompt/templates/code_review_file_diff.tmpl)
+- [summarize_file_diff.tmpl](./prompt/templates/summarize_file_diff.tmpl)
+- [summarize_title.tmpl](./prompt/templates/summarize_title.tmpl)
+- [conventional_commit.tmpl](./prompt/templates/conventional_commit.tmpl)
+
 ### 如何切換到 Azure OpenAI 服務
 
 請從 Azure 資源管理門戶的左側菜單中獲取 `API 金鑰`、`端點` 和 `模型部署` 列表。
