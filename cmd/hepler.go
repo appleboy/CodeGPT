@@ -66,7 +66,7 @@ func check() error {
 	}
 
 	// load custom prompt
-	promptFolder := viper.GetString("prompt_folder")
+	promptFolder := viper.GetString("prompt.folder")
 	if promptFolder != "" {
 		if err := util.LoadTemplatesFromDir(promptFolder); err != nil {
 			return fmt.Errorf("failed to load custom prompt templates: %s", err)

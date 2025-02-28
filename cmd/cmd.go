@@ -48,6 +48,25 @@ func init() {
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 }
 
+// initConfig initializes the configuration for the application.
+// It sets up the configuration file, environment variables, and prompt folder.
+//
+// If a configuration file is specified by the cfgFile variable, it uses that file.
+// If the file does not exist, it creates a new one.
+// If no configuration file is specified, it searches for a configuration file
+// named ".codegpt.yaml" in the user's home directory under ".config/codegpt".
+//
+// The function also sets up environment variable handling to support multiple
+// CI/CD platforms, such as GitHub Actions and Drone CI, by setting the appropriate
+// environment variable prefixes.
+//
+// Additionally, it ensures that the prompt folder is correctly set up. If a prompt
+// folder is specified by the promptFolder variable, it verifies that it is a directory
+// and creates it if it does not exist. If no prompt folder is specified, it defaults
+// to a "prompt" directory under the ".config/codegpt" directory in the user's home.
+//
+// The function uses the Viper library for configuration management and the Cobra
+// library for error handling.
 func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -78,30 +97,6 @@ func initConfig() {
 		}
 	}
 
-	if promptFolder != "" {
-		viper.Set("prompt_folder", promptFolder)
-		if file.IsFile(promptFolder) {
-			log.Fatalf("prompt folder %s is a file", promptFolder)
-		}
-		// create the prompt folder if it doesn't exist
-		if !file.IsDir(promptFolder) {
-			if err := os.MkdirAll(promptFolder, os.ModePerm); err != nil {
-				log.Fatal(err)
-			}
-		}
-	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-		targetFolder := path.Join(home, ".config", "codegpt", "prompt")
-		if !file.IsDir(targetFolder) {
-			if err := os.MkdirAll(targetFolder, os.ModePerm); err != nil {
-				log.Fatal(err)
-			}
-		}
-		viper.Set("prompt_folder", targetFolder)
-	}
-
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(replacer)
 
@@ -126,6 +121,49 @@ func initConfig() {
 			// Config file was found but another error was produced
 			fmt.Fprintln(os.Stderr, err)
 		}
+	}
+
+	switch {
+	case promptFolder != "":
+		// If a prompt folder is specified by the promptFolder variable,
+		// check if it is a file. If it is, log a fatal error.
+		if file.IsFile(promptFolder) {
+			log.Fatalf("prompt folder %s is a file", promptFolder)
+		}
+		// If the prompt folder does not exist, create it.
+		if !file.IsDir(promptFolder) {
+			if err := os.MkdirAll(promptFolder, os.ModePerm); err != nil {
+				log.Fatal(err)
+			}
+		}
+		// Set the prompt folder in the configuration.
+		viper.Set("prompt.folder", promptFolder)
+	case viper.GetString("prompt.folder") != "":
+		// If the prompt folder is specified in the configuration,
+		// retrieve it and check if it is a file. If it is, log a fatal error.
+		promptFolder = viper.GetString("prompt.folder")
+		if file.IsFile(promptFolder) {
+			log.Fatalf("prompt folder %s is a file", promptFolder)
+		}
+		// If the prompt folder does not exist, create it.
+		if !file.IsDir(promptFolder) {
+			if err := os.MkdirAll(promptFolder, os.ModePerm); err != nil {
+				log.Fatal(err)
+			}
+		}
+	default:
+		// If no prompt folder is specified, use the default prompt folder
+		// under the ".config/codegpt" directory in the user's home directory.
+		home, err := os.UserHomeDir()
+		cobra.CheckErr(err)
+		targetFolder := path.Join(home, ".config", "codegpt", "prompt")
+		if !file.IsDir(targetFolder) {
+			if err := os.MkdirAll(targetFolder, os.ModePerm); err != nil {
+				log.Fatal(err)
+			}
+		}
+		// Set the prompt folder in the configuration.
+		viper.Set("prompt.folder", targetFolder)
 	}
 }
 
