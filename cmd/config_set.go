@@ -32,6 +32,7 @@ func init() {
 	configSetCmd.Flags().BoolP("skip_verify", "", false, availableKeys["openai.skip_verify"])
 	configSetCmd.Flags().StringP("headers", "", "", availableKeys["openai.headers"])
 	configSetCmd.Flags().StringP("api_version", "", "", availableKeys["openai.api_version"])
+	configSetCmd.Flags().StringP("prompt_folder", "", "", availableKeys["prompt.folder"])
 	_ = viper.BindPFlag("openai.base_url", configSetCmd.Flags().Lookup("base_url"))
 	_ = viper.BindPFlag("openai.org_id", configSetCmd.Flags().Lookup("org_id"))
 	_ = viper.BindPFlag("openai.api_key", configSetCmd.Flags().Lookup("api_key"))
@@ -50,6 +51,7 @@ func init() {
 	_ = viper.BindPFlag("openai.skip_verify", configSetCmd.Flags().Lookup("skip_verify"))
 	_ = viper.BindPFlag("openai.headers", configSetCmd.Flags().Lookup("headers"))
 	_ = viper.BindPFlag("openai.api_version", configSetCmd.Flags().Lookup("api_version"))
+	_ = viper.BindPFlag("prompt.folder", configSetCmd.Flags().Lookup("prompt_folder"))
 }
 
 // configSetCmd updates the config value.

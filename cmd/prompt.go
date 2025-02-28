@@ -39,12 +39,14 @@ var promptCmd = &cobra.Command{
 			return nil
 		}
 
-		confirm, err := confirmation.New("Do you want to load default prompt data, will overwrite your data", confirmation.No).RunPrompt()
+		folder := viper.GetString("prompt.folder")
+
+		color.Yellow("Prompt folder: %s", folder)
+		confirm, err := confirmation.New("Do you want to load the default prompt data? This will overwrite your existing data.", confirmation.No).RunPrompt()
 		if err != nil || !confirm {
 			return err
 		}
 
-		folder := viper.GetString("prompt_folder")
 		for _, key := range defaultPromptDataKeys {
 			if err := savePromptData(folder, key); err != nil {
 				return err
