@@ -12,24 +12,24 @@ func init() {
 	hookCmd.AddCommand(hookUninstallCmd)
 }
 
-// hookCmd represents the command for installing/uninstalling the prepare-commit-msg hook.
+// hookCmd represents the command for managing the prepare-commit-msg git hook.
 var hookCmd = &cobra.Command{
 	Use:   "hook",
-	Short: "install/uninstall git prepare-commit-msg hook",
+	Short: "Manage git prepare-commit-msg hook",
 }
 
 // hookInstallCmd installs the prepare-commit-msg hook.
 var hookInstallCmd = &cobra.Command{
 	Use:   "install",
-	Short: "install git prepare-commit-msg hook",
+	Short: "Install git prepare-commit-msg hook",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		g := git.New()
 
 		if err := g.InstallHook(); err != nil {
 			return err
 		}
-		color.Green("Install git hook: prepare-commit-msg successfully")
-		color.Green("You can see the hook file: .git/hooks/prepare-commit-msg")
+		color.Green("Git hook 'prepare-commit-msg' installed successfully")
+		color.Green("Hook file location: .git/hooks/prepare-commit-msg")
 
 		return nil
 	},
@@ -38,14 +38,14 @@ var hookInstallCmd = &cobra.Command{
 // hookUninstallCmd uninstalls the prepare-commit-msg hook.
 var hookUninstallCmd = &cobra.Command{
 	Use:   "uninstall",
-	Short: "uninstall git prepare-commit-msg hook",
+	Short: "Uninstall git prepare-commit-msg hook",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		g := git.New()
 
 		if err := g.UninstallHook(); err != nil {
 			return err
 		}
-		color.Green("Remove git hook: prepare-commit-msg successfully")
+		color.Green("Git hook 'prepare-commit-msg' removed successfully")
 		return nil
 	},
 }

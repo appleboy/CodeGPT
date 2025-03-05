@@ -19,16 +19,16 @@ var maxTokens int
 
 func init() {
 	reviewCmd.PersistentFlags().IntVar(&diffUnified, "diff_unified", 3,
-		"generate diffs with <n> lines of context, default is 3")
+		"Generate diffs with <n> lines of context (default: 3)")
 	reviewCmd.PersistentFlags().IntVar(&maxTokens, "max_tokens", 300,
-		"the maximum number of tokens to generate in the chat completion.")
-	reviewCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-4o", "select openai model")
-	reviewCmd.PersistentFlags().StringVar(&commitLang, "lang", "en", "summarizing language uses English by default")
-	reviewCmd.PersistentFlags().StringSliceVar(&excludeList, "exclude_list", []string{}, "exclude file from git diff command")
+		"Maximum number of tokens to generate in the chat completion")
+	reviewCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-4o", "OpenAI model to use")
+	reviewCmd.PersistentFlags().StringVar(&commitLang, "lang", "en", "Language for summarization (default: English)")
+	reviewCmd.PersistentFlags().StringSliceVar(&excludeList, "exclude_list", []string{}, "Files to exclude from git diff")
 	reviewCmd.PersistentFlags().BoolVar(&commitAmend, "amend", false,
-		"replace the tip of the current branch by creating a new commit.")
+		"Replace the tip of the current branch by creating a new commit")
 	reviewCmd.PersistentFlags().BoolVar(&promptOnly, "prompt_only", false,
-		"show prompt only, don't send request to openai")
+		"Show prompt only without sending request to OpenAI")
 }
 
 var reviewCmd = &cobra.Command{

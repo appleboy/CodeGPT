@@ -15,7 +15,7 @@ var loadPromptData bool
 
 func init() {
 	promptCmd.PersistentFlags().BoolVar(&loadPromptData, "load", false,
-		"load default prompt data")
+		"Load default prompt templates into your configuration")
 }
 
 var defaultPromptDataKeys = []string{
@@ -25,15 +25,32 @@ var defaultPromptDataKeys = []string{
 	prompt.ConventionalCommitTemplate,
 }
 
-// promptCmd represents the command to load default prompt data.
-// It uses the "prompt" keyword and provides a short description: "load default prompt data".
-// The command executes the RunE function which checks if the loadPromptData flag is set.
-// If set, it prompts the user for confirmation to load the default prompt data, which will overwrite existing data.
-// Upon confirmation, it retrieves the prompt folder path from the configuration and saves the default prompt data keys to the specified folder.
-// If any error occurs during the process, it returns the error.
+// promptCmd is a Cobra command to load default prompt data into a specified folder.
+// It provides functionality to populate the prompt folder with predefined templates.
+//
+// Usage:
+//
+//	codegpt prompt [flags]
+//
+// Flags:
+//
+//	-l, --load    load default prompt data into the specified folder (required to execute)
+//
+// This command will:
+// 1. Check if the load flag is enabled
+// 2. Get the prompt folder path from configuration
+// 3. Ask for user confirmation before proceeding with data loading
+// 4. Save all default prompt templates to the specified folder
+//
+// The command requires explicit confirmation from the user as it may overwrite existing prompt data.
 var promptCmd = &cobra.Command{
 	Use:   "prompt",
-	Short: "load default prompt data",
+	Short: "Load default prompt templates",
+	Long: `Load default prompt templates into your configuration directory.
+	
+This command allows you to initialize or update your prompt templates with the default set provided by CodeGPT.
+When executed with the --load flag, it will copy all standard templates to your configured prompt folder.`,
+	Example: "  codegpt prompt --load",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if !loadPromptData {
 			return nil

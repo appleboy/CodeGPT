@@ -84,8 +84,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	return fmt.Sprintf(
-		"Please confirm the following commit message:\n\n%s\n\n%s",
+		"Please review and confirm your commit message:\n\n%s\n\n%s",
 		m.textarea.View(),
-		"(Press Ctrl+C to continue.)",
+		"(Press Ctrl+C to continue)",
 	) + "\n\n"
 }

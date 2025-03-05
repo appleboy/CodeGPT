@@ -13,7 +13,7 @@ var (
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Print the version number",
+	Short: "Print the application version and commit information",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("version:", Version, "commit:", Commit)
 	},
