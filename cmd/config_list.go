@@ -13,31 +13,30 @@ func init() {
 	configCmd.AddCommand(configListCmd)
 }
 
-// availableKeys is a list of available config keys
 // availableKeys is a map of configuration keys and their descriptions
 var availableKeys = map[string]string{
-	"git.diff_unified":         "Generate diffs with <n> lines of context, default is 3",
-	"git.exclude_list":         "Exclude file from git diff command",
-	"git.template_file":        "Template file for commit message",
-	"git.template_string":      "Template string for commit message",
-	"openai.socks":             "SOCKS proxy",
-	"openai.api_key":           "OpenAI API key",
-	"openai.model":             "OpenAI model",
-	"openai.org_id":            "OpenAI requesting organization",
-	"openai.proxy":             "HTTP proxy",
-	"output.lang":              "Summarizing language, defaults to English",
-	"openai.base_url":          "API base URL to use",
-	"openai.timeout":           "Request timeout",
-	"openai.max_tokens":        "Maximum number of tokens to generate in the chat completion",
-	"openai.temperature":       "Sampling temperature to use, between 0 and 2. Higher values like 0.8 make the output more random, while lower values like 0.2 make it more focused and deterministic",
-	"openai.provider":          "Service provider, supports 'openai' or 'azure'",
-	"openai.skip_verify":       "Skip verifying TLS certificate",
-	"openai.headers":           "Custom headers for OpenAI request",
-	"openai.api_version":       "OpenAI API version",
-	"openai.top_p":             "Nucleus sampling probability mass. For example, 0.1 means only the tokens comprising the top 10% probability mass are considered",
-	"openai.frequency_penalty": "Penalty for new tokens based on their existing frequency in the text so far. Decreases the model's likelihood to repeat the same line verbatim",
-	"openai.presence_penalty":  "Penalty for new tokens based on whether they appear in the text so far. Increases the model's likelihood to talk about new topics",
-	"prompt.folder":            "Prompt template folder",
+	"git.diff_unified":         "Number of context lines in git diff output (default: 3)",
+	"git.exclude_list":         "Files to exclude from git diff command",
+	"git.template_file":        "Path to template file for commit messages",
+	"git.template_string":      "Template string for formatting commit messages",
+	"openai.socks":             "SOCKS proxy URL for API connections",
+	"openai.api_key":           "Authentication key for OpenAI API access",
+	"openai.model":             "AI model identifier to use for requests",
+	"openai.org_id":            "Organization ID for multi-org OpenAI accounts",
+	"openai.proxy":             "HTTP proxy URL for API connections",
+	"output.lang":              "Language for summarization output (default: English)",
+	"openai.base_url":          "Custom base URL for API requests",
+	"openai.timeout":           "Maximum duration to wait for API response",
+	"openai.max_tokens":        "Maximum token limit for generated completions",
+	"openai.temperature":       "Randomness control parameter (0-1): lower values for focused results, higher for creative variety",
+	"openai.provider":          "Service provider selection ('openai' or 'azure')",
+	"openai.skip_verify":       "Option to bypass TLS certificate verification",
+	"openai.headers":           "Additional custom HTTP headers for API requests",
+	"openai.api_version":       "Specific API version to target",
+	"openai.top_p":             "Nucleus sampling parameter: controls diversity by limiting to top percentage of probability mass",
+	"openai.frequency_penalty": "Parameter to reduce repetition by penalizing tokens based on their frequency",
+	"openai.presence_penalty":  "Parameter to encourage topic diversity by penalizing previously used tokens",
+	"prompt.folder":            "Directory path for custom prompt templates",
 }
 
 // configListCmd represents the command to list the configuration values.
