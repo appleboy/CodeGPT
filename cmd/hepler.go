@@ -8,17 +8,16 @@ import (
 	"github.com/appleboy/CodeGPT/provider/openai"
 	"github.com/appleboy/CodeGPT/util"
 	"github.com/appleboy/com/file"
-
 	"github.com/spf13/viper"
 )
 
 func check() error {
 	// Check if the Git command is available on the system's PATH
 	if !util.IsCommandAvailable("git") {
-		return errors.New("git command not found on your system's PATH. Please install Git and try again")
+		return errors.New("git command not found in your system's PATH. Please install Git and try again")
 	}
 
-	// Update Viper configuration values based on the CLI flags
+	// Apply configuration values from CLI flags to Viper
 	if diffUnified != 3 {
 		viper.Set("git.diff_unified", diffUnified)
 	}
@@ -55,17 +54,17 @@ func check() error {
 		viper.Set("git.template_string", templateString)
 	}
 
-	// Check if the template file specified in the configuration exists
+	// Verify template file existence
 	templateFile := viper.GetString("git.template_file")
 	if templateFile != "" && !file.IsFile(templateFile) {
-		return fmt.Errorf("template file not found: %s", templateFile)
+		return fmt.Errorf("template file not found at: %s", templateFile)
 	}
 
 	if templateVarsFile != "" && !file.IsFile(templateVarsFile) {
-		return fmt.Errorf("template variables file not found: %s", templateVarsFile)
+		return fmt.Errorf("template variables file not found at: %s", templateVarsFile)
 	}
 
-	// load custom prompt
+	// Load custom prompts from configured directory
 	promptFolder := viper.GetString("prompt.folder")
 	if promptFolder != "" {
 		if err := util.LoadTemplatesFromDir(promptFolder); err != nil {

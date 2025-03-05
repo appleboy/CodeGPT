@@ -5,8 +5,8 @@ import (
 )
 
 // configCmd represents the command for custom configuration,
-// including openai.api_key and openai.model and etc...
+// including settings like openai.api_key, openai.model, and others.
 var configCmd = &cobra.Command{
 	Use:   "config",
-	Short: "custom config (openai.api_key, openai.model ...)",
+	Short: "Customize configuration settings (API key, model selection, etc.)",
 }

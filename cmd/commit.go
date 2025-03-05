@@ -43,23 +43,23 @@ var (
 )
 
 func init() {
-	commitCmd.PersistentFlags().StringP("file", "f", "", "output file for commit message")
+	commitCmd.PersistentFlags().StringP("file", "f", "", "specify output file for commit message")
 	commitCmd.PersistentFlags().BoolVar(&preview, "preview", false, "preview commit message before committing")
 	commitCmd.PersistentFlags().IntVar(&diffUnified, "diff_unified", 3,
 		"generate diffs with <n> lines of context (default: 3)")
-	commitCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-4o", "OpenAI model to use for generation")
-	commitCmd.PersistentFlags().StringVar(&commitLang, "lang", "en", "output language for the commit message (default: English)")
+	commitCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-4o", "specify which OpenAI model to use for generation")
+	commitCmd.PersistentFlags().StringVar(&commitLang, "lang", "en", "set output language for the commit message (default: English)")
 	commitCmd.PersistentFlags().StringSliceVar(&excludeList, "exclude_list", []string{},
-		"files to exclude from git diff")
-	commitCmd.PersistentFlags().StringVar(&httpsProxy, "proxy", "", "HTTP proxy URL")
-	commitCmd.PersistentFlags().StringVar(&socksProxy, "socks", "", "SOCKS proxy URL")
-	commitCmd.PersistentFlags().StringVar(&templateFile, "template_file", "", "template file for commit message format")
-	commitCmd.PersistentFlags().StringVar(&templateString, "template_string", "", "inline template string for commit message format")
-	commitCmd.PersistentFlags().StringSliceVar(&templateVars, "template_vars", []string{}, "custom variables for templates")
-	commitCmd.PersistentFlags().StringVar(&templateVarsFile, "template_vars_file", "", "file containing template variables")
+		"specify files to exclude from git diff")
+	commitCmd.PersistentFlags().StringVar(&httpsProxy, "proxy", "", "set HTTP proxy URL")
+	commitCmd.PersistentFlags().StringVar(&socksProxy, "socks", "", "set SOCKS proxy URL")
+	commitCmd.PersistentFlags().StringVar(&templateFile, "template_file", "", "provide template file for commit message format")
+	commitCmd.PersistentFlags().StringVar(&templateString, "template_string", "", "provide inline template string for commit message format")
+	commitCmd.PersistentFlags().StringSliceVar(&templateVars, "template_vars", []string{}, "define custom variables for templates")
+	commitCmd.PersistentFlags().StringVar(&templateVarsFile, "template_vars_file", "", "specify file containing template variables")
 	commitCmd.PersistentFlags().BoolVar(&commitAmend, "amend", false,
 		"amend the previous commit instead of creating a new one")
-	commitCmd.PersistentFlags().DurationVarP(&timeout, "timeout", "t", defaultTimeout, "API request timeout duration")
+	commitCmd.PersistentFlags().DurationVarP(&timeout, "timeout", "t", defaultTimeout, "set API request timeout duration")
 	commitCmd.PersistentFlags().BoolVar(&promptOnly, "prompt_only", false,
 		"display the prompt without sending to OpenAI")
 	commitCmd.PersistentFlags().BoolVar(&noConfirm, "no_confirm", false,
