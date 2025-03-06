@@ -1,11 +1,16 @@
 package core
 
+// Platform represents a type for different AI platforms.
 type Platform string
 
 const (
-	OpenAI    Platform = "openai"
-	Azure     Platform = "azure"
-	Gemini    Platform = "gemini"
+	// OpenAI represents the OpenAI platform.
+	OpenAI Platform = "openai"
+	// Azure represents the Azure platform.
+	Azure Platform = "azure"
+	// Gemini represents the Gemini platform.
+	Gemini Platform = "gemini"
+	// Anthropic represents the Anthropic platform.
 	Anthropic Platform = "anthropic"
 )
 
