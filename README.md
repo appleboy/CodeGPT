@@ -8,7 +8,7 @@
 
 English | [繁體中文](./README.zh-tw.md) | [简体中文](./README.zh-cn.md)
 
-A CLI written in [Go](https://go.dev) that writes git commit messages or provides a code review summary for you using ChatGPT AI (gpt-4o, gpt-4 model) and automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
+A CLI tool written in [Go](https://go.dev) that generates git commit messages or provides code review summaries using ChatGPT AI (gpt-4o, gpt-4 model). It also automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
 
 - [繁體中文介紹][1]
 - [繁體中文影片][2]
@@ -21,39 +21,47 @@ A CLI written in [Go](https://go.dev) that writes git commit messages or provide
 ## Features
 
 - Supports [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service), [OpenAI API](https://platform.openai.com/docs/api-reference), [Gemini][60], [Anthropic][100], [Ollama][41], [Groq][30], and [OpenRouter][50].
-- Supports [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
-- Supports Git prepare-commit-msg Hook, see the [Git Hooks documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
-- Supports customizing generated diffs with n lines of context, the default is three.
-- Supports excluding files from the git diff command.
-- Supports commit message translation into another language (supports `en`, `zh-tw`, or `zh-cn`).
-- Supports socks proxy or custom network HTTP proxy.
-- Supports [model lists](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) like `gpt-4`, `gpt-4o`, etc.
-- Supports generating a brief code review.
-- Supports customizing prompt template and variables.
+- Adheres to the [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
+- Integrates with Git prepare-commit-msg Hook, see the [Git Hooks documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
+- Allows customization of generated diffs with a specified number of context lines (default is three).
+- Enables exclusion of files from the git diff command.
+- Translates commit messages into other languages (supports `en`, `zh-tw`, or `zh-cn`).
+- Supports SOCKS proxy or custom network HTTP proxy.
+- Provides a [model list](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) including `gpt-4`, `gpt-4o`, etc.
+- Generates brief code reviews.
+- Allows customization of prompt templates and variables.
 
 ![code review](./images/code_review.png)
 
 ## Installation
 
-Install from [Homebrew](http://brew.sh/) on macOS
+### macOS
+
+Install via [Homebrew](http://brew.sh/):
 
 ```sh
 brew tap appleboy/tap
 brew install codegpt
 ```
 
-Install from [Chocolatey](https://chocolatey.org/install) on Windows
+### Windows
+
+Install via [Chocolatey](https://chocolatey.org/install):
 
 ```sh
 choco install codegpt
 ```
 
-The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/CodeGPT/releases). Change the binary permissions to `755` and copy the binary to the system bin directory. Use the `codegpt` command as shown below.
+### Pre-compiled Binaries
+
+Download the pre-compiled binaries from the [release page](https://github.com/appleboy/CodeGPT/releases). Change the binary permissions to `755` and copy the binary to the system bin directory. Use the `codegpt` command as shown below:
 
 ```sh
 $ codegpt version
 version: v0.4.3 commit: xxxxxxx
 ```
+
+### From Source
 
 Install from source code:
 
@@ -63,25 +71,23 @@ go install github.com/appleboy/CodeGPT/cmd/codegpt@latest
 
 ## Setup
 
-Please first create your OpenAI API Key. The [OpenAI Platform](https://platform.openai.com/account/api-keys) allows you to generate a new API Key.
+First, create your OpenAI API Key. The [OpenAI Platform](https://platform.openai.com/account/api-keys) allows you to generate a new API Key.
 
 ![register](./images/register.png)
 
-An environment variable is a variable that is set on your operating system, rather than within your application. It consists of a name and value. We recommend that you set the name of the variable to `OPENAI_API_KEY`.
-
-See the [Best Practices for API Key Safety](https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety).
+Set the environment variable `OPENAI_API_KEY`:
 
 ```sh
 export OPENAI_API_KEY=sk-xxxxxxx
 ```
 
-or store your API key in a custom config file.
+Alternatively, store your API key in a custom config file:
 
 ```sh
 codegpt config set openai.api_key sk-xxxxxxx
 ```
 
-This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/codegpt/.codegpt.yaml). The following options are available.
+This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/codegpt/.codegpt.yaml). The following options are available:
 
 | Option                       | Description                                                                                                                                                                    |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -131,15 +137,15 @@ save conventional_commit.tmpl to /Users/xxxxx/.config/codegpt/prompt/conventiona
 - [summarize_title.tmpl](./prompt/templates/summarize_title.tmpl)
 - [conventional_commit.tmpl](./prompt/templates/conventional_commit.tmpl)
 
-### How to change to Azure OpenAI Service
+### How to Change to Azure OpenAI Service
 
-Please get the `API key`, `Endpoint` and `Model deployments` list from Azure Resource Management Portal on left menu.
+Get the `API key`, `Endpoint`, and `Model deployments` list from the Azure Resource Management Portal on the left menu.
 
 ![azure01](./images/azure_01.png)
 
 ![azure02](./images/azure_02.png)
 
-Update your config file.
+Update your config file:
 
 ```sh
 codegpt config set openai.provider azure
@@ -148,7 +154,7 @@ codegpt config set openai.api_key xxxxxxxxxxxxxxxx
 codegpt config set openai.model xxxxx-gpt-4o
 ```
 
-### Support [Gemini][60] API Service
+### Support for [Gemini][60] API Service
 
 Build with the Gemini API, you can see the [Gemini API documentation][61]. Update the `provider` and `api_key` in your config file. Please create an API key from the [Gemini API][62] page.
 
@@ -162,7 +168,7 @@ codegpt config set openai.model gemini-1.5-flash-latest
 [61]: https://ai.google.dev/gemini-api/docs
 [62]: https://aistudio.google.com/app/apikey
 
-### Support [Anthropic][100] API Service
+### Support for [Anthropic][100] API Service
 
 Build with the Anthropic API, you can see the [Anthropic API documentation][101]. Update the `provider` and `api_key` in your config file. Please create an API key from the [Anthropic API][102] page.
 
@@ -179,9 +185,9 @@ See the model list from the [Anthropic API documentation][103].
 [102]: https://anthropic.com/
 [103]: https://docs.anthropic.com/en/docs/about-claude/models
 
-### How to change to [Groq][30] API Service
+### How to Change to [Groq][30] API Service
 
-Please get the `API key` from Groq API Service, please visit [here][31]. Update the `base_url` and `api_key` in your config file.
+Get the `API key` from the Groq API Service, please visit [here][31]. Update the `base_url` and `api_key` in your config file.
 
 ```sh
 codegpt config set openai.provider openai
@@ -199,9 +205,9 @@ GroqCloud currently supports the [following models][32]:
 [31]: https://console.groq.com/keys
 [32]: https://console.groq.com/docs/models
 
-### How to change to ollama API Service
+### How to Change to Ollama API Service
 
-We can use the Llama3 model from the [ollama][41] API Service, please visit [here][40]. Update the `base_url` in your config file.
+We can use the Llama3 model from the [Ollama][41] API Service, please visit [here][40]. Update the `base_url` in your config file.
 
 [40]: https://github.com/ollama/ollama/blob/main/docs/openai.md#models
 [41]: https://github.com/ollama/ollama
@@ -212,7 +218,7 @@ ollama pull llama3
 ollama cp llama3 gpt-4o
 ```
 
-Try to use the `ollama` API Service.
+Try to use the `Ollama` API Service:
 
 ```sh
 curl http://localhost:11434/v1/chat/completions \
@@ -234,11 +240,11 @@ Update the `base_url` in your config file. You don't need to set the `api_key` i
 codegpt config set openai.base_url http://localhost:11434/v1
 ```
 
-### How to change to [OpenRouter][50] API Service
+### How to Change to [OpenRouter][50] API Service
 
 You can see the [supported models list][51], model usage can be paid by users, developers, or both, and may shift in [availability][52]. You can also fetch models, prices, and limits [via API][53].
 
-The following example use free model name: `meta-llama/llama-3-8b-instruct:free`
+The following example uses the free model name: `meta-llama/llama-3-8b-instruct:free`
 
 ```sh
 codegpt config set openai.provider openai
@@ -252,14 +258,14 @@ codegpt config set openai.model google/learnlm-1.5-pro-experimental:free
 [52]: https://openrouter.ai/terms#services
 [53]: https://openrouter.ai/api/v1/models
 
-For including your app on openrouter.ai rankings and Shows in rankings on openrouter.ai, you can set the `openai.headers` in your config file.
+To include your app in openrouter.ai rankings and show it in rankings on openrouter.ai, you can set the `openai.headers` in your config file:
 
 ```sh
 codegpt config set openai.headers "HTTP-Referer=https://github.com/appleboy/CodeGPT X-Title=CodeGPT"
 ```
 
-- **HTTP-Refer**: Optional, for including your app on openrouter.ai rankings.
-- **X-Title**: Optional, for Shows in rankings on openrouter.ai.
+- **HTTP-Referer**: Optional, for including your app in openrouter.ai rankings.
+- **X-Title**: Optional, for showing in rankings on openrouter.ai.
 
 ## Usage
 
@@ -274,24 +280,24 @@ git add <files...>
 codegpt commit --preview
 ```
 
-The commit message is shown below.
+The commit message is shown below:
 
 ```sh
-Summarize the commit message use gpt-4o model
+Summarize the commit message using the gpt-4o model
 We are trying to summarize a git diff
-We are trying to summarize a title for pull request
+We are trying to summarize a title for the pull request
 ================Commit Summary====================
 
 feat: Add preview flag and remove disableCommit flag in commit command and template file.
 
 - Add a `preview` flag to the `commit` command
-- Remove the `disbaleCommit` flag from the `prepare-commit-msg` template file
+- Remove the `disableCommit` flag from the `prepare-commit-msg` template file
 
 ==================================================
 Write the commit message to .git/COMMIT_EDITMSG file
 ```
 
-or translate all git commit messages into a different language (`Traditional Chinese`, `Simplified Chinese` or `Japanese`)
+Or translate all git commit messages into a different language (`Traditional Chinese`, `Simplified Chinese`, or `Japanese`):
 
 ```sh
 codegpt commit --lang zh-tw --preview
@@ -300,9 +306,9 @@ codegpt commit --lang zh-tw --preview
 Consider the following outcome:
 
 ```sh
-Summarize the commit message use gpt-4o model
+Summarize the commit message using the gpt-4o model
 We are trying to summarize a git diff
-We are trying to summarize a title for pull request
+We are trying to summarize a title for the pull request
 We are trying to translate a git commit message to Traditional Chinese language
 ================Commit Summary====================
 
@@ -315,15 +321,15 @@ We are trying to translate a git commit message to Traditional Chinese language
 Write the commit message to .git/COMMIT_EDITMSG file
 ```
 
-You can replace the tip of the current branch by creating a new commit. just use `--amend` flag
+You can replace the tip of the current branch by creating a new commit. Just use the `--amend` flag:
 
 ```sh
 codegpt commit --amend
 ```
 
-## Change commit message template
+## Change Commit Message Template
 
-Default commit message template as following:
+The default commit message template is as follows:
 
 ```tmpl
 {{ .summarize_prefix }}: {{ .summarize_title }}
@@ -331,20 +337,20 @@ Default commit message template as following:
 {{ .summarize_message }}
 ```
 
-change format with template string using `--template_string` parameter:
+Change the format with a template string using the `--template_string` parameter:
 
 ```sh
 codegpt commit --preview --template_string \
   "[{{ .summarize_prefix }}]: {{ .summarize_title }}"
 ```
 
-change format with template file using `--template_file` parameter:
+Change the format with a template file using the `--template_file` parameter:
 
 ```sh
 codegpt commit --preview --template_file your_file_path
 ```
 
-Add custom variable to git commit message template:
+Add a custom variable to the git commit message template:
 
 ```sh
 {{ .summarize_prefix }}: {{ .summarize_title }}
@@ -354,32 +360,32 @@ Add custom variable to git commit message template:
 {{ if .JIRA_URL }}{{ .JIRA_URL }}{{ end }}
 ```
 
-Add custom variable to git commit message template using `--template_vars` parameter:
+Add a custom variable to the git commit message template using the `--template_vars` parameter:
 
 ```sh
 codegpt commit --preview --template_file your_file_path --template_vars \
   JIRA_URL=https://jira.example.com/ABC-123
 ```
 
-Load custom variable from file using `--template_vars_file` parameter:
+Load a custom variable from a file using the `--template_vars_file` parameter:
 
 ```sh
 codegpt commit --preview --template_file your_file_path --template_vars_file your_file_path
 ```
 
-See the `template_vars_file` format as following:
+See the `template_vars_file` format as follows:
 
 ```env
 JIRA_URL=https://jira.example.com/ABC-123
 ```
 
-### Git hook
+### Git Hook
 
 You can also use the prepare-commit-msg hook to integrate `codegpt` with Git. This allows you to use Git normally and edit the commit message before committing.
 
 #### Install
 
-You want to install the hook in the Git repository:
+To install the hook in the Git repository:
 
 ```sh
 codegpt hook install
@@ -387,7 +393,7 @@ codegpt hook install
 
 #### Uninstall
 
-You want to remove the hook from the Git repository:
+To remove the hook from the Git repository:
 
 ```sh
 codegpt hook uninstall
@@ -404,9 +410,9 @@ git commit
 
 ```sh
 $ git commit
-Summarize the commit message use gpt-4o model
+Summarize the commit message using the gpt-4o model
 We are trying to summarize a git diff
-We are trying to summarize a title for pull request
+We are trying to summarize a title for the pull request
 ================Commit Summary====================
 
 Improve user experience and documentation for OpenAI tools
@@ -430,7 +436,7 @@ You can use `codegpt` to generate a code review message for your staged changes:
 codegpt review
 ```
 
-or translate all code review messages into a different language (`Traditional Chinese`, `Simplified Chinese` or `Japanese`)
+Or translate all code review messages into a different language (`Traditional Chinese`, `Simplified Chinese`, or `Japanese`):
 
 ```sh
 codegpt review --lang zh-tw
