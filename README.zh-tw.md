@@ -98,6 +98,7 @@ codegpt config set openai.api_key sk-xxxxxxx
 | **openai.proxy**             | HTTP/HTTPS 客戶端代理。                                                                                                                                                   |
 | **openai.socks**             | SOCKS 客戶端代理。                                                                                                                                                        |
 | **openai.timeout**           | 默認 HTTP 超時為 `10s`（十秒）。                                                                                                                                          |
+| **openai.skip_verify**       | 默認 skip_verify 是 `false` 你可以改為 `true` 以忽略SSL驗證。                                                                                                                  |
 | **openai.max_tokens**        | 默認最大 token 為 `300`。請參閱參考 [max_tokens](https://platform.openai.com/docs/api-reference/completions/create#completions/create-max_tokens)。                       |
 | **openai.temperature**       | 默認溫度為 `1`。請參閱參考 [temperature](https://platform.openai.com/docs/api-reference/completions/create#completions/create-temperature)。                              |
 | **git.diff_unified**         | 生成具有 `<n>` 行上下文的差異，默認為 `3`。                                                                                                                               |
