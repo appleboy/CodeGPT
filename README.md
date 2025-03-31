@@ -69,6 +69,17 @@ Install from source code:
 go install github.com/appleboy/CodeGPT/cmd/codegpt@latest
 ```
 
+### Using vscode devcontainer
+
+Add the [feature](https://github.com/kvokka/features/tree/main/src/codegpt) to
+your devcontainer.json:
+
+```json
+"features": {
+    "ghcr.io/kvokka/features/codegpt:1": {}
+}
+```
+
 ## Setup
 
 First, create your OpenAI API Key. The [OpenAI Platform](https://platform.openai.com/account/api-keys) allows you to generate a new API Key.
