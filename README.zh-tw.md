@@ -23,8 +23,8 @@
 - 支援 [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service)、[OpenAI API](https://platform.openai.com/docs/api-reference)、[Gemini][60]、[Anthropic][100]、[Ollama][41]、[Groq][30] 和 [OpenRouter][50]。
 - 遵循 [conventional commits 規範](https://www.conventionalcommits.org/en/v1.0.0/)。
 - 與 Git prepare-commit-msg Hook 集成，請參閱 [Git Hooks 文檔](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)。
-- 允許自定義生成的差異，指定上下文行數（默認為三行）。
-- 允許從 git diff 命令中排除文件。
+- 允許透過指定上下文行數來自定義差異生成（預設值：3）。
+- 支援 git diff 排除檔案模式。
 - 將提交訊息翻譯成其他語言（支援 `en`、`zh-tw` 或 `zh-cn`）。
 - 支援 SOCKS 代理或自定義網絡 HTTP 代理。
 - 提供 [模型列表](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38)，包括 `gpt-4`、`gpt-4o` 等。
@@ -79,7 +79,7 @@ go install github.com/appleboy/CodeGPT/cmd/codegpt@latest
 }
 ```
 
-## 設置
+## 配置
 
 首先，創建您的 OpenAI API Key。 [OpenAI 平台](https://platform.openai.com/account/api-keys) 允許您生成新的 API Key。
 

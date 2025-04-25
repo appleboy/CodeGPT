@@ -23,8 +23,8 @@ A CLI tool written in [Go](https://go.dev) that generates git commit messages or
 - Supports [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service), [OpenAI API](https://platform.openai.com/docs/api-reference), [Gemini][60], [Anthropic][100], [Ollama][41], [Groq][30], and [OpenRouter][50].
 - Adheres to the [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
 - Integrates with Git prepare-commit-msg Hook, see the [Git Hooks documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
-- Allows customization of generated diffs with a specified number of context lines (default is three).
-- Enables exclusion of files from the git diff command.
+- Allows customization of generated diffs by specifying the number of context lines (default: 3).
+- Enables file exclusion patterns for git diff operations.
 - Translates commit messages into other languages (supports `en`, `zh-tw`, or `zh-cn`).
 - Supports SOCKS proxy or custom network HTTP proxy.
 - Provides a [model list](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) including `gpt-4`, `gpt-4o`, etc.
@@ -80,7 +80,7 @@ your devcontainer.json:
 }
 ```
 
-## Setup
+## Configuration
 
 First, create your OpenAI API Key. The [OpenAI Platform](https://platform.openai.com/account/api-keys) allows you to generate a new API Key.
 
@@ -473,7 +473,7 @@ PromptTokens: 287, CompletionTokens: 199, TotalTokens: 486
 ==================================================
 ```
 
-another php example code:
+Example php code review:
 
 ```php
 <?php
