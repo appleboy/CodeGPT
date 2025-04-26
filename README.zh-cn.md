@@ -8,6 +8,29 @@
 
 [English](./README.md) | [繁體中文](./README.zh-tw.md) | 简体中文
 
+## 目录
+
+- [CodeGPT](#codegpt)
+  - [目录](#目录)
+  - [功能](#功能)
+  - [安装](#安装)
+    - [从源码安装](#从源码安装)
+    - [使用 VSCode Devcontainer](#使用-vscode-devcontainer)
+  - [配置](#配置)
+    - [如何自定义默认提示文件夹](#如何自定义默认提示文件夹)
+    - [如何切换到 Azure OpenAI 服务](#如何切换到-azure-openai-服务)
+    - [支持 Gemini API 服务](#支持-gemini-api-服务)
+    - [支持 Anthropic API 服务](#支持-anthropic-api-服务)
+    - [如何切换到 Groq API 服务](#如何切换到-groq-api-服务)
+    - [如何切换到 ollama API 服务](#如何切换到-ollama-api-服务)
+    - [如何切换到 OpenRouter API 服务](#如何切换到-openrouter-api-服务)
+  - [使用](#使用)
+    - [CLI 模式](#cli-模式)
+  - [更改提交信息模板](#更改提交信息模板)
+    - [Git hook](#git-hook)
+      - [安装 hook](#安装-hook)
+      - [卸载 hook](#卸载-hook)
+
 一个用 [Go](https://go.dev) 编写的 CLI 工具，它使用 ChatGPT AI（gpt-4o，gpt-4 模型）为你编写 git 提交信息或提供代码审查摘要，并自动安装 [git prepare-commit-msg hook](https://git-scm.com/docs/githooks)。
 
 - [繁體中文介紹][1]

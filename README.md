@@ -8,6 +8,36 @@
 
 English | [繁體中文](./README.zh-tw.md) | [简体中文](./README.zh-cn.md)
 
+## Table of Contents
+
+- [CodeGPT](#codegpt)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Installation](#installation)
+    - [macOS](#macos)
+    - [Windows](#windows)
+    - [Pre-compiled Binaries](#pre-compiled-binaries)
+    - [From Source](#from-source)
+    - [Using vscode devcontainer](#using-vscode-devcontainer)
+  - [Configuration](#configuration)
+    - [How to Customize the Default Prompt Folder](#how-to-customize-the-default-prompt-folder)
+    - [How to Change to Azure OpenAI Service](#how-to-change-to-azure-openai-service)
+    - [Support for Gemini API Service](#support-for-gemini-api-service)
+    - [Support for Anthropic API Service](#support-for-anthropic-api-service)
+    - [How to Change to Groq API Service](#how-to-change-to-groq-api-service)
+    - [How to Change to Ollama API Service](#how-to-change-to-ollama-api-service)
+    - [How to Change to OpenRouter API Service](#how-to-change-to-openrouter-api-service)
+  - [Usage](#usage)
+    - [CLI Mode](#cli-mode)
+  - [Change Commit Message Template](#change-commit-message-template)
+    - [Git Hook](#git-hook)
+      - [Install](#install)
+      - [Uninstall](#uninstall)
+    - [Code Review](#code-review)
+  - [Testing](#testing)
+  - [Star History](#star-history)
+  - [Reference](#reference)
+
 A CLI tool written in [Go](https://go.dev) that generates git commit messages or provides code review summaries using ChatGPT AI (gpt-4o, gpt-4 model). It also automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
 
 - [繁體中文介紹][1]

@@ -8,6 +8,36 @@
 
 [English](./README.md) | 繁體中文 | [简体中文](./README.zh-cn.md)
 
+## 目錄
+
+- [CodeGPT](#codegpt)
+  - [目錄](#目錄)
+  - [功能](#功能)
+  - [安裝](#安裝)
+    - [macOS](#macos)
+    - [Windows](#windows)
+    - [預編譯二進制文件](#預編譯二進制文件)
+    - [從源碼安裝](#從源碼安裝)
+    - [使用 VSCode Devcontainer](#使用-vscode-devcontainer)
+  - [配置](#配置)
+    - [如何自定義默認提示文件夾](#如何自定義默認提示文件夾)
+    - [如何切換到 Azure OpenAI 服務](#如何切換到-azure-openai-服務)
+    - [支援 Gemini API 服務](#支援-gemini-api-服務)
+    - [支援 Anthropic API 服務](#支援-anthropic-api-服務)
+    - [如何切換到 Groq API 服務](#如何切換到-groq-api-服務)
+    - [如何切換到 Ollama API 服務](#如何切換到-ollama-api-服務)
+    - [如何切換到 OpenRouter API 服務](#如何切換到-openrouter-api-服務)
+  - [使用方法](#使用方法)
+    - [CLI 模式](#cli-模式)
+  - [更改提交訊息模板](#更改提交訊息模板)
+    - [Git Hook](#git-hook)
+      - [Install（安裝）](#install安裝)
+      - [Uninstall（解除安裝）](#uninstall解除安裝)
+    - [程式碼審查（Code Review）](#程式碼審查code-review)
+  - [測試（Testing）](#測試testing)
+  - [Star History](#star-history)
+  - [參考資料（Reference）](#參考資料reference)
+
 一個用 [Go](https://go.dev) 編寫的 CLI 工具，使用 ChatGPT AI (gpt-4o, gpt-4 模型) 生成 git 提交訊息或提供代碼審查摘要。它還會自動安裝 [git prepare-commit-msg hook](https://git-scm.com/docs/githooks)。
 
 - [繁體中文介紹][1]
