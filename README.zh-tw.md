@@ -100,11 +100,11 @@ chmod +x install.sh
 
 #### 可設定的環境變數
 
-| 變數名稱      | 預設值             | 說明                           |
-| ------------- | ------------------ | ------------------------------ |
-| VERSION       | 0.16.1             | 要安裝的 CodeGPT 版本          |
-| INSTALL_DIR   | $HOME/.codegpt/bin | 安裝目錄                       |
-| CURL_INSECURE | false              | 是否跳過 SSL 驗證 (true/false) |
+| 變數名稱      | 預設值             | 說明                                      |
+| ------------- | ------------------ | ----------------------------------------- |
+| VERSION       | latest             | 要安裝的 CodeGPT 版本（預設為最新發布版） |
+| INSTALL_DIR   | $HOME/.codegpt/bin | 安裝目錄                                  |
+| CURL_INSECURE | false              | 是否跳過 SSL 驗證 (true/false)            |
 
 使用範例：
 

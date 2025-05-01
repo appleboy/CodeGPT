@@ -89,11 +89,11 @@ chmod +x install.sh
 
 #### 可配置的环境变量
 
-| 变量名        | 默认值             | 说明                           |
-| ------------- | ------------------ | ------------------------------ |
-| VERSION       | 0.16.1             | 要安装的 CodeGPT 版本          |
-| INSTALL_DIR   | $HOME/.codegpt/bin | 安装目录                       |
-| CURL_INSECURE | false              | 是否跳过 SSL 验证 (true/false) |
+| 变量名        | 默认值             | 说明                                      |
+| ------------- | ------------------ | ----------------------------------------- |
+| VERSION       | latest             | 要安装的 CodeGPT 版本（默认为最新发布版） |
+| INSTALL_DIR   | $HOME/.codegpt/bin | 安装目录                                  |
+| CURL_INSECURE | false              | 是否跳过 SSL 验证 (true/false)            |
 
 使用示例：
 
