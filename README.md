@@ -87,7 +87,7 @@ choco install codegpt
 
 ```sh
 # Download and run the install script
-curl -sSL https://raw.githubusercontent.com/appleboy/CodeGPT/main/install.sh | bash
+bash < <(curl -sSL https://raw.githubusercontent.com/appleboy/CodeGPT/main/install.sh)
 ```
 
 Or download and run manually:

@@ -76,7 +76,7 @@ choco install codegpt
 
 ```sh
 # 下载并执行安装脚本
-curl -sSL https://raw.githubusercontent.com/appleboy/CodeGPT/main/install.sh | bash
+bash < <(curl -sSL https://raw.githubusercontent.com/appleboy/CodeGPT/main/install.sh)
 ```
 
 或手动下载后执行：
@@ -86,11 +86,11 @@ chmod +x install.sh
 ./install.sh
 ```
 
-该脚本会自动：
+该脚本会：
 
 1. 检测您的操作系统和架构
 2. 下载最新版二进制文件
-3. 将程序加入 PATH
+3. 将程序加入您的 PATH
 
 可以从 [发布页面](https://github.com/appleboy/CodeGPT/releases) 下载预编译的二进制文件。将二进制文件权限更改为 `755` 并将其复制到系统 bin 目录。使用如下所示的 `codegpt` 命令。
 
