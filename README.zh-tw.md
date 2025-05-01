@@ -16,6 +16,7 @@
   - [安裝](#安裝)
     - [macOS](#macos)
     - [Windows](#windows)
+    - [使用安裝腳本](#使用安裝腳本)
     - [預編譯二進制文件](#預編譯二進制文件)
     - [從源碼安裝](#從源碼安裝)
     - [使用 VSCode Devcontainer](#使用-vscode-devcontainer)
@@ -81,6 +82,26 @@ brew install codegpt
 ```sh
 choco install codegpt
 ```
+
+### 使用安裝腳本
+
+```sh
+# 下載並執行安裝腳本
+curl -sSL https://raw.githubusercontent.com/appleboy/CodeGPT/main/install.sh | bash
+```
+
+或手動下載後執行：
+
+```sh
+chmod +x install.sh
+./install.sh
+```
+
+此腳本會自動：
+
+1. 偵測您的作業系統與架構
+2. 下載最新版二進位檔案
+3. 將程式加入 PATH
 
 ### 預編譯二進制文件
 

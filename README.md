@@ -16,6 +16,7 @@ English | [繁體中文](./README.zh-tw.md) | [简体中文](./README.zh-cn.md)
   - [Installation](#installation)
     - [macOS](#macos)
     - [Windows](#windows)
+    - [Using install script](#using-install-script)
     - [Pre-compiled Binaries](#pre-compiled-binaries)
     - [From Source](#from-source)
     - [Using vscode devcontainer](#using-vscode-devcontainer)
@@ -81,6 +82,26 @@ Install via [Chocolatey](https://chocolatey.org/install):
 ```sh
 choco install codegpt
 ```
+
+### Using install script
+
+```sh
+# Download and run the install script
+curl -sSL https://raw.githubusercontent.com/appleboy/CodeGPT/main/install.sh | bash
+```
+
+Or download and run manually:
+
+```sh
+chmod +x install.sh
+./install.sh
+```
+
+The script will:
+
+1. Detect your OS and architecture
+2. Download the latest binary
+3. Add the binary to your PATH
 
 ### Pre-compiled Binaries
 
