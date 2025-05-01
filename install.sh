@@ -10,12 +10,12 @@ YELLOW='\033[1;33m'
 ORANGE='\033[38;2;255;140;0m'
 NC='\033[0m' # No Color
 
-RELEASE_URL="${RELEASE_URL:-https://github.com/appleboy/CodeGPT/releases/download}"
 VERSION="${VERSION:-0.16.1}"
+RELEASE_URL="${RELEASE_URL:-https://github.com/appleboy/CodeGPT/releases/download}"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/.codegpt/bin}"
 CURL_INSECURE="${CURL_INSECURE:-false}"
-CLIENT_PLATFORM="${SSH_CLIENT_OS:-$(uname -s | tr '[:upper:]' '[:lower:]')}"
-CLIENT_ARCH="${SSH_CLIENT_ARCH:-$(uname -m)}"
+CLIENT_PLATFORM="${CLIENT_PLATFORM:-$(uname -s | tr '[:upper:]' '[:lower:]')}"
+CLIENT_ARCH="${CLIENT_ARCH:-$(uname -m)}"
 
 function print_message() {
   local level=$1
