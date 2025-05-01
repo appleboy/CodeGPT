@@ -1,6 +1,10 @@
 package version
 
 var (
-	Version string = ""
-	Commit  string = ""
+	Version   string
+	GitCommit string
+	BuildTime string
+	GoVersion string
+	BuildOS   string
+	BuildArch string
 )

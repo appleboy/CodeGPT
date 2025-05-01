@@ -2,7 +2,6 @@ GO ?= go
 EXECUTABLE := codegpt
 GOFILES := $(shell find . -type f -name "*.go")
 TAGS ?=
-LDFLAGS ?= -X 'github.com/appleboy/CodeGPT/version.Version=$(VERSION)' -X 'github.com/appleboy/CodeGPT/version.Commit=$(COMMIT)'
 
 ifneq ($(shell uname), Darwin)
 	EXTLDFLAGS = -extldflags "-static" $(null)
@@ -16,6 +15,14 @@ else
 	VERSION ?= $(shell git describe --tags --always || git rev-parse --short HEAD)
 endif
 COMMIT ?= $(shell git rev-parse --short HEAD)
+
+LDFLAGS ?= -X 'github.com/appleboy/CodeGPT/version.Version=$(VERSION)' \
+	-X 'github.com/appleboy/CodeGPT/version.BuildTime=$(shell date +%Y-%m-%dT%H:%M:%S)' \
+	-X 'github.com/appleboy/CodeGPT/version.GitCommit=$(shell git rev-parse HEAD)' \
+	-X 'github.com/appleboy/CodeGPT/version.GitBranch=$(shell git rev-parse --abbrev-ref HEAD)' \
+	-X 'github.com/appleboy/CodeGPT/version.GoVersion=$(shell $(GO) version | cut -d " " -f 3)' \
+	-X 'github.com/appleboy/CodeGPT/version.BuildOS=$(shell $(GO) env GOOS)' \
+	-X 'github.com/appleboy/CodeGPT/version.BuildArch=$(shell $(GO) env GOARCH)'
 
 ## build: build the codegpt binary
 build: $(EXECUTABLE)
