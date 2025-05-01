@@ -17,6 +17,7 @@ English | [繁體中文](./README.zh-tw.md) | [简体中文](./README.zh-cn.md)
     - [macOS](#macos)
     - [Windows](#windows)
     - [Using install script](#using-install-script)
+      - [Configurable Environment Variables](#configurable-environment-variables)
     - [Pre-compiled Binaries](#pre-compiled-binaries)
     - [From Source](#from-source)
     - [Using vscode devcontainer](#using-vscode-devcontainer)
@@ -95,6 +96,21 @@ Or download and run manually:
 ```sh
 chmod +x install.sh
 ./install.sh
+```
+
+#### Configurable Environment Variables
+
+| Variable Name | Default Value      | Description                        |
+| ------------- | ------------------ | ---------------------------------- |
+| VERSION       | 0.16.1             | The CodeGPT version to install     |
+| INSTALL_DIR   | $HOME/.codegpt/bin | Installation directory             |
+| CURL_INSECURE | false              | Skip SSL verification (true/false) |
+
+Example usage:
+
+```sh
+# Install a specific version to a custom directory
+VERSION=0.15.0 INSTALL_DIR=/opt/codegpt ./install.sh
 ```
 
 The script will:

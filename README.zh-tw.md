@@ -17,6 +17,7 @@
     - [macOS](#macos)
     - [Windows](#windows)
     - [使用安裝腳本](#使用安裝腳本)
+      - [可設定的環境變數](#可設定的環境變數)
     - [預編譯二進制文件](#預編譯二進制文件)
     - [從源碼安裝](#從源碼安裝)
     - [使用 VSCode Devcontainer](#使用-vscode-devcontainer)
@@ -90,11 +91,26 @@ choco install codegpt
 bash < <(curl -sSL https://raw.githubusercontent.com/appleboy/CodeGPT/main/install.sh)
 ```
 
-或手動下載後執行：
+或手動下載並執行：
 
 ```sh
 chmod +x install.sh
 ./install.sh
+```
+
+#### 可設定的環境變數
+
+| 變數名稱      | 預設值             | 說明                           |
+| ------------- | ------------------ | ------------------------------ |
+| VERSION       | 0.16.1             | 要安裝的 CodeGPT 版本          |
+| INSTALL_DIR   | $HOME/.codegpt/bin | 安裝目錄                       |
+| CURL_INSECURE | false              | 是否跳過 SSL 驗證 (true/false) |
+
+使用範例：
+
+```sh
+# 安裝特定版本到自訂目錄
+VERSION=0.15.0 INSTALL_DIR=/opt/codegpt ./install.sh
 ```
 
 此腳本會：
