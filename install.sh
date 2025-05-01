@@ -10,13 +10,6 @@ YELLOW='\033[1;33m'
 ORANGE='\033[38;2;255;140;0m'
 NC='\033[0m' # No Color
 
-VERSION="${VERSION:-0.16.1}"
-RELEASE_URL="${RELEASE_URL:-https://github.com/appleboy/CodeGPT/releases/download}"
-INSTALL_DIR="${INSTALL_DIR:-$HOME/.codegpt/bin}"
-CURL_INSECURE="${CURL_INSECURE:-false}"
-CLIENT_PLATFORM="${CLIENT_PLATFORM:-$(uname -s | tr '[:upper:]' '[:lower:]')}"
-CLIENT_ARCH="${CLIENT_ARCH:-$(uname -m)}"
-
 function print_message() {
   local level=$1
   local message=$2
@@ -49,23 +42,10 @@ function detect_client_info() {
   esac
 }
 
-detect_client_info
-
 function download_and_install() {
   DOWNLOAD_URL_PREFIX="${RELEASE_URL}/v${VERSION}"
   CLIENT_BINARY="CodeGPT-${VERSION}-${CLIENT_PLATFORM}-${CLIENT_ARCH}"
   print_message info "Downloading ${CLIENT_BINARY} from ${DOWNLOAD_URL_PREFIX}"
-
-  if [[ "${CURL_INSECURE}" != 'true' && "${CURL_INSECURE}" != 'false' ]]; then
-    log_error "CURL_INSECURE must be either 'true' or 'false'" 4
-  fi
-  if [[ "${CURL_INSECURE}" == 'true' ]]; then
-    print_message warning "CURL_INSECURE is set to true. Proceeding with insecure download."
-  fi
-  INSECURE_OPTION=""
-  if [[ "${CURL_INSECURE}" == 'true' ]]; then
-    INSECURE_OPTION="--insecure"
-  fi
   mkdir -p "$INSTALL_DIR" || log_error "Failed to create directory: $INSTALL_DIR" 5
   TARGET="$INSTALL_DIR/${CLIENT_BINARY}"
 
@@ -76,8 +56,6 @@ function download_and_install() {
   # show the version
   "${INSTALL_DIR}/codegpt" version
 }
-
-download_and_install
 
 function add_to_path() {
   local config_file=$1
@@ -97,6 +75,52 @@ function add_to_path() {
     print_message info "  $command"
   fi
 }
+
+# Fetch latest release version from GitHub if VERSION is not set
+get_latest_version() {
+  local latest
+  if command -v jq >/dev/null 2>&1; then
+    latest=$(curl $INSECURE_OPTION -# --retry 5 -fSL https://api.github.com/repos/appleboy/CodeGPT/releases/latest | jq -r .tag_name)
+  else
+    latest=$(curl $INSECURE_OPTION -# --retry 5 -fSL https://api.github.com/repos/appleboy/CodeGPT/releases/latest | grep '"tag_name":' | sed -E 's/.*"tag_name": ?"v?([^"]+)".*/\1/')
+  fi
+  # Remove leading 'v' if present
+  latest="${latest#v}"
+  echo "$latest"
+}
+
+CURL_INSECURE="${CURL_INSECURE:-false}"
+if [[ "${CURL_INSECURE}" != 'true' && "${CURL_INSECURE}" != 'false' ]]; then
+  log_error "CURL_INSECURE must be either 'true' or 'false'" 4
+fi
+if [[ "${CURL_INSECURE}" == 'true' ]]; then
+  print_message warning "CURL_INSECURE is set to true. Proceeding with insecure download."
+fi
+INSECURE_OPTION=""
+if [[ "${CURL_INSECURE}" == 'true' ]]; then
+  INSECURE_OPTION="--insecure"
+fi
+
+if [[ -z "${VERSION:-}" ]]; then
+  LATEST_VERSION=$(get_latest_version)
+  if [[ -z "$LATEST_VERSION" ]]; then
+    log_error "Failed to fetch the latest version from GitHub." 6
+  fi
+  VERSION="$LATEST_VERSION"
+fi
+
+# Check if VERSION is a valid semantic version
+if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  log_error "Invalid version format: $VERSION. Expected format: x.y.z" 1
+fi
+
+RELEASE_URL="${RELEASE_URL:-https://github.com/appleboy/CodeGPT/releases/download}"
+INSTALL_DIR="${INSTALL_DIR:-$HOME/.codegpt/bin}"
+CLIENT_PLATFORM="${CLIENT_PLATFORM:-$(uname -s | tr '[:upper:]' '[:lower:]')}"
+CLIENT_ARCH="${CLIENT_ARCH:-$(uname -m)}"
+
+detect_client_info
+download_and_install
 
 XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
 
