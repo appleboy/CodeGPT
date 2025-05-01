@@ -83,6 +83,11 @@ function add_to_path() {
   local config_file=$1
   local command=$2
 
+  if grep -Fxq "$command" "$config_file"; then
+    print_message info "Configuration already exists in $config_file, skipping"
+    return 0
+  fi
+
   if [[ -w $config_file ]]; then
     printf "\n# codegpt\n" >>"$config_file"
     echo "$command" >>"$config_file"
