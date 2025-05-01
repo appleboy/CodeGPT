@@ -7,7 +7,9 @@ import (
 	"strings"
 
 	"github.com/appleboy/CodeGPT/core"
+	"github.com/appleboy/CodeGPT/core/transport"
 	"github.com/appleboy/CodeGPT/proxy"
+	"github.com/appleboy/CodeGPT/version"
 
 	openai "github.com/sashabaranov/go-openai"
 )
@@ -19,23 +21,13 @@ var _ core.Generative = (*Client)(nil)
 
 // Client is a struct that represents an OpenAI client.
 type Client struct {
-	client      *openai.Client
-	model       string
-	maxTokens   int
-	temperature float32
-
-	// An alternative to sampling with temperature, called nucleus sampling,
-	// where the model considers the results of the tokens with top_p probability mass.
-	// So 0.1 means only the tokens comprising the top 10% probability mass are considered.
-	topP float32
-	// Number between -2.0 and 2.0.
-	// Positive values penalize new tokens based on whether they appear in the text so far,
-	// increasing the model's likelihood to talk about new topics.
-	presencePenalty float32
-	// Number between -2.0 and 2.0.
-	// Positive values penalize new tokens based on their existing frequency in the text so far,
-	// decreasing the model's likelihood to repeat the same line verbatim.
+	client           *openai.Client
+	model            string
+	maxTokens        int
+	temperature      float32
+	topP             float32
 	frequencyPenalty float32
+	presencePenalty  float32
 }
 
 type Response struct {
@@ -205,9 +197,12 @@ func New(opts ...Option) (*Client, error) {
 
 	// Create a new client instance with the necessary fields.
 	engine := &Client{
-		model:       cfg.model,
-		maxTokens:   cfg.maxTokens,
-		temperature: cfg.temperature,
+		model:            cfg.model,
+		maxTokens:        cfg.maxTokens,
+		temperature:      cfg.temperature,
+		topP:             cfg.topP,
+		frequencyPenalty: cfg.frequencyPenalty,
+		presencePenalty:  cfg.presencePenalty,
 	}
 
 	// Create a new OpenAI config object with the given API token and other optional fields.
@@ -228,6 +223,15 @@ func New(opts ...Option) (*Client, error) {
 	)
 	if err != nil {
 		return nil, fmt.Errorf("can't create a new HTTP client: %w", err)
+	}
+
+	// Inject x-app-name and x-app-version headers using core/transport.DefaultHeaderTransport
+	// Always wrap the proxy's httpClient.Transport
+	httpClient.Transport = &transport.DefaultHeaderTransport{
+		Origin:     httpClient.Transport,
+		Header:     nil,
+		AppName:    version.App,
+		AppVersion: version.Version,
 	}
 
 	// Set the OpenAI client to use the default configuration with Azure-specific options, if the provider is Azure.

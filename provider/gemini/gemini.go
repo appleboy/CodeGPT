@@ -3,9 +3,12 @@ package gemini
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/appleboy/CodeGPT/core"
+	"github.com/appleboy/CodeGPT/core/transport"
+	"github.com/appleboy/CodeGPT/version"
 	"github.com/appleboy/com/convert"
 
 	"github.com/google/generative-ai-go/genai"
@@ -117,7 +120,17 @@ func New(ctx context.Context, opts ...Option) (c *Client, err error) {
 		temperature: cfg.temperature,
 	}
 
-	client, err := genai.NewClient(ctx, option.WithAPIKey(cfg.token))
+	// Inject x-app-name and x-app-version headers using core/transport.DefaultHeaderTransport
+	httpClient := &http.Client{
+		Transport: &transport.DefaultHeaderTransport{
+			Origin:     http.DefaultTransport,
+			Header:     nil,
+			AppName:    version.App,
+			AppVersion: version.Version,
+		},
+	}
+
+	client, err := genai.NewClient(ctx, option.WithAPIKey(cfg.token), option.WithHTTPClient(httpClient))
 	if err != nil {
 		return nil, err
 	}

@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"net/http"
 
 	"github.com/appleboy/CodeGPT/core"
+	"github.com/appleboy/CodeGPT/core/transport"
 	"github.com/appleboy/CodeGPT/proxy"
+	"github.com/appleboy/CodeGPT/version"
 
 	"github.com/appleboy/com/convert"
 	"github.com/liushuangls/go-anthropic/v2"
@@ -115,35 +116,7 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 	}, nil
 }
 
-// DefaultHeaderTransport is an http.RoundTripper that adds the given headers to
-type DefaultHeaderTransport struct {
-	Origin http.RoundTripper
-	Header http.Header
-}
-
-// RoundTrip implements the http.RoundTripper interface.
-func (t *DefaultHeaderTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	for key, values := range t.Header {
-		for _, value := range values {
-			req.Header.Add(key, value)
-		}
-	}
-	return t.Origin.RoundTrip(req)
-}
-
 // New creates a new Client instance with the provided options.
-// It validates the configuration, sets up the HTTP transport with optional
-// proxy settings, and initializes the Client with the specified parameters.
-//
-// Parameters:
-//
-//	opts - A variadic list of Option functions to configure the Client.
-//
-// Returns:
-//
-//	c - A pointer to the newly created Client instance.
-//	err - An error if the configuration is invalid or if there is an issue
-//	      setting up the HTTP transport or proxy.
 func New(opts ...Option) (c *Client, err error) {
 	// Create a new config object with the given options.
 	cfg := newConfig(opts...)
@@ -161,6 +134,14 @@ func New(opts ...Option) (c *Client, err error) {
 	)
 	if err != nil {
 		return nil, fmt.Errorf("can't create a new HTTP client: %w", err)
+	}
+
+	// Inject x-app-name and x-app-version headers using core/transport.DefaultHeaderTransport
+	httpClient.Transport = &transport.DefaultHeaderTransport{
+		Origin:     httpClient.Transport,
+		Header:     nil,
+		AppName:    version.App,
+		AppVersion: version.Version,
 	}
 
 	// Create a new client instance with the necessary fields.
