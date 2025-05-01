@@ -1,6 +1,7 @@
 package transport
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"reflect"
@@ -33,8 +34,14 @@ func TestDefaultHeaderTransport_CustomHeaders(t *testing.T) {
 		AppName:    "myapp",
 		AppVersion: "1.2.3",
 	}
-	req, _ := http.NewRequest("GET", "http://example.com", nil)
-	tr.RoundTrip(req)
+	req, _ := http.NewRequestWithContext(context.Background(), "GET", "http://example.com", nil)
+	resp, err := tr.RoundTrip(req)
+	if err != nil {
+		t.Fatalf("RoundTrip error: %v", err)
+	}
+	if resp != nil && resp.Body != nil {
+		resp.Body.Close()
+	}
 
 	want := http.Header{
 		"X-Test":        {"abc"},
@@ -58,8 +65,14 @@ func TestDefaultHeaderTransport_EmptyHeadersAndAppInfo(t *testing.T) {
 		AppName:    "",
 		AppVersion: "",
 	}
-	req, _ := http.NewRequest("GET", "http://example.com", nil)
-	tr.RoundTrip(req)
+	req, _ := http.NewRequestWithContext(context.Background(), "GET", "http://example.com", nil)
+	resp, err := tr.RoundTrip(req)
+	if err != nil {
+		t.Fatalf("RoundTrip error: %v", err)
+	}
+	if resp != nil && resp.Body != nil {
+		resp.Body.Close()
+	}
 
 	// x-app-name/version should not be present
 	if req.Header.Get("x-app-name") != "" {
@@ -78,8 +91,11 @@ func TestDefaultHeaderTransport_OriginErrorPropagation(t *testing.T) {
 		AppName:    "",
 		AppVersion: "",
 	}
-	req, _ := http.NewRequest("GET", "http://example.com", nil)
-	_, err := tr.RoundTrip(req)
+	req, _ := http.NewRequestWithContext(context.Background(), "GET", "http://example.com", nil)
+	resp, err := tr.RoundTrip(req)
+	if resp != nil && resp.Body != nil {
+		resp.Body.Close()
+	}
 	if err == nil || err.Error() != "mock error" {
 		t.Errorf("Expected error 'mock error', got %v", err)
 	}
@@ -95,8 +111,14 @@ func TestDefaultHeaderTransport_MultipleHeaderValues(t *testing.T) {
 		AppName:    "app",
 		AppVersion: "v",
 	}
-	req, _ := http.NewRequest("GET", "http://example.com", nil)
-	tr.RoundTrip(req)
+	req, _ := http.NewRequestWithContext(context.Background(), "GET", "http://example.com", nil)
+	resp, err := tr.RoundTrip(req)
+	if err != nil {
+		t.Fatalf("RoundTrip error: %v", err)
+	}
+	if resp != nil && resp.Body != nil {
+		resp.Body.Close()
+	}
 
 	got := req.Header.Values("X-Multi")
 	want := []string{"a", "b"}
