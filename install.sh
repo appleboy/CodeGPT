@@ -153,3 +153,8 @@ if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
     ;;
   esac
 fi
+
+if [ -n "${GITHUB_ACTIONS-}" ] && [ "${GITHUB_ACTIONS}" == "true" ]; then
+  echo "$INSTALL_DIR" >>$GITHUB_PATH
+  print_message info "Added $INSTALL_DIR to \$GITHUB_PATH"
+fi
