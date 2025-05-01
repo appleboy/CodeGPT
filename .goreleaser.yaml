@@ -1,6 +1,8 @@
 before:
   hooks:
     - go mod tidy
+    - export GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    - export GO_VERSION=$(go version | cut -d " " -f 3)
 
 builds:
   - env:
@@ -59,8 +61,13 @@ builds:
       - -trimpath
     ldflags:
       - -s -w
-      - -X github.com/appleboy/CodeGPT/cmd.Version={{.Version}}
-      - -X github.com/appleboy/CodeGPT/cmd.Commit={{.ShortCommit}}
+      - -X 'github.com/appleboy/CodeGPT/version.Version={{.Version}}'
+      - -X 'github.com/appleboy/CodeGPT/version.BuildTime={{.Date}}'
+      - -X 'github.com/appleboy/CodeGPT/version.GitCommit={{.FullCommit}}'
+      - -X 'github.com/appleboy/CodeGPT/version.GitBranch={{.Env.GIT_BRANCH}}'
+      - -X 'github.com/appleboy/CodeGPT/version.GoVersion={{.Env.GO_VERSION}}'
+      - -X 'github.com/appleboy/CodeGPT/version.BuildOS={{.Os}}'
+      - -X 'github.com/appleboy/CodeGPT/version.BuildArch={{.Arch}}'
     binary: >-
       {{ .ProjectName }}-
       {{- if .IsSnapshot }}{{ .Branch }}-
