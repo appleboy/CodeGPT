@@ -54,7 +54,13 @@ function download_and_install() {
   # Rename the binary to codegpt
   mv "${TARGET}" "${INSTALL_DIR}/codegpt"
   # show the version
+  print_message info "Installed ${ORANGE}${CLIENT_BINARY}${NC} to ${GREEN}${INSTALL_DIR}${NC}"
+  print_message info "Run ${ORANGE}codegpt version${NC} to show the version"
+  print_message info ""
+  print_message info "==============================="
   "${INSTALL_DIR}/codegpt" version
+  print_message info "==============================="
+  print_message info ""
 }
 
 function add_to_path() {
@@ -182,6 +188,9 @@ if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
     ;;
   esac
 fi
+
+print_message info "To use the command, please restart your terminal or run:"
+print_message info "  source $config_file"
 
 if [ -n "${GITHUB_ACTIONS-}" ] && [ "${GITHUB_ACTIONS}" == "true" ]; then
   echo "$INSTALL_DIR" >>$GITHUB_PATH
