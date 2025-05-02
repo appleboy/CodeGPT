@@ -1,7 +1,6 @@
 before:
   hooks:
     - go mod tidy
-    - export GO_VERSION=$(go version | cut -d " " -f 3)
 
 builds:
   - env:
@@ -63,7 +62,7 @@ builds:
       - -X 'github.com/appleboy/CodeGPT/version.Version={{.Version}}'
       - -X 'github.com/appleboy/CodeGPT/version.BuildTime={{.Date}}'
       - -X 'github.com/appleboy/CodeGPT/version.GitCommit={{.FullCommit}}'
-      - -X 'github.com/appleboy/CodeGPT/version.GoVersion={{.Env.GO_VERSION}}'
+      - -X 'github.com/appleboy/CodeGPT/version.GoVersion=$(go version | cut -d " " -f 3)'
       - -X 'github.com/appleboy/CodeGPT/version.BuildOS={{.Os}}'
       - -X 'github.com/appleboy/CodeGPT/version.BuildArch={{.Arch}}'
     binary: >-
