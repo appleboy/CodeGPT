@@ -19,7 +19,6 @@ COMMIT ?= $(shell git rev-parse --short HEAD)
 LDFLAGS ?= -X 'github.com/appleboy/CodeGPT/version.Version=$(VERSION)' \
 	-X 'github.com/appleboy/CodeGPT/version.BuildTime=$(shell date +%Y-%m-%dT%H:%M:%S)' \
 	-X 'github.com/appleboy/CodeGPT/version.GitCommit=$(shell git rev-parse HEAD)' \
-	-X 'github.com/appleboy/CodeGPT/version.GitBranch=$(shell git rev-parse --abbrev-ref HEAD)' \
 	-X 'github.com/appleboy/CodeGPT/version.GoVersion=$(shell $(GO) version | cut -d " " -f 3)' \
 	-X 'github.com/appleboy/CodeGPT/version.BuildOS=$(shell $(GO) env GOOS)' \
 	-X 'github.com/appleboy/CodeGPT/version.BuildArch=$(shell $(GO) env GOARCH)'
