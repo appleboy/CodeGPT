@@ -63,7 +63,7 @@ builds:
       - -X 'github.com/appleboy/CodeGPT/version.Version={{.Version}}'
       - -X 'github.com/appleboy/CodeGPT/version.BuildTime={{.Date}}'
       - -X 'github.com/appleboy/CodeGPT/version.GitCommit={{.FullCommit}}'
-      - -X 'github.com/appleboy/CodeGPT/version.GoVersion={{.Env.GOVERSION}}'
+      - -X 'github.com/appleboy/CodeGPT/version.GoVersion={{.Env.GO_VERSION}}'
       - -X 'github.com/appleboy/CodeGPT/version.BuildOS={{.Os}}'
       - -X 'github.com/appleboy/CodeGPT/version.BuildArch={{.Arch}}'
     binary: >-
