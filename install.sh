@@ -30,6 +30,11 @@ function log_error() {
 }
 
 function detect_client_info() {
+  # Detect WSL or Cygwin as windows
+  if [[ "${CLIENT_PLATFORM}" =~ ^(mingw|cygwin|msys)_nt* ]] || grep -qi microsoft /proc/version 2>/dev/null; then
+    CLIENT_PLATFORM="windows"
+  fi
+
   case "${CLIENT_PLATFORM}" in
   darwin | linux | windows) ;;
   *) log_error "Unknown or unsupported platform: ${CLIENT_PLATFORM}. Supported platforms are Linux, Darwin, and Windows." 2 ;;
@@ -38,7 +43,8 @@ function detect_client_info() {
   case "${CLIENT_ARCH}" in
   x86_64* | i?86_64* | amd64*) CLIENT_ARCH="amd64" ;;
   aarch64* | arm64*) CLIENT_ARCH="arm64" ;;
-  *) log_error "Unknown or unsupported architecture: ${CLIENT_ARCH}. Supported architectures are x86_64, i686, and arm64." 3 ;;
+  armv7l*) CLIENT_ARCH="arm-7" ;;
+  *) log_error "Unknown or unsupported architecture: ${CLIENT_ARCH}. Supported architectures are x86_64, i686, arm64, armv7." 3 ;;
   esac
 }
 
@@ -50,9 +56,9 @@ function download_and_install() {
   TARGET="$INSTALL_DIR/${CLIENT_BINARY}"
 
   curl -# -fSL --retry 5 --keepalive-time 2 ${INSECURE_OPTION} "${DOWNLOAD_URL_PREFIX}/${CLIENT_BINARY}" -o "${TARGET}"
-  chmod +x "${TARGET}"
+  chmod +x "${TARGET}" || log_error "Failed to set executable permission on: ${TARGET}" 7
   # Rename the binary to codegpt
-  mv "${TARGET}" "${INSTALL_DIR}/codegpt"
+  mv "${TARGET}" "${INSTALL_DIR}/codegpt" || log_error "Failed to rename ${TARGET} to ${INSTALL_DIR}/codegpt" 8
   # show the version
   print_message info "Installed ${ORANGE}${CLIENT_BINARY}${NC} to ${GREEN}${INSTALL_DIR}${NC}"
   print_message info "Run ${ORANGE}codegpt version${NC} to show the version"
@@ -61,6 +67,7 @@ function download_and_install() {
   "${INSTALL_DIR}/codegpt" version
   print_message info "==============================="
   print_message info ""
+  print_message info "Installation completed successfully!"
 }
 
 function add_to_path() {
@@ -100,7 +107,8 @@ if [[ "${CURL_INSECURE}" != 'true' && "${CURL_INSECURE}" != 'false' ]]; then
   log_error "CURL_INSECURE must be either 'true' or 'false'" 4
 fi
 if [[ "${CURL_INSECURE}" == 'true' ]]; then
-  print_message warning "CURL_INSECURE is set to true. Proceeding with insecure download."
+  print_message warning "WARNING: CURL_INSECURE is set to true. Proceeding with insecure download."
+  print_message warning "WARNING: You are bypassing SSL certificate verification. This is insecure and may expose you to man-in-the-middle attacks."
 fi
 INSECURE_OPTION=""
 if [[ "${CURL_INSECURE}" == 'true' ]]; then
