@@ -8,9 +8,10 @@ import (
 	"github.com/appleboy/CodeGPT/core"
 	"github.com/appleboy/CodeGPT/core/transport"
 	"github.com/appleboy/CodeGPT/version"
-	"github.com/appleboy/com/convert"
 
+	"github.com/appleboy/com/convert"
 	"github.com/sashabaranov/go-openai"
+	"github.com/yassinebenaid/godump"
 	"google.golang.org/genai"
 )
 
@@ -116,6 +117,10 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 		resp.Candidates[0].Content.Parts[0].FunctionCall.Args["prefix"] == nil ||
 		resp.Candidates[0].Content.Parts[0].FunctionCall.Args["prefix"].(string) == "" {
 		return nil, ErrInvalidFunctionCall
+	}
+
+	if c.debug {
+		_ = godump.Dump(resp.Candidates)
 	}
 
 	r := &core.Response{

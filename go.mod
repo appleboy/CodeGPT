@@ -15,6 +15,7 @@ require (
 	github.com/sashabaranov/go-openai v1.38.0
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.19.0
+	github.com/yassinebenaid/godump v0.11.1
 	golang.org/x/net v0.39.0
 	google.golang.org/genai v1.3.0
 )
