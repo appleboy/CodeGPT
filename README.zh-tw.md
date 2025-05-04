@@ -239,7 +239,24 @@ codegpt config set openai.model xxxxx-gpt-4o
 ```sh
 codegpt config set openai.provider gemini
 codegpt config set openai.api_key xxxxxxx
-codegpt config set openai.model gemini-1.5-flash-latest
+codegpt config set openai.model gemini-2.0-flash
+```
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant GeminiClient as Gemini Provider
+    participant GenAI as Google GenAI API
+
+    User->>GeminiClient: Completion(ctx, content)
+    GeminiClient->>GenAI: GenerateContent(model, content, config)
+    GenAI-->>GeminiClient: Response (text, usage metadata)
+    GeminiClient-->>User: core.Response (text, usage)
+
+    User->>GeminiClient: GetSummaryPrefix(ctx, content)
+    GeminiClient->>GenAI: GenerateContent(model, content, config with function call)
+    GenAI-->>GeminiClient: Response (function call result)
+    GeminiClient-->>User: core.Response (prefix or error)
 ```
 
 [60]: https://ai.google.dev/gemini-api
