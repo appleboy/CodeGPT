@@ -2,22 +2,22 @@ package gemini
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"net/http"
-	"strings"
 
 	"github.com/appleboy/CodeGPT/core"
 	"github.com/appleboy/CodeGPT/core/transport"
 	"github.com/appleboy/CodeGPT/version"
 	"github.com/appleboy/com/convert"
 
-	"github.com/google/generative-ai-go/genai"
 	"github.com/sashabaranov/go-openai"
-	"google.golang.org/api/option"
+	"google.golang.org/genai"
 )
 
+var ErrInvalidFunctionCall = errors.New("invalid function call")
+
 type Client struct {
-	client      *genai.GenerativeModel
+	client      *genai.Client
 	model       string
 	maxTokens   int32
 	temperature float32
@@ -27,78 +27,100 @@ type Client struct {
 
 // Completion is a method on the Client struct that takes a context.Context and a string argument
 func (c *Client) Completion(ctx context.Context, content string) (*core.Response, error) {
-	resp, err := c.client.GenerateContent(ctx, genai.Text(content))
+	cfg := &genai.GenerateContentConfig{
+		TopP:            convert.ToPtr(c.topP),
+		Temperature:     convert.ToPtr(c.temperature),
+		MaxOutputTokens: c.maxTokens,
+	}
+	data := []*genai.Content{
+		{
+			Role: "user",
+			Parts: []*genai.Part{
+				{
+					Text: content,
+				},
+			},
+		},
+	}
+
+	resp, err := c.client.Models.GenerateContent(ctx, c.model, data, cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	var ret string
-
-	for _, cand := range resp.Candidates {
-		for _, part := range cand.Content.Parts {
-			ret += fmt.Sprintf("%v", part)
-		}
-	}
-
-	usage := core.Usage{
-		PromptTokens:     int(resp.UsageMetadata.PromptTokenCount),
-		CompletionTokens: int(resp.UsageMetadata.CandidatesTokenCount),
-		TotalTokens:      int(resp.UsageMetadata.TotalTokenCount),
-	}
-
-	if resp.UsageMetadata.CachedContentTokenCount > 0 {
-		usage.PromptTokensDetails = &openai.PromptTokensDetails{
-			CachedTokens: int(resp.UsageMetadata.CachedContentTokenCount),
+	usage := core.Usage{}
+	if resp.UsageMetadata != nil {
+		usage.PromptTokens = int(resp.UsageMetadata.PromptTokenCount)
+		usage.CompletionTokens = int(resp.UsageMetadata.CandidatesTokenCount)
+		usage.TotalTokens = int(resp.UsageMetadata.TotalTokenCount)
+		if resp.UsageMetadata.CachedContentTokenCount > 0 {
+			usage.PromptTokensDetails = &openai.PromptTokensDetails{
+				CachedTokens: int(resp.UsageMetadata.CachedContentTokenCount),
+			}
 		}
 	}
 
 	return &core.Response{
-		Content: ret,
+		Content: resp.Text(),
 		Usage:   usage,
 	}, nil
 }
 
 // GetSummaryPrefix is an API call to get a summary prefix using function call.
 func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Response, error) {
-	c.client.Tools = []*genai.Tool{summaryPrefixFunc}
+	cfg := &genai.GenerateContentConfig{
+		MaxOutputTokens: c.maxTokens,
+		TopP:            convert.ToPtr(c.topP),
+		Temperature:     convert.ToPtr(c.temperature),
+		Tools:           []*genai.Tool{summaryPrefixFunc},
+		ToolConfig: &genai.ToolConfig{
+			FunctionCallingConfig: &genai.FunctionCallingConfig{
+				Mode: genai.FunctionCallingConfigModeAny,
+				AllowedFunctionNames: []string{
+					"get_summary_prefix",
+				},
+			},
+		},
+	}
+	data := []*genai.Content{
+		{
+			Role: "user",
+			Parts: []*genai.Part{
+				{
+					Text: content,
+				},
+			},
+		},
+	}
 
-	// Start new chat session.
-	session := c.client.StartChat()
-
-	// Send the message to the generative model.
-	resp, err := session.SendMessage(ctx, genai.Text(content))
+	resp, err := c.client.Models.GenerateContent(ctx, c.model, data, cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	part := resp.Candidates[0].Content.Parts[0]
-
-	usage := core.Usage{
-		PromptTokens:     int(resp.UsageMetadata.PromptTokenCount),
-		CompletionTokens: int(resp.UsageMetadata.CandidatesTokenCount),
-		TotalTokens:      int(resp.UsageMetadata.TotalTokenCount),
+	usage := core.Usage{}
+	if resp.UsageMetadata != nil {
+		usage.PromptTokens = int(resp.UsageMetadata.PromptTokenCount)
+		usage.CompletionTokens = int(resp.UsageMetadata.CandidatesTokenCount)
+		usage.TotalTokens = int(resp.UsageMetadata.TotalTokenCount)
+		if resp.UsageMetadata.CachedContentTokenCount > 0 {
+			usage.PromptTokensDetails = &openai.PromptTokensDetails{
+				CachedTokens: int(resp.UsageMetadata.CachedContentTokenCount),
+			}
+		}
 	}
 
-	if resp.UsageMetadata.CachedContentTokenCount > 0 {
-		usage.PromptTokensDetails = &openai.PromptTokensDetails{
-			CachedTokens: int(resp.UsageMetadata.CachedContentTokenCount),
-		}
+	if len(resp.Candidates) == 0 ||
+		resp.Candidates[0].Content.Parts[0].FunctionCall.Name != "get_summary_prefix" ||
+		resp.Candidates[0].Content.Parts[0].FunctionCall.Args == nil ||
+		resp.Candidates[0].Content.Parts[0].FunctionCall.Args["prefix"] == nil ||
+		resp.Candidates[0].Content.Parts[0].FunctionCall.Args["prefix"].(string) == "" {
+		return nil, ErrInvalidFunctionCall
 	}
 
 	r := &core.Response{
-		Content: strings.TrimSpace(strings.TrimSuffix(fmt.Sprintf("%v", part), "\n")),
+		Content: resp.Candidates[0].Content.Parts[0].FunctionCall.Args["prefix"].(string),
 		Usage:   usage,
-	}
-
-	if c.debug {
-		// Check that you got the expected function call back.
-		funcall, ok := part.(genai.FunctionCall)
-		if !ok {
-			return nil, fmt.Errorf("expected type FunctionCall, got %T", part)
-		}
-		if g, e := funcall.Name, summaryPrefixFunc.FunctionDeclarations[0].Name; g != e {
-			return nil, fmt.Errorf("expected FunctionCall.Name %q, got %q", e, g)
-		}
 	}
 
 	return r, nil
@@ -113,13 +135,6 @@ func New(ctx context.Context, opts ...Option) (c *Client, err error) {
 		return nil, err
 	}
 
-	// Create a new client instance with the necessary fields.
-	engine := &Client{
-		model:       cfg.model,
-		maxTokens:   cfg.maxTokens,
-		temperature: cfg.temperature,
-	}
-
 	// Inject x-app-name and x-app-version headers using core/transport.DefaultHeaderTransport
 	httpClient := &http.Client{
 		Transport: &transport.DefaultHeaderTransport{
@@ -130,15 +145,22 @@ func New(ctx context.Context, opts ...Option) (c *Client, err error) {
 		},
 	}
 
-	client, err := genai.NewClient(ctx, option.WithAPIKey(cfg.token), option.WithHTTPClient(httpClient))
+	client, err := genai.NewClient(ctx, &genai.ClientConfig{
+		APIKey:     cfg.token,
+		HTTPClient: httpClient,
+		Backend:    genai.BackendGeminiAPI,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	engine.client = client.GenerativeModel(engine.model)
-	engine.client.MaxOutputTokens = convert.ToPtr(engine.maxTokens)
-	engine.client.Temperature = convert.ToPtr(engine.temperature)
-	engine.client.TopP = convert.ToPtr(engine.topP)
+	engine := &Client{
+		client:      client,
+		model:       cfg.model,
+		maxTokens:   cfg.maxTokens,
+		temperature: cfg.temperature,
+		topP:        cfg.topP,
+	}
 
 	return engine, nil
 }

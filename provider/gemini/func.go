@@ -1,6 +1,6 @@
 package gemini
 
-import "github.com/google/generative-ai-go/genai"
+import "google.golang.org/genai"
 
 var summaryPrefixFunc = &genai.Tool{
 	FunctionDeclarations: []*genai.FunctionDeclaration{{
