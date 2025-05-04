@@ -15,8 +15,6 @@ import (
 	"google.golang.org/genai"
 )
 
-var ErrInvalidFunctionCall = errors.New("invalid function call")
-
 type Client struct {
 	client      *genai.Client
 	model       string
@@ -111,12 +109,23 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 		}
 	}
 
-	if len(resp.Candidates) == 0 ||
-		resp.Candidates[0].Content.Parts[0].FunctionCall.Name != "get_summary_prefix" ||
-		resp.Candidates[0].Content.Parts[0].FunctionCall.Args == nil ||
-		resp.Candidates[0].Content.Parts[0].FunctionCall.Args["prefix"] == nil ||
-		resp.Candidates[0].Content.Parts[0].FunctionCall.Args["prefix"].(string) == "" {
-		return nil, ErrInvalidFunctionCall
+	if len(resp.Candidates) == 0 {
+		return nil, errors.New("no candidates found")
+	}
+
+	cand := resp.Candidates[0]
+	if len(cand.Content.Parts) == 0 {
+		return nil, errors.New("no content found")
+	}
+
+	part := cand.Content.Parts[0]
+	if part.FunctionCall == nil || part.FunctionCall.Name != "get_summary_prefix" {
+		return nil, errors.New("no function call found")
+	}
+
+	prefix, ok := part.FunctionCall.Args["prefix"].(string)
+	if !ok || prefix == "" {
+		return nil, errors.New("no prefix found")
 	}
 
 	if c.debug {
@@ -124,7 +133,7 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 	}
 
 	r := &core.Response{
-		Content: resp.Candidates[0].Content.Parts[0].FunctionCall.Args["prefix"].(string),
+		Content: prefix,
 		Usage:   usage,
 	}
 
