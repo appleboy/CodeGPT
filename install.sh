@@ -67,7 +67,7 @@ function download_and_install() {
   "${INSTALL_DIR}/codegpt" version
   print_message info "==============================="
   print_message info ""
-  print_message info "Installation completed successfully!"
+  print_message info "✅ Installation completed successfully!"
 }
 
 function add_to_path() {
