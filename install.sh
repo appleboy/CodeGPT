@@ -90,7 +90,7 @@ function add_to_path() {
 }
 
 # Fetch latest release version from GitHub if VERSION is not set
-get_latest_version() {
+function get_latest_version() {
   local latest
   if command -v jq >/dev/null 2>&1; then
     latest=$(curl $INSECURE_OPTION -# --retry 5 -fSL https://api.github.com/repos/appleboy/CodeGPT/releases/latest | jq -r .tag_name)
@@ -101,6 +101,13 @@ get_latest_version() {
   latest="${latest#v}"
   echo "$latest"
 }
+
+# Check for required commands
+for cmd in curl; do
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    log_error "Error: $cmd is not installed. Please install $cmd to proceed." 1
+  fi
+done
 
 CURL_INSECURE="${CURL_INSECURE:-false}"
 if [[ "${CURL_INSECURE}" != 'true' && "${CURL_INSECURE}" != 'false' ]]; then
