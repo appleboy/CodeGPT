@@ -15,7 +15,12 @@ concurrency:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: [stable]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    name: lint
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,8 +30,8 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
-          check-latest: true
+          go-version: ${{ matrix.go }}
+
       - name: Setup golangci-lint
         uses: golangci/golangci-lint-action@v8
         with:
