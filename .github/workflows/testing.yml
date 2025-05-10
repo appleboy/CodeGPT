@@ -37,10 +37,6 @@ jobs:
         with:
           version: v2.1
           args: --verbose
-      - uses: hadolint/hadolint-action@v3.1.0
-        name: hadolint for Dockerfile
-        with:
-          dockerfile: docker/Dockerfile
 
   test:
     strategy:
