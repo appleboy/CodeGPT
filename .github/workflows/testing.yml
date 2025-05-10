@@ -20,7 +20,7 @@ jobs:
         go: [stable]
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-    name: lint
+    name: ${{ matrix.os }} @ Go ${{ matrix.go }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -54,9 +54,6 @@ jobs:
             go-build: ~/Library/Caches/go-build
     name: ${{ matrix.os }} @ Go ${{ matrix.go }}
     runs-on: ${{ matrix.os }}
-    env:
-      GO111MODULE: on
-      GOPROXY: https://proxy.golang.org
     steps:
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v5
