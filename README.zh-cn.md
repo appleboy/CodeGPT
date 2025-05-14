@@ -22,6 +22,9 @@
     - [如何自定义默认提示文件夹](#如何自定义默认提示文件夹)
     - [如何切换到 Azure OpenAI 服务](#如何切换到-azure-openai-服务)
     - [支持 Gemini API 服务](#支持-gemini-api-服务)
+      - [配置选项](#配置选项)
+      - [示例：Gemini API（默认后端）](#示例gemini-api默认后端)
+      - [示例：VertexAI Gemini](#示例vertexai-gemini)
     - [支持 Anthropic API 服务](#支持-anthropic-api-服务)
     - [如何切换到 Groq API 服务](#如何切换到-groq-api-服务)
     - [如何切换到 ollama API 服务](#如何切换到-ollama-api-服务)
@@ -223,34 +226,68 @@ codegpt config set openai.model xxxxx-gpt-4o
 
 ### 支持 [Gemini][60] API 服务
 
-使用 Gemini API 构建，你可以参见 [Gemini API 文档][61]。在你的配置文件中更新 `provider` 和 `api_key`。请从 [Gemini API][62] 页面创建 API key。
+你可以使用 Gemini API 或 VertexAI Gemini 服务。参见 [Gemini API 文档][61] 和 [VertexAI 文档][63]。  
+请在配置文件中更新以下参数。
+
+- 请从 [Gemini API][62] 页面（用于 BackendGeminiAPI）或 [VertexAI API Key][64]（用于 BackendVertexAI）创建 API key。
+
+#### 配置选项
+
+| 选项                | 描述                                                                                       | 示例值             | 是否必填 | 默认值             |
+| ------------------- | ------------------------------------------------------------------------------------------ | ------------------ | -------- | ------------------ |
+| **openai.provider** | 设置为 `gemini` 以使用 Gemini 提供商                                                       | `gemini`           | 是       |                    |
+| **gemini.api_key**  | Gemini 或 VertexAI 的 API key                                                              | `xxxxxxx`          | 是       |                    |
+| **gemini.model**    | 模型名称（参见 [Gemini 模型][61]）                                                         | `gemini-2.0-flash` | 是       |                    |
+| **gemini.backend**  | Gemini 后端：`BackendGeminiAPI`（默认，适用于 Gemini API）或 `BackendVertexAI`（VertexAI） | `BackendGeminiAPI` | 否       | `BackendGeminiAPI` |
+| **gemini.project**  | VertexAI 项目 ID（如使用 `BackendVertexAI` 必填）                                          | `my-gcp-project`   | 条件必填 |                    |
+| **gemini.location** | VertexAI 区域（如使用 `BackendVertexAI` 必填）                                             | `us-central1`      | 条件必填 |                    |
+
+#### 示例：Gemini API（默认后端）
 
 ```sh
 codegpt config set openai.provider gemini
-codegpt config set openai.api_key xxxxxxx
+codegpt config set gemini.api_key xxxxxxx
 codegpt config set openai.model gemini-2.0-flash
+# gemini.backend 默认为 BackendGeminiAPI，可省略
 ```
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant GeminiClient as Gemini Provider
-    participant GenAI as Google GenAI API
+#### 示例：VertexAI Gemini
 
-    User->>GeminiClient: Completion(ctx, content)
-    GeminiClient->>GenAI: GenerateContent(model, content, config)
-    GenAI-->>GeminiClient: Response (text, usage metadata)
-    GeminiClient-->>User: core.Response (text, usage)
-
-    User->>GeminiClient: GetSummaryPrefix(ctx, content)
-    GeminiClient->>GenAI: GenerateContent(model, content, config with function call)
-    GenAI-->>GeminiClient: Response (function call result)
-    GeminiClient-->>User: core.Response (prefix or error)
+```sh
+codegpt config set openai.provider gemini
+codegpt config set openai.model gemini-1.5-pro-preview-0409
+codegpt config set gemini.backend BackendVertexAI
+codegpt config set gemini.project my-gcp-project
+codegpt config set gemini.location us-central1
 ```
 
 [60]: https://ai.google.dev/gemini-api
 [61]: https://ai.google.dev/gemini-api/docs
 [62]: https://aistudio.google.com/app/apikey
+[63]: https://cloud.google.com/vertex-ai/docs/generative-ai/learn/overview
+[64]: https://console.cloud.google.com/apis/credentials
+
+```mermaid
+flowchart TD
+    User([用户])
+    subgraph CodeGPT
+      GeminiClient([Gemini 提供商])
+    end
+    subgraph Google
+      GeminiAPI([Gemini API])
+      VertexAI([VertexAI Gemini])
+    end
+
+    User -->|Completion / GetSummaryPrefix| GeminiClient
+
+    GeminiClient -- BackendGeminiAPI --> GeminiAPI
+    GeminiAPI -- Response (text, usage) --> GeminiClient
+
+    GeminiClient -- BackendVertexAI --> VertexAI
+    VertexAI -- Response (text, usage) --> GeminiClient
+
+    GeminiClient --> User
+```
 
 ### 支持 [Anthropic][100] API 服务
 

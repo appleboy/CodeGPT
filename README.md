@@ -25,6 +25,9 @@ English | [繁體中文](./README.zh-tw.md) | [简体中文](./README.zh-cn.md)
     - [How to Customize the Default Prompt Folder](#how-to-customize-the-default-prompt-folder)
     - [How to Change to Azure OpenAI Service](#how-to-change-to-azure-openai-service)
     - [Support for Gemini API Service](#support-for-gemini-api-service)
+      - [Configuration Options](#configuration-options)
+      - [Example: Gemini API (default backend)](#example-gemini-api-default-backend)
+      - [Example: VertexAI Gemini](#example-vertexai-gemini)
     - [Support for Anthropic API Service](#support-for-anthropic-api-service)
     - [How to Change to Groq API Service](#how-to-change-to-groq-api-service)
     - [How to Change to Ollama API Service](#how-to-change-to-ollama-api-service)
@@ -235,33 +238,67 @@ codegpt config set openai.model xxxxx-gpt-4o
 
 ### Support for [Gemini][60] API Service
 
-Build with the Gemini API, you can see the [Gemini API documentation][61]. Update the `provider` and `api_key` in your config file. Please create an API key from the [Gemini API][62] page.
+You can use the Gemini API or VertexAI Gemini service. See the [Gemini API documentation][61] and [VertexAI documentation][63].  
+Update the following parameters in your config file.
+
+- Please create an API key from the [Gemini API][62] page (for BackendGeminiAPI) or from [VertexAI API Key][64] (for BackendVertexAI).
+
+#### Configuration Options
+
+| Option              | Description                                                                                      | Example Value      | Required | Default            |
+| ------------------- | ------------------------------------------------------------------------------------------------ | ------------------ | -------- | ------------------ |
+| **openai.provider** | Set to `gemini` to use Gemini provider                                                           | `gemini`           | Yes      |                    |
+| **gemini.api_key**  | API key for Gemini or VertexAI                                                                   | `xxxxxxx`          | Yes      |                    |
+| **gemini.model**    | Model name (see [Gemini models][61])                                                             | `gemini-2.0-flash` | Yes      |                    |
+| **gemini.backend**  | Gemini backend: `BackendGeminiAPI` (default, for Gemini API) or `BackendVertexAI` (for VertexAI) | `BackendGeminiAPI` | No       | `BackendGeminiAPI` |
+| **gemini.project**  | VertexAI project ID (required if using `BackendVertexAI`)                                        | `my-gcp-project`   | Cond.    |                    |
+| **gemini.location** | VertexAI location (required if using `BackendVertexAI`)                                          | `us-central1`      | Cond.    |                    |
+
+#### Example: Gemini API (default backend)
 
 ```sh
 codegpt config set openai.provider gemini
-codegpt config set openai.api_key xxxxxxx
 codegpt config set openai.model gemini-2.0-flash
+codegpt config set gemini.api_key xxxxxxx
+# gemini.backend defaults to BackendGeminiAPI, so you can omit it
+```
+
+#### Example: VertexAI Gemini
+
+```sh
+codegpt config set openai.provider gemini
+codegpt config set openai.model gemini-2.0-flash
+codegpt config set gemini.backend BackendVertexAI
+codegpt config set gemini.project my-gcp-project
+codegpt config set gemini.location us-central1
 ```
 
 [60]: https://ai.google.dev/gemini-api
 [61]: https://ai.google.dev/gemini-api/docs
 [62]: https://aistudio.google.com/app/apikey
+[63]: https://cloud.google.com/vertex-ai/docs/generative-ai/learn/overview
+[64]: https://console.cloud.google.com/apis/credentials
 
 ```mermaid
-sequenceDiagram
-    participant User
-    participant GeminiClient as Gemini Provider
-    participant GenAI as Google GenAI API
+flowchart TD
+    User([User])
+    subgraph CodeGPT
+      GeminiClient([Gemini Provider])
+    end
+    subgraph Google
+      GeminiAPI([Gemini API])
+      VertexAI([VertexAI Gemini])
+    end
 
-    User->>GeminiClient: Completion(ctx, content)
-    GeminiClient->>GenAI: GenerateContent(model, content, config)
-    GenAI-->>GeminiClient: Response (text, usage metadata)
-    GeminiClient-->>User: core.Response (text, usage)
+    User -->|Completion / GetSummaryPrefix| GeminiClient
 
-    User->>GeminiClient: GetSummaryPrefix(ctx, content)
-    GeminiClient->>GenAI: GenerateContent(model, content, config with function call)
-    GenAI-->>GeminiClient: Response (function call result)
-    GeminiClient-->>User: core.Response (prefix or error)
+    GeminiClient -- BackendGeminiAPI --> GeminiAPI
+    GeminiAPI -- Response (text, usage) --> GeminiClient
+
+    GeminiClient -- BackendVertexAI --> VertexAI
+    VertexAI -- Response (text, usage) --> GeminiClient
+
+    GeminiClient --> User
 ```
 
 ### Support for [Anthropic][100] API Service
