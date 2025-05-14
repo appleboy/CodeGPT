@@ -159,11 +159,26 @@ func New(ctx context.Context, opts ...Option) (c *Client, err error) {
 		},
 	}
 
-	client, err := genai.NewClient(ctx, &genai.ClientConfig{
-		APIKey:     cfg.token,
-		HTTPClient: httpClient,
-		Backend:    genai.BackendGeminiAPI,
-	})
+	var clientConfig *genai.ClientConfig
+	switch cfg.backend {
+	case genai.BackendVertexAI:
+		clientConfig = &genai.ClientConfig{
+			HTTPClient: httpClient,
+			Backend:    cfg.backend,
+			Project:    cfg.project,
+			Location:   cfg.location,
+		}
+	case genai.BackendGeminiAPI, genai.BackendUnspecified:
+		fallthrough
+	default:
+		cfg.backend = genai.BackendGeminiAPI
+		clientConfig = &genai.ClientConfig{
+			APIKey:     cfg.token,
+			HTTPClient: httpClient,
+			Backend:    cfg.backend,
+		}
+	}
+	client, err := genai.NewClient(ctx, clientConfig)
 	if err != nil {
 		return nil, err
 	}

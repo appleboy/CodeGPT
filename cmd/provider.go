@@ -35,13 +35,20 @@ func NewOpenAI() (*openai.Client, error) {
 
 // NewGemini returns a new Gemini client
 func NewGemini(ctx context.Context) (*gemini.Client, error) {
+	apiKey := viper.GetString("gemini.api_key")
+	if apiKey == "" {
+		apiKey = viper.GetString("openai.api_key")
+	}
 	return gemini.New(
 		ctx,
-		gemini.WithToken(viper.GetString("openai.api_key")),
+		gemini.WithToken(apiKey),
 		gemini.WithModel(viper.GetString("openai.model")),
 		gemini.WithMaxTokens(viper.GetInt32("openai.max_tokens")),
 		gemini.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
 		gemini.WithTopP(float32(viper.GetFloat64("openai.top_p"))),
+		gemini.WithBackend(viper.GetString("gemini.backend")),
+		gemini.WithProject(viper.GetString("gemini.project")),
+		gemini.WithLocation(viper.GetString("gemini.location")),
 	)
 }
 

@@ -37,6 +37,10 @@ var availableKeys = map[string]string{
 	"openai.frequency_penalty": "Parameter to reduce repetition by penalizing tokens based on their frequency",
 	"openai.presence_penalty":  "Parameter to encourage topic diversity by penalizing previously used tokens",
 	"prompt.folder":            "Directory path for custom prompt templates",
+	"gemini.project":           "VertexAI project for Gemini provider",
+	"gemini.location":          "VertexAI location for Gemini provider",
+	"gemini.backend":           "Gemini backend (BackendGeminiAPI or BackendVertexAI)",
+	"gemini.api_key":           "API key for Gemini provider",
 }
 
 // configListCmd represents the command to list the configuration values.
@@ -65,7 +69,7 @@ var configListCmd = &cobra.Command{
 		// Add the key and value to the table
 		for _, v := range keys {
 			// Hide the api key
-			if v == "openai.api_key" {
+			if v == "openai.api_key" || v == "gemini.api_key" {
 				tbl.AddRow(v, "****************")
 				continue
 			}
