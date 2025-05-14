@@ -2,11 +2,14 @@ package gemini
 
 import (
 	"errors"
+
+	"google.golang.org/genai"
 )
 
 var (
-	errorsMissingToken = errors.New("missing gemini api key")
-	errorsMissingModel = errors.New("missing model")
+	errorsMissingToken          = errors.New("missing gemini api key")
+	errorsMissingTokenOrProject = errors.New("missing token or project")
+	errorsMissingModel          = errors.New("missing model")
 )
 
 const (
@@ -79,45 +82,71 @@ func WithTopP(val float32) Option {
 	})
 }
 
-// config is a struct that stores configuration options for the instrumentation.
 type config struct {
 	token       string
 	model       string
 	maxTokens   int32
 	temperature float32
 	topP        float32
+	project     string
+	location    string
+	backend     genai.Backend
 }
 
-// valid checks whether a config object is valid, returning an error if it is not.
 func (cfg *config) valid() error {
-	// Check that the token is not empty.
-	if cfg.token == "" {
-		return errorsMissingToken
+	if cfg.backend == genai.BackendVertexAI {
+		if cfg.project == "" || cfg.location == "" {
+			return errorsMissingTokenOrProject
+		}
+	} else {
+		if cfg.token == "" {
+			return errorsMissingToken
+		}
 	}
-
 	if cfg.model == "" {
 		return errorsMissingModel
 	}
-
-	// If all checks pass, return nil (no error).
 	return nil
+}
+
+func WithLocation(val string) Option {
+	return optionFunc(func(c *config) {
+		c.location = val
+	})
+}
+
+func WithBackend(val string) Option {
+	return optionFunc(func(c *config) {
+		switch val {
+		case "BackendVertexAI":
+			c.backend = genai.BackendVertexAI
+		case "BackendGeminiAPI":
+			c.backend = genai.BackendGeminiAPI
+		case "BackendUnspecified":
+			fallthrough
+		default:
+			c.backend = genai.BackendGeminiAPI
+		}
+	})
+}
+
+func WithProject(val string) Option {
+	return optionFunc(func(c *config) {
+		c.project = val
+	})
 }
 
 // newConfig creates a new config object with default values, and applies the given options.
 func newConfig(opts ...Option) *config {
-	// Create a new config object with default values.
 	c := &config{
 		model:       defaultModel,
 		maxTokens:   defaultMaxTokens,
 		temperature: defaultTemperature,
 		topP:        defaultTopP,
+		backend:     genai.BackendGeminiAPI,
 	}
-
-	// Apply each of the given options to the config object.
 	for _, opt := range opts {
 		opt.apply(c)
 	}
-
-	// Return the resulting config object.
 	return c
 }
