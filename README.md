@@ -245,14 +245,14 @@ Update the following parameters in your config file.
 
 #### Configuration Options
 
-| Option              | Description                                                                                      | Example Value      | Required | Default            |
-| ------------------- | ------------------------------------------------------------------------------------------------ | ------------------ | -------- | ------------------ |
-| **openai.provider** | Set to `gemini` to use Gemini provider                                                           | `gemini`           | Yes      |                    |
-| **gemini.api_key**  | API key for Gemini or VertexAI                                                                   | `xxxxxxx`          | Yes      |                    |
-| **gemini.model**    | Model name (see [Gemini models][61])                                                             | `gemini-2.0-flash` | Yes      |                    |
-| **gemini.backend**  | Gemini backend: `BackendGeminiAPI` (default, for Gemini API) or `BackendVertexAI` (for VertexAI) | `BackendGeminiAPI` | No       | `BackendGeminiAPI` |
-| **gemini.project**  | VertexAI project ID (required if using `BackendVertexAI`)                                        | `my-gcp-project`   | Cond.    |                    |
-| **gemini.location** | VertexAI location (required if using `BackendVertexAI`)                                          | `us-central1`      | Cond.    |                    |
+| Option                | Description                                                                                      | Example Value      | Required | Default            |
+| --------------------- | ------------------------------------------------------------------------------------------------ | ------------------ | -------- | ------------------ |
+| **openai.provider**   | Set to `gemini` to use Gemini provider                                                           | `gemini`           | Yes      |                    |
+| **gemini.api_key**    | API key for Gemini or VertexAI                                                                   | `xxxxxxx`          | Yes      |                    |
+| **gemini.model**      | Model name (see [Gemini models][61])                                                             | `gemini-2.0-flash` | Yes      |                    |
+| **gemini.backend**    | Gemini backend: `BackendGeminiAPI` (default, for Gemini API) or `BackendVertexAI` (for VertexAI) | `BackendGeminiAPI` | No       | `BackendGeminiAPI` |
+| **gemini.project_id** | VertexAI project ID (required if using `BackendVertexAI`)                                        | `my-gcp-project`   | Cond.    |                    |
+| **gemini.location**   | VertexAI location (required if using `BackendVertexAI`)                                          | `us-central1`      | Cond.    |                    |
 
 #### Example: Gemini API (default backend)
 
@@ -269,7 +269,7 @@ codegpt config set gemini.api_key xxxxxxx
 codegpt config set openai.provider gemini
 codegpt config set openai.model gemini-2.0-flash
 codegpt config set gemini.backend BackendVertexAI
-codegpt config set gemini.project my-gcp-project
+codegpt config set gemini.project_id my-gcp-project
 codegpt config set gemini.location us-central1
 ```
 

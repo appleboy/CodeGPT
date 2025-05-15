@@ -88,14 +88,14 @@ type config struct {
 	maxTokens   int32
 	temperature float32
 	topP        float32
-	project     string
+	projectID   string
 	location    string
 	backend     genai.Backend
 }
 
 func (cfg *config) valid() error {
 	if cfg.backend == genai.BackendVertexAI {
-		if cfg.project == "" || cfg.location == "" {
+		if cfg.projectID == "" || cfg.location == "" {
 			return errorsMissingTokenOrProject
 		}
 	} else {
@@ -132,7 +132,7 @@ func WithBackend(val string) Option {
 
 func WithProject(val string) Option {
 	return optionFunc(func(c *config) {
-		c.project = val
+		c.projectID = val
 	})
 }
 

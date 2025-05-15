@@ -37,7 +37,7 @@ var availableKeys = map[string]string{
 	"openai.frequency_penalty": "Parameter to reduce repetition by penalizing tokens based on their frequency",
 	"openai.presence_penalty":  "Parameter to encourage topic diversity by penalizing previously used tokens",
 	"prompt.folder":            "Directory path for custom prompt templates",
-	"gemini.project":           "VertexAI project for Gemini provider",
+	"gemini.project_id":        "VertexAI project for Gemini provider",
 	"gemini.location":          "VertexAI location for Gemini provider",
 	"gemini.backend":           "Gemini backend (BackendGeminiAPI or BackendVertexAI)",
 	"gemini.api_key":           "API key for Gemini provider",

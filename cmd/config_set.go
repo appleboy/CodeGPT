@@ -34,7 +34,7 @@ func init() {
 	configSetCmd.Flags().StringP("api_version", "", "", availableKeys["openai.api_version"])
 	configSetCmd.Flags().StringP("prompt_folder", "", "", availableKeys["prompt.folder"])
 	// Gemini flags
-	configSetCmd.Flags().String("gemini.project", "", availableKeys["gemini.project"])
+	configSetCmd.Flags().String("gemini.project_id", "", availableKeys["gemini.project_id"])
 	configSetCmd.Flags().String("gemini.location", "", availableKeys["gemini.location"])
 	configSetCmd.Flags().String("gemini.backend", "BackendGeminiAPI", availableKeys["gemini.backend"])
 	configSetCmd.Flags().String("gemini.api_key", "", availableKeys["gemini.api_key"])
@@ -58,7 +58,7 @@ func init() {
 	_ = viper.BindPFlag("openai.headers", configSetCmd.Flags().Lookup("headers"))
 	_ = viper.BindPFlag("openai.api_version", configSetCmd.Flags().Lookup("api_version"))
 	_ = viper.BindPFlag("prompt.folder", configSetCmd.Flags().Lookup("prompt_folder"))
-	_ = viper.BindPFlag("gemini.project", configSetCmd.Flags().Lookup("gemini.project"))
+	_ = viper.BindPFlag("gemini.project_id", configSetCmd.Flags().Lookup("gemini.project_id"))
 	_ = viper.BindPFlag("gemini.location", configSetCmd.Flags().Lookup("gemini.location"))
 	_ = viper.BindPFlag("gemini.backend", configSetCmd.Flags().Lookup("gemini.backend"))
 	_ = viper.BindPFlag("gemini.api_key", configSetCmd.Flags().Lookup("gemini.api_key"))

@@ -165,7 +165,7 @@ func New(ctx context.Context, opts ...Option) (c *Client, err error) {
 		clientConfig = &genai.ClientConfig{
 			HTTPClient: httpClient,
 			Backend:    cfg.backend,
-			Project:    cfg.project,
+			Project:    cfg.projectID,
 			Location:   cfg.location,
 		}
 	case genai.BackendGeminiAPI, genai.BackendUnspecified:
