@@ -244,14 +244,14 @@ codegpt config set openai.model xxxxx-gpt-4o
 
 #### 設定選項
 
-| 選項                | 說明                                                                                       | 範例值             | 必填     | 預設值             |
-| ------------------- | ------------------------------------------------------------------------------------------ | ------------------ | -------- | ------------------ |
-| **openai.provider** | 設為 `gemini` 以使用 Gemini 提供者                                                         | `gemini`           | 是       |                    |
-| **gemini.api_key**  | Gemini 或 VertexAI 的 API 金鑰                                                             | `xxxxxxx`          | 是       |                    |
-| **gemini.model**    | 模型名稱（參見 [Gemini 模型][61]）                                                         | `gemini-2.0-flash` | 是       |                    |
-| **gemini.backend**  | Gemini 後端：`BackendGeminiAPI`（預設，適用於 Gemini API）或 `BackendVertexAI`（VertexAI） | `BackendGeminiAPI` | 否       | `BackendGeminiAPI` |
-| **gemini.project**  | VertexAI 專案 ID（如使用 `BackendVertexAI` 必填）                                          | `my-gcp-project`   | 條件必填 |                    |
-| **gemini.location** | VertexAI 區域（如使用 `BackendVertexAI` 必填）                                             | `us-central1`      | 條件必填 |                    |
+| 選項                  | 說明                                                                                       | 範例值             | 必填     | 預設值             |
+| --------------------- | ------------------------------------------------------------------------------------------ | ------------------ | -------- | ------------------ |
+| **openai.provider**   | 設為 `gemini` 以使用 Gemini 提供者                                                         | `gemini`           | 是       |                    |
+| **gemini.api_key**    | Gemini 或 VertexAI 的 API 金鑰                                                             | `xxxxxxx`          | 是       |                    |
+| **gemini.model**      | 模型名稱（參見 [Gemini 模型][61]）                                                         | `gemini-2.0-flash` | 是       |                    |
+| **gemini.backend**    | Gemini 後端：`BackendGeminiAPI`（預設，適用於 Gemini API）或 `BackendVertexAI`（VertexAI） | `BackendGeminiAPI` | 否       | `BackendGeminiAPI` |
+| **gemini.project_id** | VertexAI 專案 ID（如使用 `BackendVertexAI` 必填）                                          | `my-gcp-project`   | 條件必填 |                    |
+| **gemini.location**   | VertexAI 區域（如使用 `BackendVertexAI` 必填）                                             | `us-central1`      | 條件必填 |                    |
 
 #### 範例：Gemini API（預設後端）
 
@@ -268,7 +268,7 @@ codegpt config set openai.model gemini-2.0-flash
 codegpt config set openai.provider gemini
 codegpt config set openai.model gemini-1.5-pro-preview-0409
 codegpt config set gemini.backend BackendVertexAI
-codegpt config set gemini.project my-gcp-project
+codegpt config set gemini.project_id my-gcp-project
 codegpt config set gemini.location us-central1
 ```
 

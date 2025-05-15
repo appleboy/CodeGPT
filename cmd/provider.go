@@ -47,7 +47,7 @@ func NewGemini(ctx context.Context) (*gemini.Client, error) {
 		gemini.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
 		gemini.WithTopP(float32(viper.GetFloat64("openai.top_p"))),
 		gemini.WithBackend(viper.GetString("gemini.backend")),
-		gemini.WithProject(viper.GetString("gemini.project")),
+		gemini.WithProject(viper.GetString("gemini.project_id")),
 		gemini.WithLocation(viper.GetString("gemini.location")),
 	)
 }
