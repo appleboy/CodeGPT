@@ -3,7 +3,7 @@ module github.com/appleboy/CodeGPT
 go 1.24
 
 require (
-	github.com/appleboy/com v0.3.0
+	github.com/appleboy/com v0.4.0
 	github.com/appleboy/graceful v1.1.1
 	github.com/charmbracelet/bubbles v0.21.0
 	github.com/charmbracelet/bubbletea v1.3.5
@@ -12,18 +12,18 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/liushuangls/go-anthropic/v2 v2.15.0
 	github.com/rodaine/table v1.3.0
-	github.com/sashabaranov/go-openai v1.39.1
+	github.com/sashabaranov/go-openai v1.40.0
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
 	github.com/yassinebenaid/godump v0.11.1
 	golang.org/x/net v0.40.0
-	google.golang.org/genai v1.4.0
+	google.golang.org/genai v1.5.0
 )
 
 require (
-	cloud.google.com/go v0.121.0 // indirect
+	cloud.google.com/go v0.121.1 // indirect
 	cloud.google.com/go/auth v0.16.1 // indirect
-	cloud.google.com/go/compute/metadata v0.6.0 // indirect
+	cloud.google.com/go/compute/metadata v0.7.0 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/charmbracelet/colorprofile v0.3.1 // indirect
@@ -73,7 +73,7 @@ require (
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.25.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250512202823-5a2f75b736a9 // indirect
-	google.golang.org/grpc v1.72.0 // indirect
+	google.golang.org/grpc v1.72.1 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
