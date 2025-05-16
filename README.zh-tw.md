@@ -113,7 +113,7 @@ chmod +x install.sh
 
 ```sh
 # 安裝特定版本到自訂目錄
-VERSION=0.15.0 INSTALL_DIR=/opt/codegpt ./install.sh
+VERSION=1.1.0 INSTALL_DIR=/opt/codegpt ./install.sh
 ```
 
 此腳本會：
@@ -128,7 +128,11 @@ VERSION=0.15.0 INSTALL_DIR=/opt/codegpt ./install.sh
 
 ```sh
 $ codegpt version
-version: v0.4.3 commit: xxxxxxx
+Version: 1.1.0
+Git Commit: 899396a
+Build Time: 2025-05-16T15:52:38Z
+Go Version: 1.24.3
+OS/Arch: darwin/arm64
 ```
 
 ### 從源碼安裝
