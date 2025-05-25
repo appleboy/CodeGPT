@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"html"
 	"os"
 	"path"
@@ -163,14 +164,36 @@ var commitCmd = &cobra.Command{
 				return err
 			}
 
-			// Generate title for pull request
+			// Generate title for pull request with retry if empty
 			color.Cyan("Generating title for pull request...")
-			resp, err := client.Completion(cmd.Context(), out)
-			if err != nil {
-				return err
+			const maxRetries = 3
+			const retryDelay = 500 * time.Millisecond
+
+			var summarizeTitle string
+			var resp *core.Response
+
+			for attempt := 1; attempt <= maxRetries; attempt++ {
+				resp, err = client.Completion(cmd.Context(), out)
+				if err != nil {
+					return err
+				}
+
+				summarizeTitle = strings.TrimSpace(resp.Content)
+				color.Magenta(resp.Usage.String())
+
+				if len(summarizeTitle) > 0 {
+					break
+				}
+
+				if attempt < maxRetries {
+					color.Cyan("Empty title response, retrying (%d/%d)...", attempt, maxRetries)
+					time.Sleep(retryDelay)
+				}
 			}
-			summarizeTitle := resp.Content
-			color.Magenta(resp.Usage.String())
+
+			if len(summarizeTitle) == 0 {
+				return fmt.Errorf("failed to get valid title after %d attempts", maxRetries)
+			}
 
 			// Lowercase the first character of first word of the commit message and remove the trailing period
 			summarizeTitle = strings.TrimRight(strings.ToLower(string(summarizeTitle[0]))+summarizeTitle[1:], ".")
