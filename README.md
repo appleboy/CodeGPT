@@ -1,12 +1,12 @@
 # CodeGPT
 
+**English** | [繁體中文](./README.zh-tw.md) | [简体中文](./README.zh-cn.md)
+
 [![Lint and Testing](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml/badge.svg?branch=main)](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml)
 [![codecov](https://codecov.io/gh/appleboy/CodeGPT/branch/main/graph/badge.svg)](https://codecov.io/gh/appleboy/CodeGPT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/CodeGPT)](https://goreportcard.com/report/github.com/appleboy/CodeGPT)
 
 ![cover](./images/cover.png)
-
-English | [繁體中文](./README.zh-tw.md) | [简体中文](./README.zh-cn.md)
 
 ## Table of Contents
 
