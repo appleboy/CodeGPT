@@ -1,10 +1,15 @@
 # CodeGPT
 
-**English** | [繁體中文](./README.zh-tw.md) | [简体中文](./README.zh-cn.md)
-
 [![Lint and Testing](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml/badge.svg?branch=main)](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml)
 [![codecov](https://codecov.io/gh/appleboy/CodeGPT/branch/main/graph/badge.svg)](https://codecov.io/gh/appleboy/CodeGPT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/CodeGPT)](https://goreportcard.com/report/github.com/appleboy/CodeGPT)
+
+A CLI tool written in [Go](https://go.dev) that generates git commit messages or provides code review summaries using ChatGPT AI (gpt-4o, gpt-4 model). It also automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
+
+- [繁體中文介紹][1]
+- [繁體中文影片][2]
+
+**English** | [繁體中文](./README.zh-tw.md) | [简体中文](./README.zh-cn.md)
 
 ![cover](./images/cover.png)
 
@@ -42,11 +47,6 @@
   - [Testing](#testing)
   - [Star History](#star-history)
   - [Reference](#reference)
-
-A CLI tool written in [Go](https://go.dev) that generates git commit messages or provides code review summaries using ChatGPT AI (gpt-4o, gpt-4 model). It also automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
-
-- [繁體中文介紹][1]
-- [繁體中文影片][2]
 
 [1]: https://blog.wu-boy.com/2023/03/writes-git-commit-messages-using-chatgpt/
 [2]: https://www.youtube.com/watch?v=4Yei_t6eMZU

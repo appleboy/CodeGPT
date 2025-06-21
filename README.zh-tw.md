@@ -1,10 +1,15 @@
 # CodeGPT
 
-[English](./README.md) | **繁體中文** | [简体中文](./README.zh-cn.md)
-
 [![Lint and Testing](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml/badge.svg?branch=main)](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml)
 [![codecov](https://codecov.io/gh/appleboy/CodeGPT/branch/main/graph/badge.svg)](https://codecov.io/gh/appleboy/CodeGPT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/CodeGPT)](https://goreportcard.com/report/github.com/appleboy/CodeGPT)
+
+一個用 [Go](https://go.dev) 編寫的 CLI 工具，使用 ChatGPT AI (gpt-4o, gpt-4 模型) 生成 git 提交訊息或提供代碼審查摘要。它還會自動安裝 [git prepare-commit-msg hook](https://git-scm.com/docs/githooks)。
+
+- [繁體中文介紹][1]
+- [繁體中文影片][2]
+
+[English](./README.md) | **繁體中文** | [简体中文](./README.zh-cn.md)
 
 ![cover](./images/cover.png)
 
@@ -42,11 +47,6 @@
   - [測試（Testing）](#測試testing)
   - [Star History](#star-history)
   - [參考資料（Reference）](#參考資料reference)
-
-一個用 [Go](https://go.dev) 編寫的 CLI 工具，使用 ChatGPT AI (gpt-4o, gpt-4 模型) 生成 git 提交訊息或提供代碼審查摘要。它還會自動安裝 [git prepare-commit-msg hook](https://git-scm.com/docs/githooks)。
-
-- [繁體中文介紹][1]
-- [繁體中文影片][2]
 
 [1]: https://blog.wu-boy.com/2023/03/writes-git-commit-messages-using-chatgpt/
 [2]: https://www.youtube.com/watch?v=4Yei_t6eMZU
