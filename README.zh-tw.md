@@ -21,11 +21,12 @@
   - [安裝](#安裝)
     - [macOS](#macos)
     - [Windows](#windows)
-    - [使用安裝腳本](#使用安裝腳本)
+    - [腳本與二進位安裝](#腳本與二進位安裝)
+      - [**A. 自動安裝（推薦）**](#a-自動安裝推薦)
+      - [**B. 手動安裝（進階）**](#b-手動安裝進階)
       - [可設定的環境變數](#可設定的環境變數)
-    - [預編譯二進制文件](#預編譯二進制文件)
     - [從源碼安裝](#從源碼安裝)
-    - [使用 VSCode Devcontainer](#使用-vscode-devcontainer)
+    - [VSCode Devcontainer](#vscode-devcontainer)
   - [配置](#配置)
     - [如何自定義默認提示文件夾](#如何自定義默認提示文件夾)
     - [如何切換到 Azure OpenAI 服務](#如何切換到-azure-openai-服務)
@@ -72,7 +73,7 @@
 
 ### macOS
 
-通過 [Homebrew](http://brew.sh/) 安裝：
+透過 [Homebrew](http://brew.sh/) 安裝：
 
 ```sh
 brew tap appleboy/tap
@@ -81,25 +82,52 @@ brew install codegpt
 
 ### Windows
 
-通過 [Chocolatey](https://chocolatey.org/install) 安裝：
+透過 [Chocolatey](https://chocolatey.org/install) 安裝：
 
 ```sh
 choco install codegpt
 ```
 
-### 使用安裝腳本
+### 腳本與二進位安裝
+
+大多數系統推薦使用安裝腳本自動安裝（推薦），亦可手動下載執行檔。
+
+#### **A. 自動安裝（推薦）**
+
+執行腳本，自動下載與安裝最新版：
 
 ```sh
-# 下載並執行安裝腳本
 bash < <(curl -sSL https://raw.githubusercontent.com/appleboy/CodeGPT/main/install.sh)
 ```
 
-或手動下載並執行：
+或手動下載腳本再執行：
 
 ```sh
+curl -LO https://raw.githubusercontent.com/appleboy/CodeGPT/main/install.sh
 chmod +x install.sh
 ./install.sh
 ```
+
+#### **B. 手動安裝（進階）**
+
+1. 從 [release 頁面](https://github.com/appleboy/CodeGPT/releases) 下載最新二進位檔案。
+2. 更改權限：
+
+   ```sh
+   chmod 755 codegpt
+   ```
+
+3. 移動到 bin 目錄：
+
+   ```sh
+   mv codegpt /usr/local/bin/
+   ```
+
+4. 驗證安裝：
+
+   ```sh
+   codegpt version
+   ```
 
 #### 可設定的環境變數
 
@@ -122,19 +150,6 @@ VERSION=1.1.0 INSTALL_DIR=/opt/codegpt ./install.sh
 2. 下載最新版二進位檔案
 3. 將程式加入您的 PATH
 
-### 預編譯二進制文件
-
-從 [release 頁面](https://github.com/appleboy/CodeGPT/releases) 下載預編譯的二進制文件。將二進制文件的權限更改為 `755`，並將二進制文件複製到系統 bin 目錄。使用如下所示的 `codegpt` 命令：
-
-```sh
-$ codegpt version
-Version: 1.1.0
-Git Commit: 899396a
-Build Time: 2025-05-16T15:52:38Z
-Go Version: 1.24.3
-OS/Arch: darwin/arm64
-```
-
 ### 從源碼安裝
 
 從源碼安裝：
@@ -143,9 +158,9 @@ OS/Arch: darwin/arm64
 go install github.com/appleboy/CodeGPT/cmd/codegpt@latest
 ```
 
-### 使用 VSCode Devcontainer
+### VSCode Devcontainer
 
-在 devcontainer.json 中添加 [feature](https://github.com/kvokka/features/tree/main/src/codegpt)：
+於 devcontainer.json 中新增 [feature](https://github.com/kvokka/features/tree/main/src/codegpt)：
 
 ```json
 "features": {

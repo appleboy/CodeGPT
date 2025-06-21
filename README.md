@@ -21,11 +21,12 @@ A CLI tool written in [Go](https://go.dev) that generates git commit messages or
   - [Installation](#installation)
     - [macOS](#macos)
     - [Windows](#windows)
-    - [Using install script](#using-install-script)
+    - [Install via Script or Binary](#install-via-script-or-binary)
+      - [**A. Automated Install (Recommended)**](#a-automated-install-recommended)
+      - [**B. Manual Install (Advanced)**](#b-manual-install-advanced)
       - [Configurable Environment Variables](#configurable-environment-variables)
-    - [Pre-compiled Binaries](#pre-compiled-binaries)
     - [From Source](#from-source)
-    - [Using vscode devcontainer](#using-vscode-devcontainer)
+    - [Using VSCode Devcontainer](#using-vscode-devcontainer)
   - [Configuration](#configuration)
     - [How to Customize the Default Prompt Folder](#how-to-customize-the-default-prompt-folder)
     - [How to Change to Azure OpenAI Service](#how-to-change-to-azure-openai-service)
@@ -87,19 +88,46 @@ Install via [Chocolatey](https://chocolatey.org/install):
 choco install codegpt
 ```
 
-### Using install script
+### Install via Script or Binary
+
+For most systems, you can use an install script **or** manually download a pre-compiled binary.
+
+#### **A. Automated Install (Recommended)**
+
+Run the install script to automatically download and set up the latest release:
 
 ```sh
-# Download and run the install script
 bash < <(curl -sSL https://raw.githubusercontent.com/appleboy/CodeGPT/main/install.sh)
 ```
 
 Or download and run manually:
 
 ```sh
+curl -LO https://raw.githubusercontent.com/appleboy/CodeGPT/main/install.sh
 chmod +x install.sh
 ./install.sh
 ```
+
+#### **B. Manual Install (Advanced)**
+
+1. Download the latest pre-compiled binary from the [release page](https://github.com/appleboy/CodeGPT/releases).
+2. Change permissions:
+
+   ```sh
+   chmod 755 codegpt
+   ```
+
+3. Move the binary to your system bin directory:
+
+   ```sh
+   mv codegpt /usr/local/bin/
+   ```
+
+4. Confirm installation:
+
+   ```sh
+   codegpt version
+   ```
 
 #### Configurable Environment Variables
 
@@ -112,7 +140,7 @@ chmod +x install.sh
 Example usage:
 
 ```sh
-# Install a specific version to a custom directory
+# Install a specific version to a custom directory:
 VERSION=1.1.0 INSTALL_DIR=/opt/codegpt ./install.sh
 ```
 
@@ -122,19 +150,6 @@ The script will:
 2. Download the latest binary
 3. Add the binary to your PATH
 
-### Pre-compiled Binaries
-
-Download the pre-compiled binaries from the [release page](https://github.com/appleboy/CodeGPT/releases). Change the binary permissions to `755` and copy the binary to the system bin directory. Use the `codegpt` command as shown below:
-
-```sh
-$ codegpt version
-Version: 1.1.0
-Git Commit: 899396a
-Build Time: 2025-05-16T15:52:38Z
-Go Version: 1.24.3
-OS/Arch: darwin/arm64
-```
-
 ### From Source
 
 Install from source code:
@@ -143,10 +158,9 @@ Install from source code:
 go install github.com/appleboy/CodeGPT/cmd/codegpt@latest
 ```
 
-### Using vscode devcontainer
+### Using VSCode Devcontainer
 
-Add the [feature](https://github.com/kvokka/features/tree/main/src/codegpt) to
-your devcontainer.json:
+Add the [feature](https://github.com/kvokka/features/tree/main/src/codegpt) to your `devcontainer.json`:
 
 ```json
 "features": {
@@ -324,7 +338,7 @@ See the model list from the [Anthropic API documentation][103].
 
 ### How to Change to [Groq][30] API Service
 
-Get the `API key` from the Groq API Service, please visit [here][31]. Update the `base_url` and `api_key` in your config file.
+Get the `API key` from the Groq API Service by visiting the [Groq API Service][31]. Update the `base_url` and `api_key` in your config file.
 
 ```sh
 codegpt config set openai.provider openai
@@ -344,7 +358,7 @@ GroqCloud currently supports the [following models][32]:
 
 ### How to Change to Ollama API Service
 
-We can use the Llama3 model from the [Ollama][41] API Service, please visit [here][40]. Update the `base_url` in your config file.
+We can use the Llama3 model from the [Ollama][41] API Service; please visit the [Ollama API Models documentation][40]. Update the `base_url` in your config file.
 
 [40]: https://github.com/ollama/ollama/blob/main/docs/openai.md#models
 [41]: https://github.com/ollama/ollama
