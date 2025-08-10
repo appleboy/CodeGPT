@@ -71,7 +71,12 @@ func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
-		if !file.IsFile(cfgFile) {
+		exists, err := file.IsFile(cfgFile)
+		if err != nil {
+			// Config file status could not be determined; handle or ignore as needed
+			// Optionally: log.Fatalf("failed to check if config file %s is a file: %v", cfgFile, err)
+		}
+		if !exists {
 			// Config file not found; ignore error if desired
 			_, err := os.Create(cfgFile)
 			if err != nil {
@@ -90,7 +95,11 @@ func initConfig() {
 		viper.SetConfigName(".codegpt")
 		cfgFile = path.Join(configFolder, ".codegpt.yaml")
 
-		if !file.IsDir(configFolder) {
+		isDir, err := file.IsDir(configFolder)
+		if err != nil {
+			log.Fatalf("failed to check if config folder %s is a directory: %v", configFolder, err)
+		}
+		if !isDir {
 			if err := os.MkdirAll(configFolder, os.ModePerm); err != nil {
 				log.Fatal(err)
 			}
@@ -127,11 +136,19 @@ func initConfig() {
 	case promptFolder != "":
 		// If a prompt folder is specified by the promptFolder variable,
 		// check if it is a file. If it is, log a fatal error.
-		if file.IsFile(promptFolder) {
+		isFile, err := file.IsFile(promptFolder)
+		if err != nil {
+			log.Fatalf("failed to check if prompt folder %s is a file: %v", promptFolder, err)
+		}
+		if isFile {
 			log.Fatalf("prompt folder %s is a file", promptFolder)
 		}
 		// If the prompt folder does not exist, create it.
-		if !file.IsDir(promptFolder) {
+		isDir, err := file.IsDir(promptFolder)
+		if err != nil {
+			log.Fatalf("failed to check if prompt folder %s is a directory: %v", promptFolder, err)
+		}
+		if !isDir {
 			if err := os.MkdirAll(promptFolder, os.ModePerm); err != nil {
 				log.Fatal(err)
 			}
@@ -142,11 +159,19 @@ func initConfig() {
 		// If the prompt folder is specified in the configuration,
 		// retrieve it and check if it is a file. If it is, log a fatal error.
 		promptFolder = viper.GetString("prompt.folder")
-		if file.IsFile(promptFolder) {
+		isFile, err := file.IsFile(promptFolder)
+		if err != nil {
+			log.Fatalf("failed to check if prompt folder %s is a file: %v", promptFolder, err)
+		}
+		if isFile {
 			log.Fatalf("prompt folder %s is a file", promptFolder)
 		}
 		// If the prompt folder does not exist, create it.
-		if !file.IsDir(promptFolder) {
+		isDir, err := file.IsDir(promptFolder)
+		if err != nil {
+			log.Fatalf("failed to check if prompt folder %s is a directory: %v", promptFolder, err)
+		}
+		if !isDir {
 			if err := os.MkdirAll(promptFolder, os.ModePerm); err != nil {
 				log.Fatal(err)
 			}
@@ -157,7 +182,11 @@ func initConfig() {
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 		targetFolder := path.Join(home, ".config", "codegpt", "prompt")
-		if !file.IsDir(targetFolder) {
+		isDir, err := file.IsDir(targetFolder)
+		if err != nil {
+			log.Fatalf("failed to check if target folder %s is a directory: %v", targetFolder, err)
+		}
+		if !isDir {
 			if err := os.MkdirAll(targetFolder, os.ModePerm); err != nil {
 				log.Fatal(err)
 			}
