@@ -66,7 +66,7 @@ function download_and_install() {
   # Use temp dir for download
   TARGET="${TMPDIR}/${CLIENT_BINARY}"
 
-  curl -# -fSL --retry 5 --keepalive-time 2 ${INSECURE_OPTION} "${DOWNLOAD_URL_PREFIX}/${CLIENT_BINARY}" -o "${TARGET}"
+  curl -# -fSL --retry 5 --keepalive-time 2 ${INSECURE_ARG} "${DOWNLOAD_URL_PREFIX}/${CLIENT_BINARY}" -o "${TARGET}"
   chmod +x "${TARGET}" || log_error "Failed to set executable permission on: ${TARGET}" 7
   # Move the binary to install dir and rename to codegpt
   mv "${TARGET}" "${INSTALL_DIR}/codegpt" || log_error "Failed to move ${TARGET} to ${INSTALL_DIR}/codegpt" 8
@@ -104,9 +104,9 @@ function add_to_path() {
 function get_latest_version() {
   local latest
   if command -v jq >/dev/null 2>&1; then
-    latest=$(curl $INSECURE_OPTION -# --retry 5 -fSL https://api.github.com/repos/appleboy/CodeGPT/releases/latest | jq -r .tag_name)
+    latest=$(curl $INSECURE_ARG -# --retry 5 -fSL https://api.github.com/repos/appleboy/CodeGPT/releases/latest | jq -r .tag_name)
   else
-    latest=$(curl $INSECURE_OPTION -# --retry 5 -fSL https://api.github.com/repos/appleboy/CodeGPT/releases/latest | grep '"tag_name":' | sed -E 's/.*"tag_name": ?"v?([^"]+)".*/\1/')
+    latest=$(curl $INSECURE_ARG -# --retry 5 -fSL https://api.github.com/repos/appleboy/CodeGPT/releases/latest | grep '"tag_name":' | sed -E 's/.*"tag_name": ?"v?([^"]+)".*/\1/')
   fi
   # Remove leading 'v' if present
   latest="${latest#v}"
@@ -120,17 +120,12 @@ for cmd in curl; do
   fi
 done
 
-CURL_INSECURE="${CURL_INSECURE:-false}"
-if [[ "${CURL_INSECURE}" != 'true' && "${CURL_INSECURE}" != 'false' ]]; then
-  log_error "CURL_INSECURE must be either 'true' or 'false'" 4
-fi
-if [[ "${CURL_INSECURE}" == 'true' ]]; then
-  print_message warning "WARNING: CURL_INSECURE is set to true. Proceeding with insecure download."
+# If INSECURE is set to any value, enable curl --insecure
+INSECURE_ARG=""
+if [[ -n "${INSECURE:-}" ]]; then
+  INSECURE_ARG="--insecure"
+  print_message warning "WARNING: INSECURE mode is enabled. Proceeding with insecure download."
   print_message warning "WARNING: You are bypassing SSL certificate verification. This is insecure and may expose you to man-in-the-middle attacks."
-fi
-INSECURE_OPTION=""
-if [[ "${CURL_INSECURE}" == 'true' ]]; then
-  INSECURE_OPTION="--insecure"
 fi
 
 if [[ -z "${VERSION:-}" ]]; then
