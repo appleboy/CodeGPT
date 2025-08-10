@@ -2,6 +2,13 @@
 
 set -euo pipefail
 
+# Create temp directory for downloads.
+TMPDIR="$(mktemp -d)"
+function cleanup() {
+  rm -rf "${TMPDIR}"
+}
+trap cleanup EXIT INT TERM
+
 APP=CodeGPT
 
 RED='\033[0;31m'
@@ -53,12 +60,14 @@ function download_and_install() {
   CLIENT_BINARY="CodeGPT-${VERSION}-${CLIENT_PLATFORM}-${CLIENT_ARCH}"
   print_message info "Downloading ${CLIENT_BINARY} from ${DOWNLOAD_URL_PREFIX}"
   mkdir -p "$INSTALL_DIR" || log_error "Failed to create directory: $INSTALL_DIR" 5
-  TARGET="$INSTALL_DIR/${CLIENT_BINARY}"
+
+  # Use temp dir for download
+  TARGET="${TMPDIR}/${CLIENT_BINARY}"
 
   curl -# -fSL --retry 5 --keepalive-time 2 ${INSECURE_OPTION} "${DOWNLOAD_URL_PREFIX}/${CLIENT_BINARY}" -o "${TARGET}"
   chmod +x "${TARGET}" || log_error "Failed to set executable permission on: ${TARGET}" 7
-  # Rename the binary to codegpt
-  mv "${TARGET}" "${INSTALL_DIR}/codegpt" || log_error "Failed to rename ${TARGET} to ${INSTALL_DIR}/codegpt" 8
+  # Move the binary to install dir and rename to codegpt
+  mv "${TARGET}" "${INSTALL_DIR}/codegpt" || log_error "Failed to move ${TARGET} to ${INSTALL_DIR}/codegpt" 8
   # show the version
   print_message info "Installed ${ORANGE}${CLIENT_BINARY}${NC} to ${GREEN}${INSTALL_DIR}${NC}"
   print_message info "Run ${ORANGE}codegpt version${NC} to show the version"
