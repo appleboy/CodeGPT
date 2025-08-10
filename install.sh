@@ -2,8 +2,6 @@
 
 set -euo pipefail
 
-APP=CodeGPT
-
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -183,7 +181,7 @@ for file in $config_files; do
 done
 
 if [[ -z $config_file ]]; then
-  log_error "No config file found for $current_shell. Checked files: ${config_files[@]}" 1
+  log_error "No config file found for $current_shell. Checked files: ${config_files[*]}" 1
 fi
 
 if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
@@ -214,6 +212,6 @@ print_message info "To use the command, please restart your terminal or run:"
 print_message info "  source $config_file"
 
 if [ -n "${GITHUB_ACTIONS-}" ] && [ "${GITHUB_ACTIONS}" == "true" ]; then
-  echo "$INSTALL_DIR" >>$GITHUB_PATH
+  echo "$INSTALL_DIR" >>"$GITHUB_PATH"
   print_message info "Added $INSTALL_DIR to \$GITHUB_PATH"
 fi
