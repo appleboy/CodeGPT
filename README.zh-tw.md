@@ -58,15 +58,13 @@
 
 - 支援 [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service)、[OpenAI API](https://platform.openai.com/docs/api-reference)、[Gemini][60]、[Anthropic][100]、[Ollama][41]、[Groq][30] 和 [OpenRouter][50]。
 - 遵循 [conventional commits 規範](https://www.conventionalcommits.org/en/v1.0.0/)。
-- 與 Git prepare-commit-msg Hook 集成，請參閱 [Git Hooks 文檔](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)。
-- 允許透過指定上下文行數來自定義差異生成（預設值：3）。
-- 支援 git diff 排除檔案模式。
-- 將提交訊息翻譯成其他語言（支援 `en`、`zh-tw` 或 `zh-cn`）。
-- 支援 SOCKS 代理或自定義網絡 HTTP 代理。
-- 提供 [模型列表](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38)，包括 `gpt-4`、`gpt-4o` 等。
-- 生成簡短的代碼審查。
-- 允許自定義提示模板和變量。
-
+- 整合 Git prepare-commit-msg Hook，詳情請參閱 [Git Hooks 文件](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)。
+- 可透過指定上下文行數（預設：3）來自訂產生的差異內容。
+- 支援差異檔案排除模式（git diff）。
+- 將提交訊息翻譯為其他語言（支援 `en`、`zh-tw`、`zh-cn`）。
+- 支援 SOCKS 代理或自訂 HTTP 網路代理。
+- 生成簡潔的程式碼審查摘要。
+- 允許自訂提示模板及變數。
 ![code review](./images/code_review.png)
 
 ## 安裝

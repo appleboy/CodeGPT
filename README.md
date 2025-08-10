@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/appleboy/CodeGPT/branch/main/graph/badge.svg)](https://codecov.io/gh/appleboy/CodeGPT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/CodeGPT)](https://goreportcard.com/report/github.com/appleboy/CodeGPT)
 
-A CLI tool written in [Go](https://go.dev) that generates git commit messages or provides code review summaries using ChatGPT AI (gpt-4o, gpt-4 model). It also automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
+A CLI tool written in [Go](https://go.dev) that generates git commit messages or provides code review summaries using ChatGPT AI (gpt-5, gpt-4o, gpt-4 model). It also automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
 
 - [繁體中文介紹][1]
 - [繁體中文影片][2]
@@ -63,7 +63,6 @@ A CLI tool written in [Go](https://go.dev) that generates git commit messages or
 - Enables file exclusion patterns for git diff operations.
 - Translates commit messages into other languages (supports `en`, `zh-tw`, or `zh-cn`).
 - Supports SOCKS proxy or custom network HTTP proxy.
-- Provides a [model list](https://github.com/appleboy/CodeGPT/blob/bf28f000463cfc6dfa2572df61e1b160c5c680f7/openai/openai.go#L18-L38) including `gpt-4`, `gpt-4o`, etc.
 - Generates brief code reviews.
 - Allows customization of prompt templates and variables.
 
