@@ -2,15 +2,6 @@
 
 set -euo pipefail
 
-# Create temp directory for downloads.
-TMPDIR="$(mktemp -d)"
-function cleanup() {
-  if [ -n "${TMPDIR:-}" ] && [ -d "$TMPDIR" ]; then
-    rm -rf "$TMPDIR"
-  fi
-}
-trap cleanup EXIT INT TERM
-
 APP=CodeGPT
 
 RED='\033[0;31m'
@@ -114,11 +105,20 @@ function get_latest_version() {
 }
 
 # Check for required commands
-for cmd in curl; do
+for cmd in curl mktemp; do
   if ! command -v "$cmd" >/dev/null 2>&1; then
     log_error "Error: $cmd is not installed. Please install $cmd to proceed." 1
   fi
 done
+
+# Create temp directory for downloads.
+TMPDIR="$(mktemp -d)"
+function cleanup() {
+  if [ -n "${TMPDIR:-}" ] && [ -d "$TMPDIR" ]; then
+    rm -rf "$TMPDIR"
+  fi
+}
+trap cleanup EXIT INT TERM
 
 # If INSECURE is set to any value, enable curl --insecure
 INSECURE_ARG=""
