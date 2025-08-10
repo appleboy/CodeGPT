@@ -71,11 +71,7 @@ func initConfig() {
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
-		exists, err := file.IsFile(cfgFile)
-		if err != nil {
-			// Config file status could not be determined; handle or ignore as needed
-			// Optionally: log.Fatalf("failed to check if config file %s is a file: %v", cfgFile, err)
-		}
+		exists, _ := file.IsFile(cfgFile)
 		if !exists {
 			// Config file not found; ignore error if desired
 			_, err := os.Create(cfgFile)

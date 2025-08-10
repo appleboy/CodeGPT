@@ -49,6 +49,7 @@ func (c *Client) Completion(ctx context.Context, content string) (*core.Response
 			CompletionTokens:        resp.Usage.CompletionTokens,
 			TotalTokens:             resp.Usage.TotalTokens,
 			CompletionTokensDetails: resp.Usage.CompletionTokensDetails,
+			PromptTokensDetails:     resp.Usage.PromptTokensDetails,
 		},
 	}, nil
 }
@@ -75,6 +76,7 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 		CompletionTokens:        resp.Usage.CompletionTokens,
 		TotalTokens:             resp.Usage.TotalTokens,
 		CompletionTokensDetails: resp.Usage.CompletionTokensDetails,
+		PromptTokensDetails:     resp.Usage.PromptTokensDetails,
 	}
 	if len(msg.ToolCalls) == 0 {
 		return &core.Response{
@@ -104,12 +106,12 @@ func (c *Client) CreateFunctionCall(
 	}
 
 	req := openai.ChatCompletionRequest{
-		Model:            c.model,
-		MaxTokens:        c.maxTokens,
-		Temperature:      c.temperature,
-		TopP:             c.topP,
-		FrequencyPenalty: c.frequencyPenalty,
-		PresencePenalty:  c.presencePenalty,
+		Model:               c.model,
+		MaxCompletionTokens: c.maxTokens,
+		Temperature:         c.temperature,
+		TopP:                c.topP,
+		FrequencyPenalty:    c.frequencyPenalty,
+		PresencePenalty:     c.presencePenalty,
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role:    openai.ChatMessageRoleAssistant,
@@ -129,11 +131,6 @@ func (c *Client) CreateFunctionCall(
 		},
 	}
 
-	if checkOSeriesModels.MatchString(c.model) {
-		req.MaxTokens = 0
-		req.MaxCompletionTokens = c.maxTokens
-	}
-
 	return c.client.CreateChatCompletion(ctx, req)
 }
 
@@ -143,12 +140,12 @@ func (c *Client) CreateChatCompletion(
 	content string,
 ) (resp openai.ChatCompletionResponse, err error) {
 	req := openai.ChatCompletionRequest{
-		Model:            c.model,
-		MaxTokens:        c.maxTokens,
-		Temperature:      c.temperature,
-		TopP:             c.topP,
-		FrequencyPenalty: c.frequencyPenalty,
-		PresencePenalty:  c.presencePenalty,
+		Model:               c.model,
+		MaxCompletionTokens: c.maxTokens,
+		Temperature:         c.temperature,
+		TopP:                c.topP,
+		FrequencyPenalty:    c.frequencyPenalty,
+		PresencePenalty:     c.presencePenalty,
 		Messages: []openai.ChatCompletionMessage{
 			{
 				Role:    openai.ChatMessageRoleAssistant,
@@ -159,11 +156,6 @@ func (c *Client) CreateChatCompletion(
 				Content: content,
 			},
 		},
-	}
-
-	if checkOSeriesModels.MatchString(c.model) {
-		req.MaxTokens = 0
-		req.MaxCompletionTokens = c.maxTokens
 	}
 
 	return c.client.CreateChatCompletion(ctx, req)
