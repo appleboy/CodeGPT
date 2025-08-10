@@ -55,13 +55,25 @@ func check() error {
 	}
 
 	// Verify template file existence
-	templateFile := viper.GetString("git.template_file")
-	if templateFile != "" && !file.IsFile(templateFile) {
-		return fmt.Errorf("template file not found at: %s", templateFile)
+	cfgTemplateFile := viper.GetString("git.template_file")
+	if cfgTemplateFile != "" {
+		exists, err := file.IsFile(cfgTemplateFile)
+		if err != nil {
+			return fmt.Errorf("failed to check template file: %v", err)
+		}
+		if !exists {
+			return fmt.Errorf("template file not found at: %s", cfgTemplateFile)
+		}
 	}
 
-	if templateVarsFile != "" && !file.IsFile(templateVarsFile) {
-		return fmt.Errorf("template variables file not found at: %s", templateVarsFile)
+	if templateVarsFile != "" {
+		exists, err := file.IsFile(templateVarsFile)
+		if err != nil {
+			return fmt.Errorf("failed to check template variables file: %v", err)
+		}
+		if !exists {
+			return fmt.Errorf("template variables file not found at: %s", templateVarsFile)
+		}
 	}
 
 	// Load custom prompts from configured directory
