@@ -127,13 +127,16 @@ chmod +x install.sh
 
 | 变量名        | 默认值             | 说明                                      |
 | ------------- | ------------------ | ----------------------------------------- |
-| VERSION       | latest             | 要安装的 CodeGPT 版本（默认为最新发布版） |
-| INSTALL_DIR   | $HOME/.codegpt/bin | 安装目录                                  |
-| CURL_INSECURE | false              | 是否跳过 SSL 验证 (true/false)            |
+| VERSION       | latest             | 要安装的 CodeGPT 版本（默认为最新发布版）               |
+| INSTALL_DIR   | $HOME/.codegpt/bin | 安装目录                                               |
+| INSECURE      | 未设置（默认关闭）  | 只要设置该变量（值不限），即跳过 SSL 验证               |
 
 使用示例：
 
 ```sh
+# 启用 insecure 模式（跳过 curl SSL 验证）
+INSECURE=1 ./install.sh
+
 # 安装指定版本到自定义目录
 VERSION=1.1.0 INSTALL_DIR=/opt/codegpt ./install.sh
 ```

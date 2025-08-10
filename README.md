@@ -130,15 +130,18 @@ chmod +x install.sh
 
 #### Configurable Environment Variables
 
-| Variable Name | Default Value      | Description                                                 |
-| ------------- | ------------------ | ----------------------------------------------------------- |
-| VERSION       | latest             | The CodeGPT version to install (defaults to latest release) |
-| INSTALL_DIR   | $HOME/.codegpt/bin | Installation directory                                      |
-| CURL_INSECURE | false              | Skip SSL verification (true/false)                          |
+| Variable Name | Default Value      | Description                                                                   |
+| ------------- | ------------------ | ----------------------------------------------------------------------------- |
+| VERSION       | latest             | The CodeGPT version to install (defaults to latest release)                   |
+| INSTALL_DIR   | $HOME/.codegpt/bin | Installation directory                                                        |
+| INSECURE      | unset (disabled)   | If set to any value, skips SSL verification. Enabled when variable is present |
 
 Example usage:
 
 ```sh
+# Install with insecure mode enabled (ignoring curl SSL verification):
+INSECURE=1 ./install.sh
+
 # Install a specific version to a custom directory:
 VERSION=1.1.0 INSTALL_DIR=/opt/codegpt ./install.sh
 ```
