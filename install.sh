@@ -5,7 +5,9 @@ set -euo pipefail
 # Create temp directory for downloads.
 TMPDIR="$(mktemp -d)"
 function cleanup() {
-  rm -rf "${TMPDIR}"
+  if [ -n "${TMPDIR:-}" ] && [ -d "$TMPDIR" ]; then
+    rm -rf "$TMPDIR"
+  fi
 }
 trap cleanup EXIT INT TERM
 
