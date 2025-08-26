@@ -61,7 +61,7 @@
 - 支持 SOCKS 代理或自定义网络 HTTP 代理。
 - 生成简洁的代码审查摘要。
 - 支持自定义提示模板和变量。
-![code review](./images/code_review.png)
+  ![code review](./images/code_review.png)
 
 ## 安装
 
@@ -125,11 +125,11 @@ chmod +x install.sh
 
 #### 可配置的环境变量
 
-| 变量名        | 默认值             | 说明                                      |
-| ------------- | ------------------ | ----------------------------------------- |
-| VERSION       | latest             | 要安装的 CodeGPT 版本（默认为最新发布版）               |
-| INSTALL_DIR   | $HOME/.codegpt/bin | 安装目录                                               |
-| INSECURE      | 未设置（默认关闭）  | 只要设置该变量（值不限），即跳过 SSL 验证               |
+| 变量名      | 默认值             | 说明                                      |
+| ----------- | ------------------ | ----------------------------------------- |
+| VERSION     | latest             | 要安装的 CodeGPT 版本（默认为最新发布版） |
+| INSTALL_DIR | $HOME/.codegpt/bin | 安装目录                                  |
+| INSECURE    | 未设置（默认关闭） | 只要设置该变量（值不限），即跳过 SSL 验证 |
 
 使用示例：
 
