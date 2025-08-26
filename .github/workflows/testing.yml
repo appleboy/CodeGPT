@@ -94,14 +94,13 @@ jobs:
           fetch-depth: 0
 
       - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.32.0
         with:
-          scan-type: 'fs'
+          scan-type: "fs"
           ignore-unfixed: true
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          exit-code: '1'
-          severity: 'CRITICAL,HIGH'
+          format: "table"
+          exit-code: "1"
+          severity: "CRITICAL,HIGH"
 
   super-linter:
     runs-on: ubuntu-latest
