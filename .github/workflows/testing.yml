@@ -89,7 +89,7 @@ jobs:
   vulnerability-scanning:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -100,7 +100,7 @@ jobs:
           ignore-unfixed: true
           format: "table"
           exit-code: "1"
-          severity: "CRITICAL,HIGH"
+          severity: "CRITICAL,HIGH,MEDIUM"
 
   super-linter:
     runs-on: ubuntu-latest
