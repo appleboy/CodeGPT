@@ -3,6 +3,8 @@
 [![Lint and Testing](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml/badge.svg?branch=main)](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml)
 [![codecov](https://codecov.io/gh/appleboy/CodeGPT/branch/main/graph/badge.svg)](https://codecov.io/gh/appleboy/CodeGPT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/CodeGPT)](https://goreportcard.com/report/github.com/appleboy/CodeGPT)
+[![npm version](https://img.shields.io/npm/v/@appleboy/codegpt?logo=npm&style=flat-square&color=CB3837)](https://www.npmjs.com/package/@appleboy/codegpt)
+[![npm downloads](https://img.shields.io/npm/dt/@appleboy/codegpt?logo=npm&style=flat-square)](https://www.npmjs.com/package/@appleboy/codegpt)
 
 A CLI tool written in [Go](https://go.dev) that generates git commit messages or provides code review summaries using ChatGPT AI (gpt-5, gpt-4o, gpt-4 model). It also automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
 
@@ -86,6 +88,16 @@ Install via [Chocolatey](https://chocolatey.org/install):
 ```sh
 choco install codegpt
 ```
+
+### Node.js/npm
+
+Install via [npm](https://www.npmjs.com/):
+
+```sh
+npm install -g @appleboy/codegpt
+```
+
+The npm package automatically downloads and installs the correct binary for your platform during installation.
 
 ### Install via Script or Binary
 

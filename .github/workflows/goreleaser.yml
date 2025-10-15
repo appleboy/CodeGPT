@@ -11,6 +11,8 @@ permissions:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -34,3 +36,121 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GO_VERSION: ${{ steps.setup-go.outputs.go-version }}
+
+      - name: Extract version from tag
+        id: get-version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Version: ${VERSION}"
+
+      - name: Upload binaries as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries
+          path: |
+            dist/CodeGPT-*
+            !dist/*.xz
+          retention-days: 1
+
+  publish-npm:
+    name: Publish to npm - ${{ matrix.scope && format('{0}/', matrix.scope) || '' }}${{ matrix.name }}
+    needs: goreleaser
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+
+    strategy:
+      matrix:
+        include:
+          - name: codegpt
+            scope: "@appleboy"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: binaries
+          path: cli/nodejs/binaries
+
+      - name: Verify downloaded binaries
+        run: |
+          echo "Downloaded binaries:"
+          ls -lh cli/nodejs/binaries/
+
+      - name: Update package.json version and name
+        working-directory: cli/nodejs
+        run: |
+          VERSION="${{ needs.goreleaser.outputs.version }}"
+          PACKAGE_NAME="${{ matrix.name }}"
+          SCOPE="${{ matrix.scope }}"
+
+          # Update version
+          npm version ${VERSION} --no-git-tag-version
+
+          # Update package name with scope if present
+          if [ -n "${SCOPE}" ]; then
+            FULL_NAME="${SCOPE}/${PACKAGE_NAME}"
+          else
+            FULL_NAME="${PACKAGE_NAME}"
+          fi
+
+          # Use jq to update package name
+          cat package.json | jq --arg name "${FULL_NAME}" '.name = $name' > package.json.tmp
+          mv package.json.tmp package.json
+
+          echo "Updated package.json:"
+          cat package.json | jq '{name, version}'
+
+      - name: Copy README for npm
+        run: |
+          cp README.md cli/nodejs/README.md
+          cp README.zh-cn.md cli/nodejs/README.zh-cn.md
+          cp README.zh-tw.md cli/nodejs/README.zh-tw.md
+
+      - name: Publish to npm with provenance
+        working-directory: cli/nodejs
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+        run: |
+          npm publish --provenance --access public
+
+      - name: Verify publication
+        working-directory: cli/nodejs
+        run: |
+          VERSION="${{ needs.goreleaser.outputs.version }}"
+          PACKAGE_NAME="${{ matrix.name }}"
+          SCOPE="${{ matrix.scope }}"
+
+          if [ -n "${SCOPE}" ]; then
+            FULL_NAME="${SCOPE}/${PACKAGE_NAME}"
+          else
+            FULL_NAME="${PACKAGE_NAME}"
+          fi
+
+          echo "Waiting for npm registry to update..."
+          sleep 10
+
+          # Check if version is available
+          PUBLISHED_VERSION=$(npm view ${FULL_NAME}@${VERSION} version 2>/dev/null || echo "")
+
+          if [ "${PUBLISHED_VERSION}" = "${VERSION}" ]; then
+            echo "✓ Successfully published ${FULL_NAME}@${VERSION}"
+            echo "Install with: npm install -g ${FULL_NAME}"
+          else
+            echo "Warning: Could not immediately verify publication"
+            echo "Please check: https://www.npmjs.com/package/${FULL_NAME}"
+          fi

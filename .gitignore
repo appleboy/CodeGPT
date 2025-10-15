@@ -17,5 +17,6 @@ coverage.txt
 dist
 **/.DS_Store
 bin
+!cli/nodejs/bin/
 release
 .codegpt.yaml
