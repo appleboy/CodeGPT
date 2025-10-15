@@ -3,6 +3,8 @@
 [![Lint and Testing](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml/badge.svg?branch=main)](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml)
 [![codecov](https://codecov.io/gh/appleboy/CodeGPT/branch/main/graph/badge.svg)](https://codecov.io/gh/appleboy/CodeGPT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/CodeGPT)](https://goreportcard.com/report/github.com/appleboy/CodeGPT)
+[![npm version](https://img.shields.io/npm/v/@appleboy/codegpt?logo=npm&style=flat-square&color=CB3837)](https://www.npmjs.com/package/@appleboy/codegpt)
+[![npm downloads](https://img.shields.io/npm/dt/@appleboy/codegpt?logo=npm&style=flat-square)](https://www.npmjs.com/package/@appleboy/codegpt)
 
 一個用 [Go](https://go.dev) 編寫的 CLI 工具，使用 ChatGPT AI (gpt-4o, gpt-4 模型) 生成 git 提交訊息或提供代碼審查摘要。它還會自動安裝 [git prepare-commit-msg hook](https://git-scm.com/docs/githooks)。
 
@@ -85,6 +87,16 @@ brew install codegpt
 ```sh
 choco install codegpt
 ```
+
+### Node.js/npm
+
+透過 [npm](https://www.npmjs.com/) 安裝：
+
+```sh
+npm install -g @appleboy/codegpt
+```
+
+npm 套件會在安裝時自動下載並安裝適合您平台的二進位檔案。
 
 ### 腳本與二進位安裝
 

@@ -1,0 +1,49 @@
+{
+  "name": "codegpt",
+  "version": "0.0.0",
+  "description": "A CLI tool that uses AI models to help write commit messages, code review, summary code, and more",
+  "main": "install.js",
+  "bin": {
+    "codegpt": "bin/codegpt"
+  },
+  "scripts": {
+    "postinstall": "node install.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/appleboy/CodeGPT.git"
+  },
+  "keywords": [
+    "codegpt",
+    "ai",
+    "cli",
+    "openai",
+    "gemini",
+    "anthropic",
+    "commit",
+    "code-review"
+  ],
+  "author": "Bo-Yi Wu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/appleboy/CodeGPT/issues"
+  },
+  "homepage": "https://github.com/appleboy/CodeGPT#readme",
+  "files": [
+    "binaries/",
+    "bin/",
+    "install.js",
+    "README.md"
+  ],
+  "os": [
+    "darwin",
+    "linux",
+    "win32",
+    "freebsd"
+  ],
+  "cpu": [
+    "x64",
+    "arm",
+    "arm64"
+  ]
+}
