@@ -82,7 +82,7 @@ var commitCmd = &cobra.Command{
 			git.WithExcludeList(viper.GetStringSlice("git.exclude_list")),
 			git.WithEnableAmend(commitAmend),
 		)
-		diff, err := g.DiffFiles()
+		diff, err := g.DiffFiles(cmd.Context())
 		if err != nil {
 			return err
 		}
@@ -288,7 +288,7 @@ var commitCmd = &cobra.Command{
 
 		outputFile := viper.GetString("output.file")
 		if outputFile == "" {
-			out, err := g.GitDir()
+			out, err := g.GitDir(cmd.Context())
 			if err != nil {
 				return err
 			}
@@ -331,7 +331,7 @@ var commitCmd = &cobra.Command{
 
 		// Commit changes to repository
 		color.Cyan("Recording changes to the repository")
-		output, err := g.Commit(commitMessage)
+		output, err := g.Commit(cmd.Context(), commitMessage)
 		if err != nil {
 			return err
 		}

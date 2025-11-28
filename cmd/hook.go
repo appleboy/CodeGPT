@@ -25,7 +25,7 @@ var hookInstallCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		g := git.New()
 
-		if err := g.InstallHook(); err != nil {
+		if err := g.InstallHook(cmd.Context()); err != nil {
 			return err
 		}
 		color.Green("Git hook 'prepare-commit-msg' installed successfully")
@@ -42,7 +42,7 @@ var hookUninstallCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		g := git.New()
 
-		if err := g.UninstallHook(); err != nil {
+		if err := g.UninstallHook(cmd.Context()); err != nil {
 			return err
 		}
 		color.Green("Git hook 'prepare-commit-msg' removed successfully")
