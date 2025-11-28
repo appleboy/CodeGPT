@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
+	"github.com/appleboy/CodeGPT/git"
 	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/provider/openai"
 	"github.com/appleboy/CodeGPT/util"
@@ -11,10 +13,16 @@ import (
 	"github.com/spf13/viper"
 )
 
-func check() error {
+func check(ctx context.Context) error {
 	// Check if the Git command is available on the system's PATH
 	if !util.IsCommandAvailable("git") {
 		return errors.New("git command not found in your system's PATH. Please install Git and try again")
+	}
+
+	// Check if the current directory is a git repository and can execute git diff
+	g := git.New()
+	if err := g.CanExecuteGitDiff(ctx); err != nil {
+		return fmt.Errorf("cannot execute git diff: %w", err)
 	}
 
 	// Apply configuration values from CLI flags to Viper

@@ -73,7 +73,7 @@ var commitCmd = &cobra.Command{
 	Use:   "commit",
 	Short: "Automatically generate commit message",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if err := check(); err != nil {
+		if err := check(cmd.Context()); err != nil {
 			return err
 		}
 

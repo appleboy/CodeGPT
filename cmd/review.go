@@ -35,7 +35,7 @@ var reviewCmd = &cobra.Command{
 	Use:   "review",
 	Short: "Auto review code changes",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if err := check(); err != nil {
+		if err := check(cmd.Context()); err != nil {
 			return err
 		}
 

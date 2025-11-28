@@ -121,6 +121,16 @@ func (c *Command) gitDir(ctx context.Context) *exec.Cmd {
 	)
 }
 
+// checkGitRepository generates the git command to check if the current directory is a git repository.
+func (c *Command) checkGitRepository(ctx context.Context) *exec.Cmd {
+	return exec.CommandContext(
+		ctx,
+		"git",
+		"rev-parse",
+		"--is-inside-work-tree",
+	)
+}
+
 // commit generates the git command to create a commit with the provided message.
 // It includes options to skip pre-commit hooks, sign off the commit, and handle amendments.
 func (c *Command) commit(ctx context.Context, val string) *exec.Cmd {
@@ -161,6 +171,21 @@ func (c *Command) GitDir(ctx context.Context) (string, error) {
 	}
 
 	return string(output), nil
+}
+
+// CanExecuteGitDiff checks if git diff can be executed in the current directory.
+// It returns an error if the current directory is not a git repository or if git diff cannot be executed.
+func (c *Command) CanExecuteGitDiff(ctx context.Context) error {
+	output, err := c.checkGitRepository(ctx).Output()
+	if err != nil {
+		return errors.New("not a git repository (or any of the parent directories)")
+	}
+
+	if strings.TrimSpace(string(output)) != "true" {
+		return errors.New("not inside a git working tree")
+	}
+
+	return nil
 }
 
 // Diff compares the differences between two sets of data.
