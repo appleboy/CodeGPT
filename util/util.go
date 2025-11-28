@@ -1,6 +1,7 @@
 package util
 
 import (
+	"bytes"
 	"os/exec"
 	"strings"
 )
@@ -34,4 +35,17 @@ func ConvertToMap(args []string) Data {
 		}
 	}
 	return m
+}
+
+// IsGitRepo returns true if the current working directory is inside a Git work tree.
+func IsGitRepo() bool {
+	cmd := exec.Command("git", "rev-parse", "--is-inside-work-tree")
+
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	if err := cmd.Run(); err != nil {
+		return false
+	}
+
+	return strings.TrimSpace(out.String()) == "true"
 }

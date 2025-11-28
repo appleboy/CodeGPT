@@ -17,6 +17,11 @@ func check() error {
 		return errors.New("git command not found in your system's PATH. Please install Git and try again")
 	}
 
+	// Check if current working directory is inside a Git repository.
+	if !util.IsGitRepo() {
+		return errors.New("not a git repository")
+	}
+
 	// Apply configuration values from CLI flags to Viper
 	if diffUnified != 3 {
 		viper.Set("git.diff_unified", diffUnified)
