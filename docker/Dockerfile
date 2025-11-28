@@ -13,8 +13,11 @@ LABEL org.opencontainers.image.description="A CLI written in Go language that wr
 LABEL org.opencontainers.image.licenses=MIT
 
 RUN apk add --no-cache ca-certificates git && \
-  rm -rf /var/cache/apk/*
+  rm -rf /var/cache/apk/* && \
+  adduser -D -H -u 1000 codegpt
 
 COPY release/${TARGETOS}/${TARGETARCH}/codegpt /bin/
+
+USER codegpt
 
 CMD ["/bin/codegpt"]
