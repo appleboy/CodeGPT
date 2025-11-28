@@ -44,7 +44,7 @@ var reviewCmd = &cobra.Command{
 			git.WithExcludeList(viper.GetStringSlice("git.exclude_list")),
 			git.WithEnableAmend(commitAmend),
 		)
-		diff, err := g.DiffFiles()
+		diff, err := g.DiffFiles(cmd.Context())
 		if err != nil {
 			return err
 		}

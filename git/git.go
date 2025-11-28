@@ -1,6 +1,7 @@
 package git
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -40,7 +41,7 @@ func (c *Command) excludeFiles() []string {
 
 // diffNames generates the git command to list the names of changed files.
 // It includes options to handle amended commits and staged changes.
-func (c *Command) diffNames() *exec.Cmd {
+func (c *Command) diffNames(ctx context.Context) *exec.Cmd {
 	args := []string{
 		"diff",
 		"--name-only",
@@ -55,7 +56,8 @@ func (c *Command) diffNames() *exec.Cmd {
 	excludedFiles := c.excludeFiles()
 	args = append(args, excludedFiles...)
 
-	return exec.Command(
+	return exec.CommandContext(
+		ctx,
 		"git",
 		args...,
 	)
@@ -64,7 +66,7 @@ func (c *Command) diffNames() *exec.Cmd {
 // diffFiles generates the git command to show the differences between files.
 // It includes options to ignore whitespace changes, use minimal diff algorithm,
 // and set the number of context lines.
-func (c *Command) diffFiles() *exec.Cmd {
+func (c *Command) diffFiles(ctx context.Context) *exec.Cmd {
 	args := []string{
 		"diff",
 		"--ignore-all-space",
@@ -81,7 +83,8 @@ func (c *Command) diffFiles() *exec.Cmd {
 	excludedFiles := c.excludeFiles()
 	args = append(args, excludedFiles...)
 
-	return exec.Command(
+	return exec.CommandContext(
+		ctx,
 		"git",
 		args...,
 	)
@@ -89,14 +92,15 @@ func (c *Command) diffFiles() *exec.Cmd {
 
 // hookPath generates the git command to get the path of the hooks directory.
 // This is used to locate where git hooks are stored.
-func (c *Command) hookPath() *exec.Cmd {
+func (c *Command) hookPath(ctx context.Context) *exec.Cmd {
 	args := []string{
 		"rev-parse",
 		"--git-path",
 		"hooks",
 	}
 
-	return exec.Command(
+	return exec.CommandContext(
+		ctx,
 		"git",
 		args...,
 	)
@@ -104,13 +108,14 @@ func (c *Command) hookPath() *exec.Cmd {
 
 // gitDir generates the git command to get the path of the git directory.
 // This is used to determine the location of the .git directory.
-func (c *Command) gitDir() *exec.Cmd {
+func (c *Command) gitDir(ctx context.Context) *exec.Cmd {
 	args := []string{
 		"rev-parse",
 		"--git-dir",
 	}
 
-	return exec.Command(
+	return exec.CommandContext(
+		ctx,
 		"git",
 		args...,
 	)
@@ -118,7 +123,7 @@ func (c *Command) gitDir() *exec.Cmd {
 
 // commit generates the git command to create a commit with the provided message.
 // It includes options to skip pre-commit hooks, sign off the commit, and handle amendments.
-func (c *Command) commit(val string) *exec.Cmd {
+func (c *Command) commit(ctx context.Context, val string) *exec.Cmd {
 	args := []string{
 		"commit",
 		"--no-verify",
@@ -130,7 +135,8 @@ func (c *Command) commit(val string) *exec.Cmd {
 		args = append(args, "--amend")
 	}
 
-	return exec.Command(
+	return exec.CommandContext(
+		ctx,
 		"git",
 		args...,
 	)
@@ -138,8 +144,8 @@ func (c *Command) commit(val string) *exec.Cmd {
 
 // Commit creates a git commit with the provided message and returns the output or an error.
 // It uses the commit method to generate the git command and execute it.
-func (c *Command) Commit(val string) (string, error) {
-	output, err := c.commit(val).Output()
+func (c *Command) Commit(ctx context.Context, val string) (string, error) {
+	output, err := c.commit(ctx, val).Output()
 	if err != nil {
 		return "", err
 	}
@@ -148,8 +154,8 @@ func (c *Command) Commit(val string) (string, error) {
 }
 
 // GitDir to show the (by default, absolute) path of the git directory of the working tree.
-func (c *Command) GitDir() (string, error) {
-	output, err := c.gitDir().Output()
+func (c *Command) GitDir(ctx context.Context) (string, error) {
+	output, err := c.gitDir(ctx).Output()
 	if err != nil {
 		return "", err
 	}
@@ -163,8 +169,8 @@ func (c *Command) GitDir() (string, error) {
 // DiffFiles compares the differences between two sets of data and returns the differences as a string and an error.
 // It first lists the names of changed files and then shows the differences between them.
 // If there are no staged changes, it returns an error message.
-func (c *Command) DiffFiles() (string, error) {
-	output, err := c.diffNames().Output()
+func (c *Command) DiffFiles(ctx context.Context) (string, error) {
+	output, err := c.diffNames(ctx).Output()
 	if err != nil {
 		return "", err
 	}
@@ -172,7 +178,7 @@ func (c *Command) DiffFiles() (string, error) {
 		return "", errors.New("please add your staged changes using git add <files...>")
 	}
 
-	output, err = c.diffFiles().Output()
+	output, err = c.diffFiles(ctx).Output()
 	if err != nil {
 		return "", err
 	}
@@ -182,8 +188,8 @@ func (c *Command) DiffFiles() (string, error) {
 
 // InstallHook installs the prepare-commit-msg hook if it doesn't already exist.
 // It retrieves the hooks directory path, checks if the hook file exists, and writes the hook file with executable permissions.
-func (c *Command) InstallHook() error {
-	hookPath, err := c.hookPath().Output()
+func (c *Command) InstallHook(ctx context.Context) error {
+	hookPath, err := c.hookPath(ctx).Output()
 	if err != nil {
 		return err
 	}
@@ -208,8 +214,8 @@ func (c *Command) InstallHook() error {
 
 // UninstallHook removes the prepare-commit-msg hook if it exists.
 // It retrieves the hooks directory path, checks if the hook file exists, and removes the hook file.
-func (c *Command) UninstallHook() error {
-	hookPath, err := c.hookPath().Output()
+func (c *Command) UninstallHook(ctx context.Context) error {
+	hookPath, err := c.hookPath(ctx).Output()
 	if err != nil {
 		return err
 	}
