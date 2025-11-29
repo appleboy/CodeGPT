@@ -71,12 +71,12 @@ jobs:
           file: docker/Dockerfile
           push: false
           load: true
-          tags: ${{ github.repository }}:scan
+          tags: ${{ env.REPO }}:scan
 
       - name: Run Trivy vulnerability scanner on Docker image
         uses: aquasecurity/trivy-action@0.33.1
         with:
-          image-ref: ${{ github.repository }}:scan
+          image-ref: ${{ env.REPO }}:scan
           ignore-unfixed: true
           format: "sarif"
           output: "trivy-docker-results.sarif"
