@@ -63,6 +63,30 @@ jobs:
         run: |
           echo "REPO=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
 
+      - name: Build Docker image for scanning
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          file: docker/Dockerfile
+          push: false
+          load: true
+          tags: ${{ github.repository }}:scan
+
+      - name: Run Trivy vulnerability scanner on Docker image
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: ${{ github.repository }}:scan
+          ignore-unfixed: true
+          format: "sarif"
+          output: "trivy-docker-results.sarif"
+          severity: "CRITICAL,HIGH,MEDIUM"
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: "trivy-docker-results.sarif"
+
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
