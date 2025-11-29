@@ -1,6 +1,7 @@
 # CodeGPT
 
 [![Lint and Testing](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml/badge.svg?branch=main)](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml)
+[![Security Scanning](https://github.com/appleboy/CodeGPT/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/appleboy/CodeGPT/actions/workflows/security.yml)
 [![codecov](https://codecov.io/gh/appleboy/CodeGPT/branch/main/graph/badge.svg)](https://codecov.io/gh/appleboy/CodeGPT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/CodeGPT)](https://goreportcard.com/report/github.com/appleboy/CodeGPT)
 
