@@ -80,7 +80,7 @@ jobs:
           ignore-unfixed: true
           format: "sarif"
           output: "trivy-docker-results.sarif"
-          severity: "CRITICAL,HIGH"
+          severity: "CRITICAL,HIGH,MEDIUM"
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
