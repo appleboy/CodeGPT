@@ -55,7 +55,8 @@ function download_and_install() {
   # Use temp dir for download
   TARGET="${TMPDIR}/${CLIENT_BINARY}"
 
-  curl -# -fSL --retry 5 --keepalive-time 2 ${INSECURE_ARG} "${DOWNLOAD_URL_PREFIX}/${CLIENT_BINARY}" -o "${TARGET}"
+  curl -# -fSL --retry 5 --keepalive-time 2 ${INSECURE_ARG} "${DOWNLOAD_URL_PREFIX}/${CLIENT_BINARY}" -o "${TARGET}" \
+    || log_error "Failed to download ${CLIENT_BINARY}" 6
   chmod +x "${TARGET}" || log_error "Failed to set executable permission on: ${TARGET}" 7
   # Move the binary to install dir and rename to codegpt
   mv "${TARGET}" "${INSTALL_DIR}/codegpt" || log_error "Failed to move ${TARGET} to ${INSTALL_DIR}/codegpt" 8
@@ -92,10 +93,14 @@ function add_to_path() {
 # Fetch latest release version from GitHub if VERSION is not set
 function get_latest_version() {
   local latest
+  local response
+  response=$(curl $INSECURE_ARG -# --retry 5 -fSL https://api.github.com/repos/appleboy/CodeGPT/releases/latest) \
+    || log_error "Failed to fetch the latest version from GitHub." 6
+
   if command -v jq >/dev/null 2>&1; then
-    latest=$(curl $INSECURE_ARG -# --retry 5 -fSL https://api.github.com/repos/appleboy/CodeGPT/releases/latest | jq -r .tag_name)
+    latest=$(echo "$response" | jq -r '.tag_name // empty')
   else
-    latest=$(curl $INSECURE_ARG -# --retry 5 -fSL https://api.github.com/repos/appleboy/CodeGPT/releases/latest | grep '"tag_name":' | sed -E 's/.*"tag_name": ?"v?([^"]+)".*/\1/')
+    latest=$(echo "$response" | grep '"tag_name":' | sed -E 's/.*"tag_name": ?"v?([^"]+)".*/\1/')
   fi
   # Remove leading 'v' if present
   latest="${latest#v}"
@@ -127,11 +132,7 @@ if [[ -n "${INSECURE:-}" ]]; then
 fi
 
 if [[ -z "${VERSION:-}" ]]; then
-  LATEST_VERSION=$(get_latest_version)
-  if [[ -z "$LATEST_VERSION" ]]; then
-    log_error "Failed to fetch the latest version from GitHub." 6
-  fi
-  VERSION="$LATEST_VERSION"
+  VERSION=$(get_latest_version)
 fi
 
 # Check if VERSION is a valid semantic version
@@ -181,7 +182,7 @@ for file in $config_files; do
 done
 
 if [[ -z $config_file ]]; then
-  log_error "No config file found for $current_shell. Checked files: ${config_files[*]}" 1
+  log_error "No config file found for $current_shell. Checked files: $config_files" 1
 fi
 
 if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
@@ -189,16 +190,7 @@ if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
   fish)
     add_to_path "$config_file" "fish_add_path $INSTALL_DIR"
     ;;
-  zsh)
-    add_to_path "$config_file" "export PATH=$INSTALL_DIR:\$PATH"
-    ;;
-  bash)
-    add_to_path "$config_file" "export PATH=$INSTALL_DIR:\$PATH"
-    ;;
-  ash)
-    add_to_path "$config_file" "export PATH=$INSTALL_DIR:\$PATH"
-    ;;
-  sh)
+  zsh | bash | ash | sh)
     add_to_path "$config_file" "export PATH=$INSTALL_DIR:\$PATH"
     ;;
   *)
