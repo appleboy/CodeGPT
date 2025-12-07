@@ -21,8 +21,11 @@ make test               # or: go test -v -cover -coverprofile coverage.txt ./...
 # Run a single test
 go test -v -run TestName ./path/to/package
 
-# Lint (uses golangci-lint v2)
-golangci-lint run
+# Format go files (auto-installs golangci-lint if missing)
+make fmt
+
+# Lint (auto-installs golangci-lint v2 if missing)
+make lint
 ```
 
 ## Architecture

@@ -37,6 +37,16 @@ install: $(GOFILES)
 test:
 	@$(GO) test -v -cover -coverprofile coverage.txt ./... && echo "\n==>\033[32m Ok\033[m\n" || exit 1
 
+## fmt: format go files using golangci-lint
+fmt:
+	@command -v golangci-lint >/dev/null 2>&1 || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $$($(GO) env GOPATH)/bin v2.7.1
+	golangci-lint fmt
+
+## lint: run golangci-lint to check for issues
+lint:
+	@command -v golangci-lint >/dev/null 2>&1 || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $$($(GO) env GOPATH)/bin v2.7.1
+	golangci-lint run
+
 ## build_linux_amd64: build the codegpt binary for linux amd64
 build_linux_amd64:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO) build -a -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)' -o release/linux/amd64/$(EXECUTABLE) ./cmd/$(EXECUTABLE)
