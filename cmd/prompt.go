@@ -59,7 +59,8 @@ When executed with the --load flag, it will copy all standard templates to your 
 		folder := viper.GetString("prompt.folder")
 
 		color.Yellow("Prompt folder: %s", folder)
-		confirm, err := confirmation.New("Do you want to load the default prompt data? This will overwrite your existing data.", confirmation.No).RunPrompt()
+		confirm, err := confirmation.New("Do you want to load the default prompt data? This will overwrite your existing data.", confirmation.No).
+			RunPrompt()
 		if err != nil || !confirm {
 			return err
 		}

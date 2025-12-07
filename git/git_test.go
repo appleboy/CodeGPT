@@ -82,7 +82,10 @@ func TestCanExecuteGitDiff(t *testing.T) {
 
 		err = cmd.CanExecuteGitDiff(ctx)
 		if err != nil {
-			t.Errorf("CanExecuteGitDiff() should succeed in a git repository subdirectory, got error: %v", err)
+			t.Errorf(
+				"CanExecuteGitDiff() should succeed in a git repository subdirectory, got error: %v",
+				err,
+			)
 		}
 	})
 }

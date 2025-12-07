@@ -26,8 +26,10 @@ func init() {
 	configSetCmd.Flags().IntP("max_tokens", "", 300, availableKeys["openai.max_tokens"])
 	configSetCmd.Flags().Float32P("temperature", "", 1.0, availableKeys["openai.temperature"])
 	configSetCmd.Flags().Float32P("top_p", "", 1.0, availableKeys["openai.top_p"])
-	configSetCmd.Flags().Float32P("frequency_penalty", "", 0.0, availableKeys["openai.frequency_penalty"])
-	configSetCmd.Flags().Float32P("presence_penalty", "", 0.0, availableKeys["openai.presence_penalty"])
+	configSetCmd.Flags().
+		Float32P("frequency_penalty", "", 0.0, availableKeys["openai.frequency_penalty"])
+	configSetCmd.Flags().
+		Float32P("presence_penalty", "", 0.0, availableKeys["openai.presence_penalty"])
 	configSetCmd.Flags().StringP("provider", "", "openai", availableKeys["openai.provider"])
 	configSetCmd.Flags().BoolP("skip_verify", "", false, availableKeys["openai.skip_verify"])
 	configSetCmd.Flags().StringP("headers", "", "", availableKeys["openai.headers"])
@@ -36,7 +38,8 @@ func init() {
 	// Gemini flags
 	configSetCmd.Flags().String("gemini.project_id", "", availableKeys["gemini.project_id"])
 	configSetCmd.Flags().String("gemini.location", "", availableKeys["gemini.location"])
-	configSetCmd.Flags().String("gemini.backend", "BackendGeminiAPI", availableKeys["gemini.backend"])
+	configSetCmd.Flags().
+		String("gemini.backend", "BackendGeminiAPI", availableKeys["gemini.backend"])
 	configSetCmd.Flags().String("gemini.api_key", "", availableKeys["gemini.api_key"])
 
 	_ = viper.BindPFlag("openai.base_url", configSetCmd.Flags().Lookup("base_url"))
@@ -76,7 +79,9 @@ var configSetCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Check if key is available
 		if _, ok := availableKeys[args[0]]; !ok {
-			return errors.New("config key is not available, please use `codegpt config list` to see the available keys")
+			return errors.New(
+				"config key is not available, please use `codegpt config list` to see the available keys",
+			)
 		}
 
 		// Set config value in viper

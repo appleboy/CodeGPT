@@ -23,8 +23,10 @@ func init() {
 	reviewCmd.PersistentFlags().IntVar(&maxTokens, "max_tokens", 300,
 		"Maximum number of tokens to generate in the chat completion")
 	reviewCmd.PersistentFlags().StringVar(&commitModel, "model", "gpt-4o", "OpenAI model to use")
-	reviewCmd.PersistentFlags().StringVar(&commitLang, "lang", "en", "Language for summarization (default: English)")
-	reviewCmd.PersistentFlags().StringSliceVar(&excludeList, "exclude_list", []string{}, "Files to exclude from git diff")
+	reviewCmd.PersistentFlags().
+		StringVar(&commitLang, "lang", "en", "Language for summarization (default: English)")
+	reviewCmd.PersistentFlags().
+		StringSliceVar(&excludeList, "exclude_list", []string{}, "Files to exclude from git diff")
 	reviewCmd.PersistentFlags().BoolVar(&commitAmend, "amend", false,
 		"Replace the tip of the current branch by creating a new commit")
 	reviewCmd.PersistentFlags().BoolVar(&promptOnly, "prompt_only", false,

@@ -34,8 +34,10 @@ const (
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/codegpt/.codegpt.yaml)")
-	rootCmd.PersistentFlags().StringVar(&promptFolder, "prompt_folder", "", "prompt folder (default is $HOME/.config/codegpt/prompt)")
+	rootCmd.PersistentFlags().
+		StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/codegpt/.codegpt.yaml)")
+	rootCmd.PersistentFlags().
+		StringVar(&promptFolder, "prompt_folder", "", "prompt folder (default is $HOME/.config/codegpt/prompt)")
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(configCmd)
 	rootCmd.AddCommand(commitCmd)
