@@ -121,20 +121,20 @@ output:
 
 ## Examples
 
-### Example 1: Basic commit with preview
+### Example 1: Basic commit without preview
 
 ```bash
 # Stage your changes
 git add .
 
-# Generate and preview commit message
-codegpt commit --preview
+# Generate commit message without confirmation
+codegpt commit --no_confirm
 ```
 
 ### Example 2: Chinese commit message
 
 ```bash
-codegpt commit --lang zh-tw --model gpt-4o
+codegpt commit --lang zh-tw --model gpt-4o --no_confirm
 ```
 
 ### Example 3: Custom template
