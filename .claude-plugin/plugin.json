@@ -1,0 +1,33 @@
+{
+  "name": "CodeGPT",
+  "version": "1.0.0",
+  "description": "A CLI tool for generating git commit messages and code reviews using AI. Supports multiple providers including OpenAI, Azure, Gemini, Anthropic, Ollama, Groq, and OpenRouter.",
+  "author": {
+    "name": "Bo-Yi Wu",
+    "email": "appleboy.tw@gmail.com",
+    "url": "https://github.com/appleboy"
+  },
+  "homepage": "https://github.com/appleboy/CodeGPT",
+  "repository": "https://github.com/appleboy/CodeGPT",
+  "license": "MIT",
+  "keywords": [
+    "git",
+    "commit-messages",
+    "code-review",
+    "ai",
+    "cli",
+    "openai",
+    "azure-openai",
+    "anthropic",
+    "claude",
+    "gemini",
+    "ollama",
+    "groq",
+    "openrouter",
+    "golang",
+    "git-hooks",
+    "automation",
+    "devtools",
+    "llm"
+  ]
+}
