@@ -1,9 +1,9 @@
 ---
-name: git commit message
+name: generating-commit-messages
 description: This skill provides AI-powered git commit message generation using the `codegpt commit` command. It analyzes git diffs and automatically generates conventional commit messages in multiple languages.
 ---
 
-# Git Commit Message
+# Generating Commit Messages
 
 ## Description
 
