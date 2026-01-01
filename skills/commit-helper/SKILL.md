@@ -21,10 +21,10 @@ bash < <(curl -sSL https://raw.githubusercontent.com/appleboy/CodeGPT/main/insta
 
 ### Basic Usage
 
-Generate a commit message for staged changes:
+Generate a commit message for staged changes (Skip confirmation prompts):
 
 ```bash
-codegpt commit
+codegpt commit --no_confirm
 ```
 
 ### Common Options
