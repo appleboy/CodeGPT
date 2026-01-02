@@ -38,6 +38,8 @@ description: Generates git commit messages automatically by analyzing your stage
    codegpt commit --no_confirm
    ```
 
+   **Note**: You don't need to manually run `git diff` to review your changes. CodeGPT automatically reads the staged changes and analyzes them to generate an appropriate commit message.
+
 ### Advanced Options
 
 - **Set language**: Use `--lang` to specify output language (en, zh-tw, zh-cn)
