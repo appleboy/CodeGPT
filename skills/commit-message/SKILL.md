@@ -1,5 +1,5 @@
 ---
-name: generating-commit-messages
+name: commit-message
 description: Generates git commit messages automatically by analyzing your staged changes using AI. Use this skill when you want to save time writing commit messages or need help describing what your code changes do.
 ---
 
@@ -224,21 +224,6 @@ Or save it in config file:
 ```yaml
 git:
   template_string: "[{{.summarize_prefix}}]({{.ticket}}): {{.summarize_title}}"
-```
-
-### Multilingual team
-
-**Issue**: Need commit messages in different languages for different repositories.
-
-**Solution**: Set language per command or configure per repository:
-
-```bash
-# Per command
-codegpt commit --lang zh-cn --no_confirm
-
-# Or set in repository's .codegpt.yaml
-output:
-  lang: zh-cn
 ```
 
 ### Network proxy required
