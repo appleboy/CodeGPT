@@ -1,162 +1,258 @@
 ---
 name: generating-commit-messages
-description: This skill provides AI-powered git commit message generation using the `codegpt commit` command. It analyzes git diffs and automatically generates conventional commit messages in multiple languages.
+description: Automatically generates conventional commit messages by analyzing your staged git changes using AI. Use this skill when you need to create well-formatted, meaningful commit messages that follow the Conventional Commits specification, or when you want to save time writing commit descriptions for your changes.
 ---
 
 # Generating Commit Messages
 
-## Description
+## Step-by-Step Instructions
 
-The git-commit skill leverages various AI providers (OpenAI, Anthropic, Gemini, Ollama, Groq, OpenRouter) to automatically generate meaningful commit messages that follow the [Conventional Commits](https://www.conventionalcommits.org/) specification.
+### Installation
 
-## Installation
+1. Run the install script to download and set up CodeGPT:
 
-Run the install script to automatically download and set up the latest release:
+   ```bash
+   bash < <(curl -sSL https://raw.githubusercontent.com/appleboy/CodeGPT/main/install.sh)
+   ```
 
-```sh
-bash < <(curl -sSL https://raw.githubusercontent.com/appleboy/CodeGPT/main/install.sh)
-```
+2. Configure your AI provider in `~/.config/codegpt/.codegpt.yaml`:
 
-## Usage
+   ```yaml
+   openai:
+     provider: openai # or: azure, anthropic, gemini, ollama, groq, openrouter
+     api_key: your_api_key_here
+     model: gpt-4o
+   ```
 
 ### Basic Usage
 
-Generate a commit message for staged changes (Skip confirmation prompts):
+1. Stage your changes:
+
+   ```bash
+   git add <files>
+   ```
+
+2. Generate and commit with AI-generated message:
+
+   ```bash
+   codegpt commit --no_confirm
+   ```
+
+3. Or preview the message before committing:
+
+   ```bash
+   codegpt commit --preview
+   ```
+
+### Advanced Options
+
+- **Set language**: Use `--lang` to specify output language (en, zh-tw, zh-cn)
+
+  ```bash
+  codegpt commit --lang zh-tw
+  ```
+
+- **Use specific model**: Override the default model
+
+  ```bash
+  codegpt commit --model gpt-4o
+  ```
+
+- **Exclude files**: Ignore certain files from the diff analysis
+
+  ```bash
+  codegpt commit --exclude_list "*.lock,*.json"
+  ```
+
+- **Custom templates**: Format messages according to your team's style
+
+  ```bash
+  codegpt commit --template_string "[{{.summarize_prefix}}] {{.summarize_title}}"
+  ```
+
+- **Amend commit**: Update the previous commit message
+
+  ```bash
+  codegpt commit --amend
+  ```
+
+## Examples of Inputs and Outputs
+
+### Example 1: Adding a new feature
+
+**Input:**
 
 ```bash
+# After making changes to add user authentication
+git add src/auth.go src/middleware.go
 codegpt commit --no_confirm
 ```
 
-### Common Options
+**Output:**
+
+```txt
+feat: add user authentication middleware
+
+Implement JWT-based authentication system with login and token validation
+middleware for protecting API endpoints.
+```
+
+### Example 2: Fixing a bug
+
+**Input:**
 
 ```bash
-# Preview commit message before committing
+# After fixing a null pointer error
+git add src/handlers/user.go
 codegpt commit --preview
-
-# Skip confirmation prompts
-codegpt commit --no_confirm
-
-# Set output language (en, zh-tw, zh-cn)
-codegpt commit --lang zh-tw
-
-# Use specific AI model
-codegpt commit --model gpt-4o
-
-# Amend previous commit
-codegpt commit --amend
-
-# Display prompt only (no API call)
-codegpt commit --prompt_only
-
-# Write to specific output file
-codegpt commit --file /path/to/commit-msg
-
-# Customize diff context lines
-codegpt commit --diff_unified 5
-
-# Exclude specific files from diff
-codegpt commit --exclude_list "*.lock,*.json"
-
-# Use custom template file
-codegpt commit --template_file ./my-template.tmpl
-
-# Use inline template string
-codegpt commit --template_string "{{.summarize_prefix}}: {{.summarize_title}}"
-
-# Set API timeout
-codegpt commit --timeout 60s
-
-# Configure network proxy
-codegpt commit --proxy http://proxy.example.com:8080
-codegpt commit --socks socks5://127.0.0.1:1080
 ```
 
-### Template Variables
+**Output:**
 
-When using custom templates, the following variables are available:
+```txt
+fix: resolve null pointer exception in user handler
 
-- `{{.summarize_prefix}}` - Conventional commit prefix (feat, fix, docs, etc.)
-- `{{.summarize_title}}` - Brief commit title
-- `{{.summarize_message}}` - Detailed commit message body
+Add nil checks before accessing user object properties to prevent crashes
+when processing requests with missing user data.
 
-You can also provide custom variables:
+[Preview shown, waiting for confirmation...]
+```
+
+### Example 3: Chinese language commit
+
+**Input:**
 
 ```bash
-codegpt commit --template_vars "author=John,ticket=PROJ-123"
-codegpt commit --template_vars_file ./vars.env
+git add docs/README.md
+codegpt commit --lang zh-tw --no_confirm
 ```
 
-## Workflow
+**Output:**
 
-1. **Diff Analysis**: Analyzes staged changes using `git diff`
-2. **Summarization**: AI generates a summary of the changes
-3. **Title Generation**: Creates a concise commit title
-4. **Prefix Detection**: Determines appropriate conventional commit prefix
-5. **Message Composition**: Combines all elements into a formatted message
-6. **Translation** (optional): Translates to target language if specified
-7. **Preview & Confirmation**: Shows message for review and optional editing
-8. **Commit**: Records changes to the repository
+```txt
+docs: 更新專案說明文件
 
-## Configuration
+新增安裝步驟說明以及使用範例，讓新使用者能夠快速上手。
+```
 
-Configure via `~/.config/codegpt/.codegpt.yaml`:
+### Example 4: Custom template with ticket number
+
+**Input:**
+
+```bash
+git add src/api/payment.go
+codegpt commit --template_string "{{.summarize_prefix}}(JIRA-123): {{.summarize_title}}" --no_confirm
+```
+
+**Output:**
+
+```txt
+feat(JIRA-123): integrate payment gateway API
+```
+
+### Example 5: Excluding lock files
+
+**Input:**
+
+```bash
+git add .
+codegpt commit --exclude_list "package-lock.json,yarn.lock,go.sum" --preview
+```
+
+**Output:**
+
+```txt
+refactor: reorganize project structure
+
+Move utility functions into separate packages and update import paths
+throughout the codebase for better modularity.
+
+(Lock files excluded from analysis)
+```
+
+## Common Edge Cases
+
+### No staged changes
+
+**Issue**: Running `codegpt commit` without staging any changes.
+
+**Solution**: Stage your changes first:
+
+```bash
+git add <files>
+codegpt commit
+```
+
+### API timeout for large diffs
+
+**Issue**: Large changesets may cause API timeouts.
+
+**Solution**: Increase timeout or commit changes in smaller batches:
+
+```bash
+codegpt commit --timeout 60s
+```
+
+### Generated files in diff
+
+**Issue**: Lock files or generated code affecting commit message quality.
+
+**Solution**: Exclude these files from analysis:
+
+```bash
+codegpt commit --exclude_list "package-lock.json,yarn.lock,*.min.js,dist/*"
+```
+
+### API key not configured
+
+**Issue**: Error message about missing API key.
+
+**Solution**: Set up your API key in the config file:
+
+```bash
+codegpt config set openai.api_key "your-api-key-here"
+```
+
+### Custom commit format required
+
+**Issue**: Team requires specific commit message format (e.g., with ticket numbers).
+
+**Solution**: Use custom templates:
+
+```bash
+codegpt commit --template_string "[{{.summarize_prefix}}] TICKET-123: {{.summarize_title}}"
+```
+
+Or save it in config file:
 
 ```yaml
-openai:
-  provider: openai  # or: azure, anthropic, gemini, ollama, groq, openrouter
-  api_key: your_api_key_here
-  model: gpt-4o
-  timeout: 30s
-
 git:
-  diff_unified: 3
-  exclude_list: []
-  template_file: ""
-  template_string: ""
+  template_string: "[{{.summarize_prefix}}] {{.ticket}}: {{.summarize_title}}"
+```
 
+### Multilingual team
+
+**Issue**: Need commit messages in different languages for different repositories.
+
+**Solution**: Set language per command or configure per repository:
+
+```bash
+# Per command
+codegpt commit --lang zh-cn
+
+# Or set in repository's .codegpt.yaml
 output:
-  lang: en  # or: zh-tw, zh-cn
-  file: ""
+  lang: zh-cn
 ```
 
-## Examples
+### Network proxy required
 
-### Example 1: Basic commit without preview
+**Issue**: API calls fail due to corporate firewall.
+
+**Solution**: Configure proxy settings:
 
 ```bash
-# Stage your changes
-git add .
-
-# Generate commit message without confirmation
-codegpt commit --no_confirm
+codegpt commit --proxy http://proxy.company.com:8080
+# Or for SOCKS proxy
+codegpt commit --socks socks5://127.0.0.1:1080
 ```
-
-### Example 2: Chinese commit message
-
-```bash
-codegpt commit --lang zh-tw --model gpt-4o --no_confirm
-```
-
-### Example 3: Custom template
-
-```bash
-codegpt commit \
-  --template_string "[{{.summarize_prefix}}] {{.summarize_title}}" \
-  --template_vars "ticket=PROJ-123"
-```
-
-### Example 4: With file exclusions
-
-```bash
-codegpt commit \
-  --exclude_list "package-lock.json,yarn.lock,go.sum" \
-  --preview
-```
-
-## Tips
-
-1. **Stage Changes First**: Always run `git add` before using `codegpt commit`
-2. **Use Preview Mode**: Review messages with `--preview` before committing
-3. **Customize Templates**: Create templates that match your team's commit style
-4. **Set Default Language**: Configure your preferred language in config file
-5. **Exclude Generated Files**: Use `--exclude_list` to ignore lock files and generated code
