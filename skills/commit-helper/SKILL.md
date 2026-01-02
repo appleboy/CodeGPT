@@ -38,42 +38,36 @@ description: Automatically generates conventional commit messages by analyzing y
    codegpt commit --no_confirm
    ```
 
-3. Or preview the message before committing:
-
-   ```bash
-   codegpt commit --preview
-   ```
-
 ### Advanced Options
 
 - **Set language**: Use `--lang` to specify output language (en, zh-tw, zh-cn)
 
   ```bash
-  codegpt commit --lang zh-tw
+  codegpt commit --lang zh-tw --no_confirm
   ```
 
 - **Use specific model**: Override the default model
 
   ```bash
-  codegpt commit --model gpt-4o
+  codegpt commit --model gpt-4o --no_confirm
   ```
 
 - **Exclude files**: Ignore certain files from the diff analysis
 
   ```bash
-  codegpt commit --exclude_list "*.lock,*.json"
+  codegpt commit --exclude_list "*.lock,*.json" --no_confirm
   ```
 
 - **Custom templates**: Format messages according to your team's style
 
   ```bash
-  codegpt commit --template_string "[{{.summarize_prefix}}] {{.summarize_title}}"
+  codegpt commit --template_string "[{{.summarize_prefix}}] {{.summarize_title}}" --no_confirm
   ```
 
 - **Amend commit**: Update the previous commit message
 
   ```bash
-  codegpt commit --amend
+  codegpt commit --amend --no_confirm
   ```
 
 ## Examples of Inputs and Outputs
@@ -104,7 +98,7 @@ middleware for protecting API endpoints.
 ```bash
 # After fixing a null pointer error
 git add src/handlers/user.go
-codegpt commit --preview
+codegpt commit --no_confirm
 ```
 
 **Output:**
@@ -156,7 +150,7 @@ feat(JIRA-123): integrate payment gateway API
 
 ```bash
 git add .
-codegpt commit --exclude_list "package-lock.json,yarn.lock,go.sum" --preview
+codegpt commit --exclude_list "package-lock.json,yarn.lock,go.sum" --no_confirm
 ```
 
 **Output:**
@@ -190,7 +184,7 @@ codegpt commit
 **Solution**: Increase timeout or commit changes in smaller batches:
 
 ```bash
-codegpt commit --timeout 60s
+codegpt commit --timeout 60s --no_confirm
 ```
 
 ### Generated files in diff
@@ -200,7 +194,7 @@ codegpt commit --timeout 60s
 **Solution**: Exclude these files from analysis:
 
 ```bash
-codegpt commit --exclude_list "package-lock.json,yarn.lock,*.min.js,dist/*"
+codegpt commit --exclude_list "package-lock.json,yarn.lock,*.min.js,dist/*" --no_confirm
 ```
 
 ### API key not configured
@@ -220,14 +214,14 @@ codegpt config set openai.api_key "your-api-key-here"
 **Solution**: Use custom templates:
 
 ```bash
-codegpt commit --template_string "[{{.summarize_prefix}}] TICKET-123: {{.summarize_title}}"
+codegpt commit --template_string "[{{.summarize_prefix}}](TICKET-123): {{.summarize_title}}"
 ```
 
 Or save it in config file:
 
 ```yaml
 git:
-  template_string: "[{{.summarize_prefix}}] {{.ticket}}: {{.summarize_title}}"
+  template_string: "[{{.summarize_prefix}}]({{.ticket}}): {{.summarize_title}}"
 ```
 
 ### Multilingual team
@@ -238,7 +232,7 @@ git:
 
 ```bash
 # Per command
-codegpt commit --lang zh-cn
+codegpt commit --lang zh-cn --no_confirm
 
 # Or set in repository's .codegpt.yaml
 output:
