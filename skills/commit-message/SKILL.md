@@ -70,11 +70,25 @@ description: Automatically generates, formats, organizes, and improves git commi
   codegpt commit --exclude_list "*.lock,*.json" --no_confirm
   ```
 
-- **Custom templates**: Format messages according to your team's style
+- **Custom templates**: Format messages according to your team's style, including Jira issue tracking
 
   ```bash
+  # Basic custom format
   codegpt commit --template_string "[{{.summarize_prefix}}] {{.summarize_title}}" --no_confirm
+
+  # With Jira issue number using template variables
+  codegpt commit --template_vars "JIRA_NUM=GAIA-2704" \
+    --template_string "{{.summarize_prefix}}{{if .JIRA_NUM}}({{.JIRA_NUM}}){{end}}: {{.summarize_title}}\n\n{{.summarize_message}}" \
+    --no_confirm
   ```
+
+  Available built-in template variables:
+
+  - `{{.summarize_prefix}}` - Conventional commit type (feat, fix, docs, etc.)
+  - `{{.summarize_title}}` - The commit title
+  - `{{.summarize_message}}` - The full commit message body
+
+  You can define custom variables with `--template_vars "KEY=VALUE"` and use them as `{{.KEY}}`
 
 - **Amend commit**: Update the previous commit message
 
@@ -141,19 +155,42 @@ docs: 更新專案說明文件
 新增安裝步驟說明以及使用範例，讓新使用者能夠快速上手。
 ```
 
-### Example 4: Custom template with ticket number
+### Example 4: Jira issue tracking integration
 
 **Input:**
 
 ```bash
-git add src/api/payment.go
-codegpt commit --template_string "{{.summarize_prefix}}(JIRA-123): {{.summarize_title}}" --no_confirm
+# Stage your changes
+git add Dockerfile docker-compose.yml
+
+# Generate commit with Jira issue number using template variables
+codegpt commit --template_vars "JIRA_NUM=GAIA-2704" \
+  --template_string "{{.summarize_prefix}}{{if .JIRA_NUM}}({{.JIRA_NUM}}){{end}}: {{.summarize_title}}
+
+{{.summarize_message}}" \
+  --no_confirm
 ```
 
 **Output:**
 
 ```txt
-feat(JIRA-123): integrate payment gateway API
+feat(GAIA-2704): update trivy scan for cicd
+
+- Add appuser (uid=1000) to run containers as non-root user
+- Fix trivy scan DS002: Image user should not be 'root'
+- Create /.app directory with proper ownership for externalimage
+```
+
+**Tip**: Save the template in config file to avoid typing it every time:
+
+```bash
+# Set the template once
+codegpt config set git.template_string "{{.summarize_prefix}}{{if .JIRA_NUM}}({{.JIRA_NUM}}){{end}}: {{.summarize_title}}
+
+{{.summarize_message}}"
+
+# Then just provide the Jira number when committing
+codegpt commit --template_vars "JIRA_NUM=GAIA-2704" --no_confirm
 ```
 
 ### Example 5: Excluding lock files
@@ -221,19 +258,77 @@ codegpt config set openai.api_key "your-api-key-here"
 
 ### Custom commit format required
 
-**Issue**: Team requires specific commit message format (e.g., with ticket numbers).
+**Issue**: Team requires specific commit message format with Jira issue tracking numbers.
 
-**Solution**: Use custom templates:
+**Solution**: Use `--template_vars` with custom templates.
+
+**Basic usage:**
 
 ```bash
-codegpt commit --template_string "[{{.summarize_prefix}}](TICKET-123): {{.summarize_title}}"
+codegpt commit --template_vars "JIRA_NUM=GAIA-2704" \
+  --template_string "{{.summarize_prefix}}{{if .JIRA_NUM}}({{.JIRA_NUM}}){{end}}: {{.summarize_title}}
+
+{{.summarize_message}}" \
+  --no_confirm
+
+# Result: feat(GAIA-2704): update trivy scan for cicd
 ```
 
-Or save it in config file:
+**Save template in config for convenience:**
+
+```bash
+# Set the template once
+codegpt config set git.template_string "{{.summarize_prefix}}{{if .JIRA_NUM}}({{.JIRA_NUM}}){{end}}: {{.summarize_title}}
+
+{{.summarize_message}}"
+
+# Then just provide the Jira number
+codegpt commit --template_vars "JIRA_NUM=GAIA-2704" --no_confirm
+```
+
+Or edit `~/.config/codegpt/.codegpt.yaml`:
 
 ```yaml
 git:
-  template_string: "[{{.summarize_prefix}}]({{.ticket}}): {{.summarize_title}}"
+  template_string: "{{.summarize_prefix}}{{if .JIRA_NUM}}({{.JIRA_NUM}}){{end}}: {{.summarize_title}}\n\n{{.summarize_message}}"
+```
+
+**Create a shell function for convenience:**
+
+Add to your `~/.bashrc` or `~/.zshrc`:
+
+```bash
+function commit() {
+  if [ -z "$1" ]; then
+    echo "Usage: commit <JIRA-NUM>"
+    return 1
+  fi
+  codegpt commit --template_vars "JIRA_NUM=$1" --no_confirm
+}
+
+# Usage: commit GAIA-2704
+```
+
+**Auto-extract from git branch name (advanced):**
+
+If your branch follows naming convention like `feature/GAIA-2704-add-security-scan`:
+
+```bash
+# Add to ~/.bashrc or ~/.zshrc
+function commit-auto() {
+  local branch=$(git rev-parse --abbrev-ref HEAD)
+  local jira_num=$(echo "$branch" | grep -oE '[A-Z]+-[0-9]+' | head -1)
+
+  if [ -z "$jira_num" ]; then
+    echo "No Jira issue found in branch: $branch"
+    codegpt commit --no_confirm
+  else
+    echo "Detected Jira issue: $jira_num"
+    codegpt commit --template_vars "JIRA_NUM=$jira_num" --no_confirm
+  fi
+}
+
+# Usage: commit-auto (auto-detects GAIA-2704 from branch name)
 ```
 
 ### Network proxy required
