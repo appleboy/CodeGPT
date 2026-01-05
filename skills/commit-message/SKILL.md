@@ -38,14 +38,24 @@ description: Automatically generates, formats, organizes, and improves git commi
    codegpt commit --no_confirm
    ```
 
-   **Note**: You don't need to manually run `git diff` to review your changes. CodeGPT automatically reads the staged changes and analyzes them to generate an appropriate commit message.
+   **Note**:
+
+   - Commit messages are generated in **English by default**. Use `--lang` to specify a different language.
+   - You don't need to manually run `git diff` to review your changes. CodeGPT automatically reads the staged changes and analyzes them to generate an appropriate commit message.
 
 ### Advanced Options
 
-- **Set language**: Use `--lang` to specify output language (en, zh-tw, zh-cn)
+- **Set language**: Use `--lang` to specify output language (default: en)
 
   ```bash
-  codegpt commit --lang zh-tw --no_confirm
+  codegpt commit --lang zh-tw --no_confirm  # For Traditional Chinese
+  codegpt commit --lang zh-cn --no_confirm  # For Simplified Chinese
+  ```
+
+  To change the default language permanently:
+
+  ```bash
+  codegpt config set output.lang en  # or zh-tw, zh-cn
   ```
 
 - **Use specific model**: Override the default model
