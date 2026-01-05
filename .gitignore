@@ -19,3 +19,4 @@ dist
 bin
 release
 .codegpt.yaml
+.claude
