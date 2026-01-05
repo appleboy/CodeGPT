@@ -10,13 +10,11 @@
   },
   "plugins": [
     {
-      "name": "generating-commit-messages",
-      "description": "This skill provides AI-powered git commit message generation using the `codegpt commit` command. It analyzes git diffs and automatically generates conventional commit messages in multiple languages.",
+      "name": "commit-message",
+      "description": "Generates git commit messages automatically by analyzing your staged changes using AI. Use this skill when you want to save time writing commit messages or need help describing what your code changes do.",
       "source": "./",
       "strict": false,
-      "skills": [
-        "./skills/commit-helper"
-      ]
+      "skills": ["./skills/commit-message"]
     }
   ]
 }

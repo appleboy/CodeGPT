@@ -1,6 +1,6 @@
 ---
 name: commit-message
-description: Generates git commit messages automatically by analyzing your staged changes using AI. Use this skill when you want to save time writing commit messages or need help describing what your code changes do.
+description: Automatically generates, formats, organizes, and improves git commit messages by analyzing your staged changes using AI. Use this skill when you want to create, write, review, or refine commit messages - whether you need to save time, maintain consistent formatting, or better describe your code changes.
 ---
 
 # Generating Commit Messages
