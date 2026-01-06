@@ -188,26 +188,97 @@ codegpt config set openai.api_key sk-xxxxxxx
 
 这将在你的主目录中创建一个 `.codegpt.yaml` 文件（$HOME/.config/codegpt/.codegpt.yaml）。以下选项可用。
 
-| 选项                         | 描述                                                                                                                                                                    |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **openai.base_url**          | 替换默认的基本 URL (`https://api.openai.com/v1`)。                                                                                                                      |
-| **openai.api_key**           | 从 [openai 平台页面](https://platform.openai.com/account/api-keys) 生成 API key。                                                                                       |
-| **openai.org_id**            | 在 API 请求中有时使用的组织标识符。参见 [组织设置](https://platform.openai.com/account/org-settings)。仅适用于 `openai` 服务。                                          |
-| **openai.model**             | 默认模型是 `gpt-4o`，你可以更改为其他自定义模型（Groq 或 OpenRouter 提供）。                                                                                            |
-| **openai.proxy**             | HTTP/HTTPS 客户端代理。                                                                                                                                                 |
-| **openai.socks**             | SOCKS 客户端代理。                                                                                                                                                      |
-| **openai.timeout**           | 默认 HTTP 超时时间是 `10s`（十秒）。                                                                                                                                    |
-| **openai.skip_verify**       | 默认 skip_verify 设置为 `false`，可以将其更改为 `true` 以忽略 SSL 验证。                                                                                                |
-| **openai.max_tokens**        | 默认最大 token 数是 `300`。参见参考 [max_tokens](https://platform.openai.com/docs/api-reference/completions/create#completions/create-max_tokens)。                     |
-| **openai.temperature**       | 默认温度是 `1`。参见参考 [temperature](https://platform.openai.com/docs/api-reference/completions/create#completions/create-temperature)。                              |
-| **git.diff_unified**         | 生成具有 `<n>` 行上下文的差异，默认是 `3`。                                                                                                                             |
-| **git.exclude_list**         | 从 `git diff` 命令中排除文件。                                                                                                                                          |
-| **openai.provider**          | 默认服务提供商是 `openai`，你可以更改为 `azure`。                                                                                                                       |
-| **output.lang**              | 默认语言是 `en`，可用语言有 `zh-tw`、`zh-cn`、`ja`。                                                                                                                    |
-| **openai.top_p**             | 默认 top_p 是 `1.0`。参见参考 [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p)。                                     |
-| **openai.frequency_penalty** | 默认 frequency_penalty 是 `0.0`。参见参考 [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty)。 |
-| **openai.presence_penalty**  | 默认 presence_penalty 是 `0.0`。参见参考 [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty)。    |
-| **prompt.folder**            | 默认提示文件夹是 `$HOME/.config/codegpt/prompt`。                                                                                                                       |
+| 选项                                              | 描述                                                                                                                                                                    |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **openai.base_url**                               | 替换默认的基本 URL (`https://api.openai.com/v1`)。                                                                                                                      |
+| **openai.api_key**                                | 从 [openai 平台页面](https://platform.openai.com/account/api-keys) 生成 API key。                                                                                       |
+| **openai.api_key_helper**                         | 用于动态生成 API key 的 Shell 命令（例如从密码管理器或密钥服务获取）。                                                                                                    |
+| **openai.api_key_helper_refresh_interval**        | 从 `api_key_helper` 刷新凭证的间隔秒数（默认：`900` 秒 / 15 分钟）。设置为 `0` 以禁用缓存。                                                                              |
+| **openai.org_id**                                 | 在 API 请求中有时使用的组织标识符。参见 [组织设置](https://platform.openai.com/account/org-settings)。仅适用于 `openai` 服务。                                          |
+| **openai.model**                                  | 默认模型是 `gpt-4o`，你可以更改为其他自定义模型（Groq 或 OpenRouter 提供）。                                                                                            |
+| **openai.proxy**                                  | HTTP/HTTPS 客户端代理。                                                                                                                                                 |
+| **openai.socks**                                  | SOCKS 客户端代理。                                                                                                                                                      |
+| **openai.timeout**                                | 默认 HTTP 超时时间是 `10s`（十秒）。                                                                                                                                    |
+| **openai.skip_verify**                            | 默认 skip_verify 设置为 `false`，可以将其更改为 `true` 以忽略 SSL 验证。                                                                                                |
+| **openai.max_tokens**                             | 默认最大 token 数是 `300`。参见参考 [max_tokens](https://platform.openai.com/docs/api-reference/completions/create#completions/create-max_tokens)。                     |
+| **openai.temperature**                            | 默认温度是 `1`。参见参考 [temperature](https://platform.openai.com/docs/api-reference/completions/create#completions/create-temperature)。                              |
+| **git.diff_unified**                              | 生成具有 `<n>` 行上下文的差异，默认是 `3`。                                                                                                                             |
+| **git.exclude_list**                              | 从 `git diff` 命令中排除文件。                                                                                                                                          |
+| **openai.provider**                               | 默认服务提供商是 `openai`，你可以更改为 `azure`。                                                                                                                       |
+| **output.lang**                                   | 默认语言是 `en`，可用语言有 `zh-tw`、`zh-cn`、`ja`。                                                                                                                    |
+| **openai.top_p**                                  | 默认 top_p 是 `1.0`。参见参考 [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p)。                                     |
+| **openai.frequency_penalty**                      | 默认 frequency_penalty 是 `0.0`。参见参考 [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty)。 |
+| **openai.presence_penalty**                       | 默认 presence_penalty 是 `0.0`。参见参考 [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty)。    |
+| **prompt.folder**                                 | 默认提示文件夹是 `$HOME/.config/codegpt/prompt`。                                                                                                                       |
+
+### 使用 API Key Helper 动态获取凭证
+
+你可以使用 Shell 命令从密码管理器或密钥服务动态获取 API key，而不是直接将其存储在配置文件中。这特别适用于：
+
+- 从密码管理器获取密钥（1Password、Bitwarden 等）
+- 使用云端密钥服务（AWS Secrets Manager、Google Secret Manager 等）
+- 实现密钥轮换和短期凭证
+- 提高安全性，避免以明文存储密钥
+
+#### 设置 API Key Helper
+
+配置 Shell 命令来获取你的 API key：
+
+```sh
+# 使用 1Password CLI
+codegpt config set openai.api_key_helper "op read op://vault/openai/api_key"
+
+# 使用 AWS Secrets Manager
+codegpt config set openai.api_key_helper "aws secretsmanager get-secret-value --secret-id openai-key --query SecretString --output text"
+
+# 使用 Google Cloud Secret Manager
+codegpt config set openai.api_key_helper "gcloud secrets versions access latest --secret=openai-api-key"
+
+# 使用环境变量
+codegpt config set openai.api_key_helper "echo \$MY_OPENAI_KEY"
+
+# 自定义脚本
+codegpt config set openai.api_key_helper "/path/to/get-api-key.sh"
+```
+
+#### 配置刷新间隔
+
+默认情况下，API key 会被缓存 15 分钟（900 秒），以避免对密钥服务的过度调用：
+
+```sh
+# 设置刷新间隔为 5 分钟
+codegpt config set openai.api_key_helper_refresh_interval 300
+
+# 设置刷新间隔为 30 分钟
+codegpt config set openai.api_key_helper_refresh_interval 1800
+
+# 禁用缓存（每次都重新获取密钥）
+codegpt config set openai.api_key_helper_refresh_interval 0
+```
+
+#### Gemini 专用 API Key Helper
+
+对于 Gemini 提供者，你可以设置单独的 helper：
+
+```sh
+codegpt config set gemini.api_key_helper "gcloud secrets versions access latest --secret=gemini-key"
+codegpt config set gemini.api_key_helper_refresh_interval 600
+```
+
+#### 工作原理
+
+1. **首次执行**：CodeGPT 运行你的 helper 命令并将 API key 缓存到 `~/.config/codegpt/.cache/`，文件权限为 0600（仅所有者可读写）
+2. **后续执行**：在刷新间隔内，CodeGPT 使用缓存的密钥
+3. **过期后**：CodeGPT 自动重新运行 helper 命令并更新缓存
+4. **安全性**：缓存文件以仅所有者可读写的权限存储
+
+#### 优先顺序
+
+当配置了多个 API key 来源时，CodeGPT 使用以下优先顺序：
+
+1. `openai.api_key_helper`（如果已配置）
+2. `openai.api_key`（静态配置）
+3. `OPENAI_API_KEY` 环境变量
 
 ### 如何自定义默认提示文件夹
 
