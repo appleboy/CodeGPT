@@ -71,6 +71,11 @@ func GetAPIKeyFromHelper(ctx context.Context, helperCmd string) (string, error) 
 
 	case <-ctx.Done():
 		// Timeout or cancellation: terminate the process group gracefully, then forcefully
+		if cmd.Process == nil {
+			// Process handle not initialized; wait for cleanup and report timeout
+			<-done
+			return "", fmt.Errorf("api_key_helper command timed out after %v", HelperTimeout)
+		}
 		pgid := cmd.Process.Pid
 
 		// First attempt: send SIGTERM to the entire process group for graceful shutdown
@@ -78,17 +83,10 @@ func GetAPIKeyFromHelper(ctx context.Context, helperCmd string) (string, error) 
 
 		// Wait for graceful termination with a grace period
 		select {
-		case err := <-done:
-			if err != nil {
-				return "", fmt.Errorf("api_key_helper terminated after timeout: %w", err)
-			}
-			apiKey := strings.TrimSpace(stdout.String())
-			if apiKey == "" {
-				return "", fmt.Errorf(
-					"api_key_helper command returned empty output after timeout termination",
-				)
-			}
-			return apiKey, nil
+		case <-done:
+			// Process exited after timeout was reached; treat as timeout regardless of exit status.
+			// We intentionally ignore stdout/stderr here to avoid returning a key after a timeout.
+			return "", fmt.Errorf("api_key_helper command timed out after %v", HelperTimeout)
 
 		case <-time.After(2 * time.Second):
 			// Grace period expired: send SIGKILL to force termination
