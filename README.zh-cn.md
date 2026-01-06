@@ -478,7 +478,7 @@ codegpt config set openai.base_url http://localhost:11434/v1
 codegpt config set openai.provider openai
 codegpt config set openai.base_url https://openrouter.ai/api/v1
 codegpt config set openai.api_key sk-or-v1-xxxxxxxxxxxxxxxx
-codegpt config set openai.model google/learnlm-1.5-pro-experimental:free
+codegpt config set openai.model google/gemini-3-flash-preview
 ```
 
 [50]: https://openrouter.ai/
