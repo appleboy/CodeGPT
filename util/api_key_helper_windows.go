@@ -33,7 +33,7 @@ func createKillOnCloseJob() (windows.Handle, error) {
 		uint32(unsafe.Sizeof(info)),
 	)
 	if err != nil {
-		windows.CloseHandle(job)
+		_ = windows.CloseHandle(job)
 		return 0, err
 	}
 	return job, nil
@@ -42,14 +42,20 @@ func createKillOnCloseJob() (windows.Handle, error) {
 // assignProcessToJob assigns a process to a Job Object.
 // Returns the process handle which should be closed by the caller.
 func assignProcessToJob(job windows.Handle, pid int) (windows.Handle, error) {
+	// Validate PID range to prevent overflow
+	if pid < 0 || pid > 0x7FFFFFFF {
+		return 0, fmt.Errorf("invalid process ID: %d", pid)
+	}
+
 	// Get child process handle (requires PROCESS_ALL_ACCESS)
+	// #nosec G115 -- PID validated above to prevent overflow
 	hProc, err := windows.OpenProcess(windows.PROCESS_ALL_ACCESS, false, uint32(pid))
 	if err != nil {
 		return 0, err
 	}
 	// Assign to Job
 	if err = windows.AssignProcessToJobObject(job, hProc); err != nil {
-		windows.CloseHandle(hProc)
+		_ = windows.CloseHandle(hProc)
 		return 0, err
 	}
 	return hProc, nil
@@ -93,7 +99,10 @@ func GetAPIKeyFromHelper(ctx context.Context, helperCmd string) (string, error) 
 	if err != nil {
 		return "", fmt.Errorf("create job failed: %w", err)
 	}
-	defer windows.CloseHandle(job) // With KILL_ON_JOB_CLOSE, closing will kill all processes
+	// With KILL_ON_JOB_CLOSE, closing the job will kill all processes
+	defer func() {
+		_ = windows.CloseHandle(job)
+	}()
 
 	// Start the child process
 	if err = cmd.Start(); err != nil {
@@ -109,7 +118,9 @@ func GetAPIKeyFromHelper(ctx context.Context, helperCmd string) (string, error) 
 		_ = cmd.Wait()
 		return "", fmt.Errorf("assign process to job failed: %w", err)
 	}
-	defer windows.CloseHandle(hProc)
+	defer func() {
+		_ = windows.CloseHandle(hProc)
+	}()
 
 	done := make(chan error, 1)
 	go func() {
