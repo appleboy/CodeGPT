@@ -13,6 +13,9 @@ func init() {
 	configCmd.AddCommand(configSetCmd)
 	configSetCmd.Flags().StringP("base_url", "b", "", availableKeys["openai.base_url"])
 	configSetCmd.Flags().StringP("api_key", "k", "", availableKeys["openai.api_key"])
+	configSetCmd.Flags().String("api_key_helper", "", availableKeys["openai.api_key_helper"])
+	configSetCmd.Flags().
+		Int("api_key_helper_refresh_interval", 900, availableKeys["openai.api_key_helper_refresh_interval"])
 	configSetCmd.Flags().StringP("model", "m", "gpt-4o", availableKeys["openai.model"])
 	configSetCmd.Flags().StringP("lang", "l", "en", availableKeys["openai.lang"])
 	configSetCmd.Flags().StringP("org_id", "o", "", availableKeys["openai.org_id"])
@@ -41,10 +44,18 @@ func init() {
 	configSetCmd.Flags().
 		String("gemini.backend", "BackendGeminiAPI", availableKeys["gemini.backend"])
 	configSetCmd.Flags().String("gemini.api_key", "", availableKeys["gemini.api_key"])
+	configSetCmd.Flags().String("gemini.api_key_helper", "", availableKeys["gemini.api_key_helper"])
+	configSetCmd.Flags().
+		Int("gemini.api_key_helper_refresh_interval", 900, availableKeys["gemini.api_key_helper_refresh_interval"])
 
 	_ = viper.BindPFlag("openai.base_url", configSetCmd.Flags().Lookup("base_url"))
 	_ = viper.BindPFlag("openai.org_id", configSetCmd.Flags().Lookup("org_id"))
 	_ = viper.BindPFlag("openai.api_key", configSetCmd.Flags().Lookup("api_key"))
+	_ = viper.BindPFlag("openai.api_key_helper", configSetCmd.Flags().Lookup("api_key_helper"))
+	_ = viper.BindPFlag(
+		"openai.api_key_helper_refresh_interval",
+		configSetCmd.Flags().Lookup("api_key_helper_refresh_interval"),
+	)
 	_ = viper.BindPFlag("openai.model", configSetCmd.Flags().Lookup("model"))
 	_ = viper.BindPFlag("openai.proxy", configSetCmd.Flags().Lookup("proxy"))
 	_ = viper.BindPFlag("openai.socks", configSetCmd.Flags().Lookup("socks"))
@@ -65,6 +76,14 @@ func init() {
 	_ = viper.BindPFlag("gemini.location", configSetCmd.Flags().Lookup("gemini.location"))
 	_ = viper.BindPFlag("gemini.backend", configSetCmd.Flags().Lookup("gemini.backend"))
 	_ = viper.BindPFlag("gemini.api_key", configSetCmd.Flags().Lookup("gemini.api_key"))
+	_ = viper.BindPFlag(
+		"gemini.api_key_helper",
+		configSetCmd.Flags().Lookup("gemini.api_key_helper"),
+	)
+	_ = viper.BindPFlag(
+		"gemini.api_key_helper_refresh_interval",
+		configSetCmd.Flags().Lookup("gemini.api_key_helper_refresh_interval"),
+	)
 }
 
 // configSetCmd updates the config value.
