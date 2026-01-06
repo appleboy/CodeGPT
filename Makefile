@@ -39,12 +39,12 @@ test:
 
 ## fmt: format go files using golangci-lint
 fmt:
-	@command -v golangci-lint >/dev/null 2>&1 || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $$($(GO) env GOPATH)/bin v2.7.1
+	@command -v golangci-lint >/dev/null 2>&1 || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $$($(GO) env GOPATH)/bin v2.7.2
 	golangci-lint fmt
 
 ## lint: run golangci-lint to check for issues
 lint:
-	@command -v golangci-lint >/dev/null 2>&1 || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $$($(GO) env GOPATH)/bin v2.7.1
+	@command -v golangci-lint >/dev/null 2>&1 || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $$($(GO) env GOPATH)/bin v2.7.2
 	golangci-lint run
 
 ## build_linux_amd64: build the codegpt binary for linux amd64
@@ -65,10 +65,17 @@ build_mac_intel:
 
 ## build_windows_64: build the codegpt binary for windows 64
 build_windows_64:
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 $(GO) build -a -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)' -o release/windows/intel/$(EXECUTABLE).exe ./cmd/$(EXECUTABLE)
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 $(GO) build -a -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)' -o release/windows/amd64/$(EXECUTABLE).exe ./cmd/$(EXECUTABLE)
+
+## clean: remove build artifacts and test coverage
+clean:
+	rm -rf bin/ release/ coverage.txt
+
+.PHONY: help build install test fmt lint clean
+.PHONY: build_linux_amd64 build_linux_arm64 build_linux_arm
+.PHONY: build_mac_intel build_windows_64
 
 ## help: print this help message
-.PHONY: help
 help:
 	@echo 'Usage:'
 	@sed -n 's/^##//p' ${MAKEFILE_LIST} | column -t -s ':' | sed -e 's/^/ /'
