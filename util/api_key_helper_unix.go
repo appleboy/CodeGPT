@@ -74,7 +74,7 @@ func GetAPIKeyFromHelper(ctx context.Context, helperCmd string) (string, error) 
 		if cmd.Process == nil {
 			// Process handle not initialized; wait for cleanup and report timeout
 			<-done
-			return "", fmt.Errorf("api_key_helper command timed out after %v", HelperTimeout)
+			return "", fmt.Errorf("api_key_helper command timeout after %v", HelperTimeout)
 		}
 		pgid := cmd.Process.Pid
 
@@ -86,13 +86,13 @@ func GetAPIKeyFromHelper(ctx context.Context, helperCmd string) (string, error) 
 		case <-done:
 			// Process exited after timeout was reached; treat as timeout regardless of exit status.
 			// We intentionally ignore stdout/stderr here to avoid returning a key after a timeout.
-			return "", fmt.Errorf("api_key_helper command timed out after %v", HelperTimeout)
+			return "", fmt.Errorf("api_key_helper command timeout after %v", HelperTimeout)
 
 		case <-time.After(2 * time.Second):
 			// Grace period expired: send SIGKILL to force termination
 			_ = syscall.Kill(-pgid, syscall.SIGKILL)
 			<-done // Wait for cleanup
-			return "", fmt.Errorf("api_key_helper command timed out after %v", HelperTimeout)
+			return "", fmt.Errorf("api_key_helper command timeout after %v", HelperTimeout)
 		}
 	}
 }

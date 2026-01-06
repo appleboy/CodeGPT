@@ -143,6 +143,6 @@ func GetAPIKeyFromHelper(ctx context.Context, helperCmd string) (string, error) 
 		// Timeout: terminate the entire Job (all descendants)
 		_ = windows.TerminateJobObject(job, 1)
 		<-done // Wait for cleanup
-		return "", fmt.Errorf("api_key_helper command timed out after %v", HelperTimeout)
+		return "", fmt.Errorf("api_key_helper command timeout after %v", HelperTimeout)
 	}
 }
