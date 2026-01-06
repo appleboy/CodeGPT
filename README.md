@@ -29,6 +29,12 @@ A CLI tool written in [Go](https://go.dev) that generates git commit messages or
     - [From Source](#from-source)
     - [Using VSCode Devcontainer](#using-vscode-devcontainer)
   - [Configuration](#configuration)
+    - [Using API Key Helper for Dynamic Credentials](#using-api-key-helper-for-dynamic-credentials)
+      - [Setup API Key Helper](#setup-api-key-helper)
+      - [Configure Refresh Interval](#configure-refresh-interval)
+      - [Gemini-Specific API Key Helper](#gemini-specific-api-key-helper)
+      - [How It Works](#how-it-works)
+      - [Priority Order](#priority-order)
     - [How to Customize the Default Prompt Folder](#how-to-customize-the-default-prompt-folder)
     - [How to Change to Azure OpenAI Service](#how-to-change-to-azure-openai-service)
     - [Support for Gemini API Service](#support-for-gemini-api-service)
@@ -191,28 +197,28 @@ codegpt config set openai.api_key sk-xxxxxxx
 
 This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/codegpt/.codegpt.yaml). The following options are available:
 
-| Option                                            | Description                                                                                                                                                                    |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **openai.base_url**                               | Replace the default base URL (`https://api.openai.com/v1`).                                                                                                                    |
-| **openai.api_key**                                | Generate API key from [openai platform page](https://platform.openai.com/account/api-keys).                                                                                    |
-| **openai.api_key_helper**                         | Shell command to dynamically generate API key (e.g., from password manager or secret service).                                                                                 |
-| **openai.api_key_helper_refresh_interval**        | Interval in seconds to refresh credentials from `api_key_helper` (default: `900` seconds / 15 minutes). Set to `0` to disable caching.                                         |
-| **openai.org_id**                                 | Identifier for this organization sometimes used in API requests. See [organization settings](https://platform.openai.com/account/org-settings). Only for `openai` service.     |
-| **openai.model**                                  | Default model is `gpt-4o`, you can change to other custom model (Groq or OpenRouter provider).                                                                                 |
-| **openai.proxy**                                  | HTTP/HTTPS client proxy.                                                                                                                                                       |
-| **openai.socks**                                  | SOCKS client proxy.                                                                                                                                                            |
-| **openai.timeout**                                | Default HTTP timeout is `10s` (ten seconds).                                                                                                                                   |
-| **openai.skip_verify**                            | Default skip_verify is `false`, You can change it to `true` to ignore SSL verification.                                                                                        |
-| **openai.max_tokens**                             | Default max tokens is `300`. See reference [max_tokens](https://platform.openai.com/docs/api-reference/completions/create#completions/create-max_tokens).                      |
-| **openai.temperature**                            | Default temperature is `1`. See reference [temperature](https://platform.openai.com/docs/api-reference/completions/create#completions/create-temperature).                     |
-| **git.diff_unified**                              | Generate diffs with `<n>` lines of context, default is `3`.                                                                                                                    |
-| **git.exclude_list**                              | Exclude file from `git diff` command.                                                                                                                                          |
-| **openai.provider**                               | Default service provider is `openai`, you can change to `azure`.                                                                                                               |
-| **output.lang**                                   | Default language is `en` and available languages `zh-tw`, `zh-cn`, `ja`.                                                                                                       |
-| **openai.top_p**                                  | Default top_p is `1.0`. See reference [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p).                                     |
-| **openai.frequency_penalty**                      | Default frequency_penalty is `0.0`. See reference [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty). |
-| **openai.presence_penalty**                       | Default presence_penalty is `0.0`. See reference [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty).    |
-| **prompt.folder**                                 | Default prompt folder is `$HOME/.config/codegpt/prompt`.                                                                                                                       |
+| Option                                     | Description                                                                                                                                                                    |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **openai.base_url**                        | Replace the default base URL (`https://api.openai.com/v1`).                                                                                                                    |
+| **openai.api_key**                         | Generate API key from [openai platform page](https://platform.openai.com/account/api-keys).                                                                                    |
+| **openai.api_key_helper**                  | Shell command to dynamically generate API key (e.g., from password manager or secret service).                                                                                 |
+| **openai.api_key_helper_refresh_interval** | Interval in seconds to refresh credentials from `api_key_helper` (default: `900` seconds / 15 minutes). Set to `0` to disable caching.                                         |
+| **openai.org_id**                          | Identifier for this organization sometimes used in API requests. See [organization settings](https://platform.openai.com/account/org-settings). Only for `openai` service.     |
+| **openai.model**                           | Default model is `gpt-4o`, you can change to other custom model (Groq or OpenRouter provider).                                                                                 |
+| **openai.proxy**                           | HTTP/HTTPS client proxy.                                                                                                                                                       |
+| **openai.socks**                           | SOCKS client proxy.                                                                                                                                                            |
+| **openai.timeout**                         | Default HTTP timeout is `10s` (ten seconds).                                                                                                                                   |
+| **openai.skip_verify**                     | Default skip_verify is `false`, You can change it to `true` to ignore SSL verification.                                                                                        |
+| **openai.max_tokens**                      | Default max tokens is `300`. See reference [max_tokens](https://platform.openai.com/docs/api-reference/completions/create#completions/create-max_tokens).                      |
+| **openai.temperature**                     | Default temperature is `1`. See reference [temperature](https://platform.openai.com/docs/api-reference/completions/create#completions/create-temperature).                     |
+| **git.diff_unified**                       | Generate diffs with `<n>` lines of context, default is `3`.                                                                                                                    |
+| **git.exclude_list**                       | Exclude file from `git diff` command.                                                                                                                                          |
+| **openai.provider**                        | Default service provider is `openai`, you can change to `azure`.                                                                                                               |
+| **output.lang**                            | Default language is `en` and available languages `zh-tw`, `zh-cn`, `ja`.                                                                                                       |
+| **openai.top_p**                           | Default top_p is `1.0`. See reference [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p).                                     |
+| **openai.frequency_penalty**               | Default frequency_penalty is `0.0`. See reference [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty). |
+| **openai.presence_penalty**                | Default presence_penalty is `0.0`. See reference [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty).    |
+| **prompt.folder**                          | Default prompt folder is `$HOME/.config/codegpt/prompt`.                                                                                                                       |
 
 ### Using API Key Helper for Dynamic Credentials
 
@@ -475,7 +481,7 @@ The following example uses the free model name: `meta-llama/llama-3-8b-instruct:
 codegpt config set openai.provider openai
 codegpt config set openai.base_url https://openrouter.ai/api/v1
 codegpt config set openai.api_key sk-or-v1-xxxxxxxxxxxxxxxx
-codegpt config set openai.model google/learnlm-1.5-pro-experimental:free
+codegpt config set openai.model google/gemini-3-flash-preview
 ```
 
 [50]: https://openrouter.ai/

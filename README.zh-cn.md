@@ -29,6 +29,12 @@
     - [从源码安装](#从源码安装)
     - [VSCode Devcontainer](#vscode-devcontainer)
   - [配置](#配置)
+    - [使用 API Key Helper 动态获取凭证](#使用-api-key-helper-动态获取凭证)
+      - [设置 API Key Helper](#设置-api-key-helper)
+      - [配置刷新间隔](#配置刷新间隔)
+      - [Gemini 专用 API Key Helper](#gemini-专用-api-key-helper)
+      - [工作原理](#工作原理)
+      - [优先顺序](#优先顺序)
     - [如何自定义默认提示文件夹](#如何自定义默认提示文件夹)
     - [如何切换到 Azure OpenAI 服务](#如何切换到-azure-openai-服务)
     - [支持 Gemini API 服务](#支持-gemini-api-服务)
@@ -188,28 +194,28 @@ codegpt config set openai.api_key sk-xxxxxxx
 
 这将在你的主目录中创建一个 `.codegpt.yaml` 文件（$HOME/.config/codegpt/.codegpt.yaml）。以下选项可用。
 
-| 选项                                              | 描述                                                                                                                                                                    |
-| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **openai.base_url**                               | 替换默认的基本 URL (`https://api.openai.com/v1`)。                                                                                                                      |
-| **openai.api_key**                                | 从 [openai 平台页面](https://platform.openai.com/account/api-keys) 生成 API key。                                                                                       |
-| **openai.api_key_helper**                         | 用于动态生成 API key 的 Shell 命令（例如从密码管理器或密钥服务获取）。                                                                                                    |
-| **openai.api_key_helper_refresh_interval**        | 从 `api_key_helper` 刷新凭证的间隔秒数（默认：`900` 秒 / 15 分钟）。设置为 `0` 以禁用缓存。                                                                              |
-| **openai.org_id**                                 | 在 API 请求中有时使用的组织标识符。参见 [组织设置](https://platform.openai.com/account/org-settings)。仅适用于 `openai` 服务。                                          |
-| **openai.model**                                  | 默认模型是 `gpt-4o`，你可以更改为其他自定义模型（Groq 或 OpenRouter 提供）。                                                                                            |
-| **openai.proxy**                                  | HTTP/HTTPS 客户端代理。                                                                                                                                                 |
-| **openai.socks**                                  | SOCKS 客户端代理。                                                                                                                                                      |
-| **openai.timeout**                                | 默认 HTTP 超时时间是 `10s`（十秒）。                                                                                                                                    |
-| **openai.skip_verify**                            | 默认 skip_verify 设置为 `false`，可以将其更改为 `true` 以忽略 SSL 验证。                                                                                                |
-| **openai.max_tokens**                             | 默认最大 token 数是 `300`。参见参考 [max_tokens](https://platform.openai.com/docs/api-reference/completions/create#completions/create-max_tokens)。                     |
-| **openai.temperature**                            | 默认温度是 `1`。参见参考 [temperature](https://platform.openai.com/docs/api-reference/completions/create#completions/create-temperature)。                              |
-| **git.diff_unified**                              | 生成具有 `<n>` 行上下文的差异，默认是 `3`。                                                                                                                             |
-| **git.exclude_list**                              | 从 `git diff` 命令中排除文件。                                                                                                                                          |
-| **openai.provider**                               | 默认服务提供商是 `openai`，你可以更改为 `azure`。                                                                                                                       |
-| **output.lang**                                   | 默认语言是 `en`，可用语言有 `zh-tw`、`zh-cn`、`ja`。                                                                                                                    |
-| **openai.top_p**                                  | 默认 top_p 是 `1.0`。参见参考 [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p)。                                     |
-| **openai.frequency_penalty**                      | 默认 frequency_penalty 是 `0.0`。参见参考 [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty)。 |
-| **openai.presence_penalty**                       | 默认 presence_penalty 是 `0.0`。参见参考 [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty)。    |
-| **prompt.folder**                                 | 默认提示文件夹是 `$HOME/.config/codegpt/prompt`。                                                                                                                       |
+| 选项                                       | 描述                                                                                                                                                                    |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **openai.base_url**                        | 替换默认的基本 URL (`https://api.openai.com/v1`)。                                                                                                                      |
+| **openai.api_key**                         | 从 [openai 平台页面](https://platform.openai.com/account/api-keys) 生成 API key。                                                                                       |
+| **openai.api_key_helper**                  | 用于动态生成 API key 的 Shell 命令（例如从密码管理器或密钥服务获取）。                                                                                                  |
+| **openai.api_key_helper_refresh_interval** | 从 `api_key_helper` 刷新凭证的间隔秒数（默认：`900` 秒 / 15 分钟）。设置为 `0` 以禁用缓存。                                                                             |
+| **openai.org_id**                          | 在 API 请求中有时使用的组织标识符。参见 [组织设置](https://platform.openai.com/account/org-settings)。仅适用于 `openai` 服务。                                          |
+| **openai.model**                           | 默认模型是 `gpt-4o`，你可以更改为其他自定义模型（Groq 或 OpenRouter 提供）。                                                                                            |
+| **openai.proxy**                           | HTTP/HTTPS 客户端代理。                                                                                                                                                 |
+| **openai.socks**                           | SOCKS 客户端代理。                                                                                                                                                      |
+| **openai.timeout**                         | 默认 HTTP 超时时间是 `10s`（十秒）。                                                                                                                                    |
+| **openai.skip_verify**                     | 默认 skip_verify 设置为 `false`，可以将其更改为 `true` 以忽略 SSL 验证。                                                                                                |
+| **openai.max_tokens**                      | 默认最大 token 数是 `300`。参见参考 [max_tokens](https://platform.openai.com/docs/api-reference/completions/create#completions/create-max_tokens)。                     |
+| **openai.temperature**                     | 默认温度是 `1`。参见参考 [temperature](https://platform.openai.com/docs/api-reference/completions/create#completions/create-temperature)。                              |
+| **git.diff_unified**                       | 生成具有 `<n>` 行上下文的差异，默认是 `3`。                                                                                                                             |
+| **git.exclude_list**                       | 从 `git diff` 命令中排除文件。                                                                                                                                          |
+| **openai.provider**                        | 默认服务提供商是 `openai`，你可以更改为 `azure`。                                                                                                                       |
+| **output.lang**                            | 默认语言是 `en`，可用语言有 `zh-tw`、`zh-cn`、`ja`。                                                                                                                    |
+| **openai.top_p**                           | 默认 top_p 是 `1.0`。参见参考 [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p)。                                     |
+| **openai.frequency_penalty**               | 默认 frequency_penalty 是 `0.0`。参见参考 [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty)。 |
+| **openai.presence_penalty**                | 默认 presence_penalty 是 `0.0`。参见参考 [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty)。    |
+| **prompt.folder**                          | 默认提示文件夹是 `$HOME/.config/codegpt/prompt`。                                                                                                                       |
 
 ### 使用 API Key Helper 动态获取凭证
 
