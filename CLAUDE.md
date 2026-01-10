@@ -28,6 +28,14 @@ make fmt
 make lint
 ```
 
+## Development Guidelines
+
+**IMPORTANT: When making changes to this codebase, you MUST:**
+
+1. **Write Tests** - Always write corresponding tests for any new functionality or bug fixes
+2. **Pass Linting** - All code must pass `make lint` validation before submission
+3. **Format Code** - Always run `make fmt` to ensure consistent coding style
+
 ## Architecture
 
 ### Core Design Pattern
