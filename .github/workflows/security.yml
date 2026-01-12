@@ -1,42 +1,50 @@
-name: Security Scanning
+name: Trivy Security Scan
 
 on:
-  schedule:
-    # Run daily at midnight UTC
-    - cron: "0 0 * * *"
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-
-permissions:
-  contents: read
-  security-events: write
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    branches: [main]
+  schedule:
+    - cron: "0 0 * * *" # Daily scan at midnight UTC
+  workflow_dispatch: # Allow manual trigger
 
 jobs:
-  trivy-source:
-    name: Trivy Source Code Scan
+  trivy-scan:
+    name: Trivy Security Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v6
 
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: "fs"
-          ignore-unfixed: true
+          scan-ref: "."
           format: "sarif"
-          output: "trivy-source-results.sarif"
+          output: "trivy-results.sarif"
           severity: "CRITICAL,HIGH,MEDIUM"
+          scanners: "vuln,secret,misconfig"
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
+      - name: Upload Trivy results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
         with:
-          sarif_file: "trivy-source-results.sarif"
+          sarif_file: "trivy-results.sarif"
+
+      - name: Run Trivy vulnerability scanner (table output)
+        uses: aquasecurity/trivy-action@0.33.1
+        if: always()
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          format: "table"
+          severity: "CRITICAL,HIGH"
+          scanners: "vuln,secret,misconfig"
+          exit-code: "1"
