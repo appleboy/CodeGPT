@@ -37,32 +37,10 @@ type Response struct {
 	Usage   openai.Usage
 }
 
-// Completion is a method on the Client struct that takes a context.Context and a string argument
-func (c *Client) Completion(ctx context.Context, content string) (*core.Response, error) {
-	resp, err := c.completion(ctx, content)
-	if err != nil {
-		return nil, err
-	}
-
-	return &core.Response{
-		Content: resp.Content,
-		Usage: core.Usage{
-			PromptTokens:            resp.Usage.PromptTokens,
-			CompletionTokens:        resp.Usage.CompletionTokens,
-			TotalTokens:             resp.Usage.TotalTokens,
-			CompletionTokensDetails: resp.Usage.CompletionTokensDetails,
-			PromptTokensDetails:     resp.Usage.PromptTokensDetails,
-		},
-	}, nil
-}
-
-// CompletionStream streams completion tokens to the writer as they arrive.
-func (c *Client) CompletionStream(
-	ctx context.Context,
-	content string,
-	w io.Writer,
-) (*core.Response, error) {
-	req := openai.ChatCompletionRequest{
+// newBaseRequest builds a ChatCompletionRequest with the client's model parameters and
+// standard system/user messages. Callers can further customize the returned request.
+func (c *Client) newBaseRequest(content string) openai.ChatCompletionRequest {
+	return openai.ChatCompletionRequest{
 		Model:               c.model,
 		MaxCompletionTokens: c.maxTokens,
 		Temperature:         c.temperature,
@@ -79,9 +57,42 @@ func (c *Client) CompletionStream(
 				Content: content,
 			},
 		},
-		Stream:        true,
-		StreamOptions: &openai.StreamOptions{IncludeUsage: true},
 	}
+}
+
+// convertUsage converts an openai.Usage to a core.Usage.
+func convertUsage(u openai.Usage) core.Usage {
+	return core.Usage{
+		PromptTokens:            u.PromptTokens,
+		CompletionTokens:        u.CompletionTokens,
+		TotalTokens:             u.TotalTokens,
+		CompletionTokensDetails: u.CompletionTokensDetails,
+		PromptTokensDetails:     u.PromptTokensDetails,
+	}
+}
+
+// Completion is a method on the Client struct that takes a context.Context and a string argument
+func (c *Client) Completion(ctx context.Context, content string) (*core.Response, error) {
+	resp, err := c.completion(ctx, content)
+	if err != nil {
+		return nil, err
+	}
+
+	return &core.Response{
+		Content: resp.Content,
+		Usage:   convertUsage(resp.Usage),
+	}, nil
+}
+
+// CompletionStream streams completion tokens to the writer as they arrive.
+func (c *Client) CompletionStream(
+	ctx context.Context,
+	content string,
+	w io.Writer,
+) (*core.Response, error) {
+	req := c.newBaseRequest(content)
+	req.Stream = true
+	req.StreamOptions = &openai.StreamOptions{IncludeUsage: true}
 
 	stream, err := c.client.CreateChatCompletionStream(ctx, req)
 	if err != nil {
@@ -106,6 +117,9 @@ func (c *Client) CompletionStream(
 
 		if len(chunk.Choices) > 0 {
 			text := chunk.Choices[0].Delta.Content
+			if text == "" {
+				text = chunk.Choices[0].Delta.ReasoningContent
+			}
 			if text != "" {
 				sb.WriteString(text)
 				_, _ = io.WriteString(w, text)
@@ -115,13 +129,7 @@ func (c *Client) CompletionStream(
 
 	return &core.Response{
 		Content: sb.String(),
-		Usage: core.Usage{
-			PromptTokens:            usage.PromptTokens,
-			CompletionTokens:        usage.CompletionTokens,
-			TotalTokens:             usage.TotalTokens,
-			CompletionTokensDetails: usage.CompletionTokensDetails,
-			PromptTokensDetails:     usage.PromptTokensDetails,
-		},
+		Usage:   convertUsage(usage),
 	}, nil
 }
 
@@ -153,13 +161,7 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 	}
 
 	msg := resp.Choices[0].Message
-	usage := core.Usage{
-		PromptTokens:            resp.Usage.PromptTokens,
-		CompletionTokens:        resp.Usage.CompletionTokens,
-		TotalTokens:             resp.Usage.TotalTokens,
-		CompletionTokensDetails: resp.Usage.CompletionTokensDetails,
-		PromptTokensDetails:     resp.Usage.PromptTokensDetails,
-	}
+	usage := convertUsage(resp.Usage)
 	if len(msg.ToolCalls) == 0 {
 		return &core.Response{
 			Content: msg.Content,
@@ -187,29 +189,12 @@ func (c *Client) CreateFunctionCall(
 		Function: &f,
 	}
 
-	req := openai.ChatCompletionRequest{
-		Model:               c.model,
-		MaxCompletionTokens: c.maxTokens,
-		Temperature:         c.temperature,
-		TopP:                c.topP,
-		FrequencyPenalty:    c.frequencyPenalty,
-		PresencePenalty:     c.presencePenalty,
-		Messages: []openai.ChatCompletionMessage{
-			{
-				Role:    openai.ChatMessageRoleAssistant,
-				Content: "You are a helpful assistant.",
-			},
-			{
-				Role:    openai.ChatMessageRoleUser,
-				Content: content,
-			},
-		},
-		Tools: []openai.Tool{t},
-		ToolChoice: openai.ToolChoice{
-			Type: openai.ToolTypeFunction,
-			Function: openai.ToolFunction{
-				Name: f.Name,
-			},
+	req := c.newBaseRequest(content)
+	req.Tools = []openai.Tool{t}
+	req.ToolChoice = openai.ToolChoice{
+		Type: openai.ToolTypeFunction,
+		Function: openai.ToolFunction{
+			Name: f.Name,
 		},
 	}
 
@@ -221,26 +206,7 @@ func (c *Client) CreateChatCompletion(
 	ctx context.Context,
 	content string,
 ) (resp openai.ChatCompletionResponse, err error) {
-	req := openai.ChatCompletionRequest{
-		Model:               c.model,
-		MaxCompletionTokens: c.maxTokens,
-		Temperature:         c.temperature,
-		TopP:                c.topP,
-		FrequencyPenalty:    c.frequencyPenalty,
-		PresencePenalty:     c.presencePenalty,
-		Messages: []openai.ChatCompletionMessage{
-			{
-				Role:    openai.ChatMessageRoleAssistant,
-				Content: "You are a helpful assistant.",
-			},
-			{
-				Role:    openai.ChatMessageRoleUser,
-				Content: content,
-			},
-		},
-	}
-
-	return c.client.CreateChatCompletion(ctx, req)
+	return c.client.CreateChatCompletion(ctx, c.newBaseRequest(content))
 }
 
 // Completion is a method on the Client struct that takes a context.Context and a string argument
