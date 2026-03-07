@@ -9,19 +9,21 @@ Generate a conventional commit message from staged git changes following a struc
 
 ## Steps
 
-### 1. Get the staged diff
+### 1. Stage changes and get the diff
 
-Run the following command to get the staged diff:
+If there are modified files from the current session that haven't been staged yet, run `git add` on those files first to include them in the staged changes.
+
+Then get the staged diff:
 
 ```bash
 git diff --staged
 ```
 
-If the diff is empty, inform the user that there are no staged changes and stop.
+If the diff is empty after this, inform the user that there are no staged changes and stop.
 
-### 2. Summarize the diff
+### 2. Analyze the diff
 
-Analyze the git diff and produce a bullet-point summary. Follow these rules:
+Produce a bullet-point summary of the changes. Follow these rules:
 
 - A line starting with `+` means it was added, `-` means deleted. Lines with neither are context.
 - Write every summary comment as a bullet point starting with `-`.
@@ -51,9 +53,9 @@ From the summary, write a single-line commit title:
 - Lowercase the first character.
 - Remove any trailing period.
 
-### 4. Determine the conventional commit prefix
+### 4. Determine the prefix and scope
 
-Choose exactly one label from the following list based on the summary:
+**Prefix** — choose exactly one label based on the summary:
 
 - `build`: Changes that affect the build system or external dependencies
 - `chore`: Updating libraries, copyrights, or other repo settings, includes updating dependencies
@@ -66,9 +68,7 @@ Choose exactly one label from the following list based on the summary:
 - `style`: Changes that do not affect the meaning of the code (white-space, formatting, etc.)
 - `test`: Adding missing tests or correcting existing tests
 
-### 5. Determine the scope
-
-Identify the module or package scope from the changed files:
+**Scope** — identify the module or package scope from the changed files:
 
 - Look at the file paths in the diff to determine which module, package, or component is affected.
 - If all changes are within a single module/package/directory, use that as the scope (e.g., `model`, `git`, `prompt`, `cmd`, `provider`).
@@ -77,9 +77,9 @@ Identify the module or package scope from the changed files:
 - Scope is **required** — always include one.
 - Keep the scope short — a single lowercase word.
 
-### 6. Format the commit message
+### 5. Create the commit
 
-Combine the results into this format:
+Format the commit message as:
 
 ```
 <prefix>(<scope>): <title>
@@ -87,6 +87,4 @@ Combine the results into this format:
 <summary>
 ```
 
-### 7. Create the commit
-
-Use the generated message to create a git commit. Show the message to the user before committing.
+Show the formatted message to the user and ask for confirmation before running `git commit`.
