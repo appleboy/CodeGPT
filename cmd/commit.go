@@ -1,8 +1,10 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"html"
+	"io"
 	"os"
 	"path"
 	"strings"
@@ -73,7 +75,27 @@ func init() {
 		"display the prompt without sending to OpenAI")
 	commitCmd.PersistentFlags().BoolVar(&noConfirm, "no_confirm", false,
 		"skip all confirmation prompts")
+	commitCmd.PersistentFlags().Bool("stream", false,
+		"enable streaming output for real-time token display")
+	_ = viper.BindPFlag("openai.stream", commitCmd.PersistentFlags().Lookup("stream"))
 	_ = viper.BindPFlag("output.file", commitCmd.PersistentFlags().Lookup("file"))
+}
+
+func callCompletion(
+	ctx context.Context,
+	client core.Generative,
+	content string,
+	w io.Writer,
+) (*core.Response, error) {
+	if viper.GetBool("openai.stream") {
+		resp, err := client.CompletionStream(ctx, content, w)
+		if err != nil {
+			return nil, err
+		}
+		fmt.Fprintln(w)
+		return resp, nil
+	}
+	return client.Completion(ctx, content)
 }
 
 // commitCmd represents the commit command.
@@ -152,7 +174,7 @@ var commitCmd = &cobra.Command{
 
 			// Get summarized comment from diff data
 			color.Cyan("Summarizing git diff...")
-			resp, err := client.Completion(cmd.Context(), out)
+			resp, err := callCompletion(cmd.Context(), client, out, os.Stdout)
 			if err != nil {
 				return err
 			}
@@ -284,7 +306,7 @@ var commitCmd = &cobra.Command{
 					viper.GetString("output.lang"),
 				),
 			)
-			resp, err := client.Completion(cmd.Context(), out)
+			resp, err := callCompletion(cmd.Context(), client, out, os.Stdout)
 			if err != nil {
 				return err
 			}

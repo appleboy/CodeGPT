@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"os"
 	"strings"
 
 	"github.com/appleboy/CodeGPT/core"
@@ -31,6 +32,9 @@ func init() {
 		"Replace the tip of the current branch by creating a new commit")
 	reviewCmd.PersistentFlags().BoolVar(&promptOnly, "prompt_only", false,
 		"Show prompt only without sending request to OpenAI")
+	reviewCmd.PersistentFlags().Bool("stream", false,
+		"enable streaming output for real-time token display")
+	_ = viper.BindPFlag("openai.stream", reviewCmd.PersistentFlags().Lookup("stream"))
 }
 
 var reviewCmd = &cobra.Command{
@@ -87,7 +91,7 @@ var reviewCmd = &cobra.Command{
 
 		// Get summarize comment from diff datas
 		color.Cyan("We are trying to review code changes")
-		resp, err := client.Completion(cmd.Context(), out)
+		resp, err := callCompletion(cmd.Context(), client, out, os.Stdout)
 		if err != nil {
 			return err
 		}
@@ -109,7 +113,7 @@ var reviewCmd = &cobra.Command{
 			// translate a git commit message
 			color.Cyan("we are trying to translate code review to " +
 				prompt.GetLanguage(viper.GetString("output.lang")) + " language")
-			resp, err := client.Completion(cmd.Context(), out)
+			resp, err := callCompletion(cmd.Context(), client, out, os.Stdout)
 			if err != nil {
 				return err
 			}

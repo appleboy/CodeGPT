@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"io"
 	"strconv"
 
 	"github.com/sashabaranov/go-openai"
@@ -49,4 +50,8 @@ type Generative interface {
 	// GetSummaryPrefix generates a summary prefix based on the provided content.
 	// It takes a context and a string as input and returns a Response pointer and an error.
 	GetSummaryPrefix(ctx context.Context, content string) (resp *Response, err error)
+
+	// CompletionStream generates a completion and streams tokens to the writer as they arrive.
+	// Returns the full accumulated Response on completion.
+	CompletionStream(ctx context.Context, content string, w io.Writer) (resp *Response, err error)
 }

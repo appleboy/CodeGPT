@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"strings"
 
 	"github.com/appleboy/CodeGPT/core"
 	"github.com/appleboy/CodeGPT/core/transport"
@@ -61,6 +63,58 @@ func (c *Client) Completion(ctx context.Context, content string) (*core.Response
 
 	return &core.Response{
 		Content: resp.Content[0].GetText(),
+		Usage:   usage,
+	}, nil
+}
+
+// CompletionStream streams completion tokens to the writer as they arrive.
+func (c *Client) CompletionStream(
+	ctx context.Context,
+	content string,
+	w io.Writer,
+) (*core.Response, error) {
+	var sb strings.Builder
+	resp, err := c.client.CreateMessagesStream(ctx, anthropic.MessagesStreamRequest{
+		MessagesRequest: anthropic.MessagesRequest{
+			Model: c.model,
+			Messages: []anthropic.Message{
+				anthropic.NewUserTextMessage(content),
+			},
+			MaxTokens:   c.maxTokens,
+			Temperature: convert.ToPtr(c.temperature),
+			TopP:        convert.ToPtr(c.topP),
+		},
+		OnContentBlockDelta: func(data anthropic.MessagesEventContentBlockDeltaData) {
+			if data.Delta.Text != nil {
+				sb.WriteString(*data.Delta.Text)
+				_, _ = io.WriteString(w, *data.Delta.Text)
+			}
+		},
+	})
+	if err != nil {
+		var e *anthropic.APIError
+		if errors.As(err, &e) {
+			fmt.Printf("Messages error, type: %s, message: %s", e.Type, e.Message)
+		} else {
+			fmt.Printf("Messages error: %v\n", err)
+		}
+		return nil, err
+	}
+
+	usage := core.Usage{
+		PromptTokens:     resp.Usage.InputTokens,
+		CompletionTokens: resp.Usage.OutputTokens,
+		TotalTokens:      resp.Usage.InputTokens + resp.Usage.OutputTokens,
+	}
+
+	if resp.Usage.CacheCreationInputTokens > 0 || resp.Usage.CacheReadInputTokens > 0 {
+		usage.PromptTokensDetails = &openai.PromptTokensDetails{
+			CachedTokens: resp.Usage.CacheCreationInputTokens + resp.Usage.CacheReadInputTokens,
+		}
+	}
+
+	return &core.Response{
+		Content: sb.String(),
 		Usage:   usage,
 	}, nil
 }

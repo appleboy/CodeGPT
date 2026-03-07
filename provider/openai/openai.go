@@ -2,7 +2,9 @@ package openai
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"regexp"
 	"strings"
 
@@ -50,6 +52,75 @@ func (c *Client) Completion(ctx context.Context, content string) (*core.Response
 			TotalTokens:             resp.Usage.TotalTokens,
 			CompletionTokensDetails: resp.Usage.CompletionTokensDetails,
 			PromptTokensDetails:     resp.Usage.PromptTokensDetails,
+		},
+	}, nil
+}
+
+// CompletionStream streams completion tokens to the writer as they arrive.
+func (c *Client) CompletionStream(
+	ctx context.Context,
+	content string,
+	w io.Writer,
+) (*core.Response, error) {
+	req := openai.ChatCompletionRequest{
+		Model:               c.model,
+		MaxCompletionTokens: c.maxTokens,
+		Temperature:         c.temperature,
+		TopP:                c.topP,
+		FrequencyPenalty:    c.frequencyPenalty,
+		PresencePenalty:     c.presencePenalty,
+		Messages: []openai.ChatCompletionMessage{
+			{
+				Role:    openai.ChatMessageRoleAssistant,
+				Content: "You are a helpful assistant.",
+			},
+			{
+				Role:    openai.ChatMessageRoleUser,
+				Content: content,
+			},
+		},
+		Stream:        true,
+		StreamOptions: &openai.StreamOptions{IncludeUsage: true},
+	}
+
+	stream, err := c.client.CreateChatCompletionStream(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	defer stream.Close()
+
+	var sb strings.Builder
+	var usage openai.Usage
+	for {
+		chunk, err := stream.Recv()
+		if errors.Is(err, io.EOF) {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+
+		if chunk.Usage != nil {
+			usage = *chunk.Usage
+		}
+
+		if len(chunk.Choices) > 0 {
+			text := chunk.Choices[0].Delta.Content
+			if text != "" {
+				sb.WriteString(text)
+				_, _ = io.WriteString(w, text)
+			}
+		}
+	}
+
+	return &core.Response{
+		Content: sb.String(),
+		Usage: core.Usage{
+			PromptTokens:            usage.PromptTokens,
+			CompletionTokens:        usage.CompletionTokens,
+			TotalTokens:             usage.TotalTokens,
+			CompletionTokensDetails: usage.CompletionTokensDetails,
+			PromptTokensDetails:     usage.PromptTokensDetails,
 		},
 	}, nil
 }
