@@ -519,7 +519,7 @@ We are trying to summarize a git diff
 We are trying to summarize a title for the pull request
 ================Commit Summary====================
 
-feat: Add preview flag and remove disableCommit flag in commit command and template file.
+feat(cmd): Add preview flag and remove disableCommit flag in commit command and template file.
 
 - Add a `preview` flag to the `commit` command
 - Remove the `disableCommit` flag from the `prepare-commit-msg` template file
@@ -566,7 +566,7 @@ The skill definition is located in [`skills/commit-message/SKILL.md`](skills/com
 
 ## Change Commit Message Template
 
-The default commit message template is as follows:
+The default commit message template is as follows. The `summarize_prefix` variable outputs the conventional commit prefix with scope in `prefix(scope)` format (e.g., `feat(cmd)`, `fix(git)`, `docs(readme)`):
 
 ```tmpl
 {{ .summarize_prefix }}: {{ .summarize_title }}

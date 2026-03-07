@@ -516,7 +516,7 @@ codegpt commit --preview
 我们正在尝试总结拉取请求的标题
 ================提交摘要====================
 
-feat: 在 commit 命令和模板文件中添加预览标志并移除 disableCommit 标志。
+feat(cmd): 在 commit 命令和模板文件中添加预览标志并移除 disableCommit 标志。
 
 - 在 `commit` 命令中添加 `preview` 标志
 - 从 `prepare-commit-msg` 模板文件中移除 `disbaleCommit` 标志
@@ -555,9 +555,15 @@ codegpt commit --lang zh-tw --preview
 codegpt commit --amend
 ```
 
+## Claude Code 集成
+
+如果你使用 [Claude Code](https://docs.anthropic.com/en/docs/claude-code)，CodeGPT 内置了 `/commit-message` 技能，可从暂存的更改自动生成符合约定的提交信息。只需在 Claude Code 中输入 `/commit-message`，即可分析暂存的差异并生成包含适当前缀、范围和摘要的提交信息。
+
+技能定义位于 [`skills/commit-message/SKILL.md`](skills/commit-message/SKILL.md)。
+
 ## 更改提交信息模板
 
-默认提交信息模板如下：
+默认提交信息模板如下。`summarize_prefix` 变量会输出包含范围的约定式提交前缀，格式为 `prefix(scope)`（例如 `feat(cmd)`、`fix(git)`、`docs(readme)`）：
 
 ```tmpl
 {{ .summarize_prefix }}: {{ .summarize_title }}
