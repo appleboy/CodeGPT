@@ -558,6 +558,12 @@ You can replace the tip of the current branch by creating a new commit. Just use
 codegpt commit --amend
 ```
 
+## Claude Code Integration
+
+If you use [Claude Code](https://docs.anthropic.com/en/docs/claude-code), CodeGPT includes a built-in `/commit-message` skill that generates conventional commit messages from your staged changes. Simply type `/commit-message` in Claude Code to analyze your staged diff and produce a well-formatted commit message with the appropriate prefix, scope, and summary.
+
+The skill definition is located in [`skills/commit-message/SKILL.md`](skills/commit-message/SKILL.md).
+
 ## Change Commit Message Template
 
 The default commit message template is as follows:
