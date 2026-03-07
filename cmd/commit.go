@@ -321,7 +321,8 @@ var commitCmd = &cobra.Command{
 			if noConfirm {
 				return nil
 			}
-			if ready, err := confirmation.New("Commit this preview summary?", confirmation.Yes).RunPrompt(); err != nil ||
+			if ready, err := confirmation.New("Commit this preview summary?", confirmation.Yes).
+				RunPrompt(); err != nil ||
 				!ready {
 				if err != nil {
 					return err
@@ -332,7 +333,8 @@ var commitCmd = &cobra.Command{
 
 		// Handle commit message change prompt when confirmation is enabled
 		if !noConfirm {
-			if change, err := confirmation.New("Do you want to modify the commit message?", confirmation.No).RunPrompt(); err != nil {
+			if change, err := confirmation.New("Do you want to modify the commit message?", confirmation.No).
+				RunPrompt(); err != nil {
 				return err
 			} else if change {
 				m := initialPrompt(commitMessage)

@@ -20,7 +20,7 @@ const (
 
 // apiKeyCache stores cached API keys with their metadata
 type apiKeyCache struct {
-	APIKey        string    `json:"apiKey"`
+	APIKey        string    `json:"apiKey"` //nolint:gosec
 	LastFetchTime time.Time `json:"lastFetchTime"`
 	HelperCmd     string    `json:"helperCmd"`
 }
