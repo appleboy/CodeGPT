@@ -93,14 +93,8 @@ func initConfig() {
 		viper.SetConfigName(".codegpt")
 		cfgFile = path.Join(configFolder, ".codegpt.yaml")
 
-		isDir, err := file.IsDir(configFolder)
-		if err != nil {
-			log.Fatalf("failed to check if config folder %s is a directory: %v", configFolder, err)
-		}
-		if !isDir {
-			if err := os.MkdirAll(configFolder, os.ModePerm); err != nil {
-				log.Fatal(err)
-			}
+		if err := os.MkdirAll(configFolder, os.ModePerm); err != nil {
+			log.Fatalf("failed to create config folder %s: %v", configFolder, err)
 		}
 	}
 
