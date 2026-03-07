@@ -122,7 +122,9 @@ func (c *Client) CompletionStream(
 			}
 			if text != "" {
 				sb.WriteString(text)
-				_, _ = io.WriteString(w, text)
+				if _, err := io.WriteString(w, text); err != nil {
+					return nil, fmt.Errorf("writing streamed completion: %w", err)
+				}
 			}
 		}
 	}
