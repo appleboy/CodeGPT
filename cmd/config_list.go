@@ -38,6 +38,7 @@ var availableKeys = map[string]string{
 	"openai.top_p":                           "Nucleus sampling parameter: controls diversity by limiting to top percentage of probability mass",
 	"openai.frequency_penalty":               "Parameter to reduce repetition by penalizing tokens based on their frequency",
 	"openai.presence_penalty":                "Parameter to encourage topic diversity by penalizing previously used tokens",
+	"openai.stream":                          "Enable streaming output for real-time token display",
 	"prompt.folder":                          "Directory path for custom prompt templates",
 	"gemini.project_id":                      "VertexAI project for Gemini provider",
 	"gemini.location":                        "VertexAI location for Gemini provider",

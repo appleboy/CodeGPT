@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
+	"strings"
 
 	"github.com/appleboy/CodeGPT/core"
 	"github.com/appleboy/CodeGPT/core/transport"
@@ -62,6 +64,62 @@ func (c *Client) Completion(ctx context.Context, content string) (*core.Response
 
 	return &core.Response{
 		Content: resp.Text(),
+		Usage:   usage,
+	}, nil
+}
+
+// CompletionStream streams completion tokens to the writer as they arrive.
+func (c *Client) CompletionStream(
+	ctx context.Context,
+	content string,
+	w io.Writer,
+) (*core.Response, error) {
+	cfg := &genai.GenerateContentConfig{
+		TopP:            convert.ToPtr(c.topP),
+		Temperature:     convert.ToPtr(c.temperature),
+		MaxOutputTokens: c.maxTokens,
+	}
+	data := []*genai.Content{
+		{
+			Role: "user",
+			Parts: []*genai.Part{
+				{
+					Text: content,
+				},
+			},
+		},
+	}
+
+	var sb strings.Builder
+	usage := core.Usage{}
+	for resp, err := range c.client.Models.GenerateContentStream(ctx, c.model, data, cfg) {
+		if err != nil {
+			return nil, err
+		}
+
+		if resp.UsageMetadata != nil {
+			usage.PromptTokens = int(resp.UsageMetadata.PromptTokenCount)
+			usage.CompletionTokens = int(resp.UsageMetadata.CandidatesTokenCount)
+			usage.TotalTokens = int(resp.UsageMetadata.TotalTokenCount)
+			if resp.UsageMetadata.CachedContentTokenCount > 0 {
+				usage.PromptTokensDetails = &openai.PromptTokensDetails{
+					CachedTokens: int(resp.UsageMetadata.CachedContentTokenCount),
+				}
+			}
+		}
+
+		if len(resp.Candidates) > 0 && resp.Candidates[0].Content != nil {
+			for _, part := range resp.Candidates[0].Content.Parts {
+				if part.Text != "" {
+					sb.WriteString(part.Text)
+					_, _ = io.WriteString(w, part.Text)
+				}
+			}
+		}
+	}
+
+	return &core.Response{
+		Content: sb.String(),
 		Usage:   usage,
 	}, nil
 }
