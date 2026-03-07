@@ -20,7 +20,7 @@ const (
 
 // apiKeyCache stores cached API keys with their metadata
 type apiKeyCache struct {
-	APIKey        string    `json:"apiKey"` //nolint:gosec
+	APIKey        string    `json:"apiKey"`
 	LastFetchTime time.Time `json:"lastFetchTime"`
 	HelperCmd     string    `json:"helperCmd"`
 }
@@ -94,6 +94,7 @@ func writeCache(helperCmd, apiKey string) error {
 		HelperCmd:     helperCmd,
 	}
 
+	//nolint:gosec // G117: intentional API key cache with 0600 perms
 	data, err := json.MarshalIndent(cache, "", "  ")
 	if err != nil {
 		return fmt.Errorf("failed to marshal cache: %w", err)

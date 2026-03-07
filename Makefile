@@ -39,13 +39,11 @@ test:
 
 ## fmt: format go files using golangci-lint
 fmt:
-	@command -v golangci-lint >/dev/null 2>&1 || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $$($(GO) env GOPATH)/bin v2.7.2
-	golangci-lint fmt
+	$(GO) tool golangci-lint fmt
 
 ## lint: run golangci-lint to check for issues
 lint:
-	@command -v golangci-lint >/dev/null 2>&1 || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $$($(GO) env GOPATH)/bin v2.7.2
-	golangci-lint run
+	$(GO) tool golangci-lint run
 
 ## build_linux_amd64: build the codegpt binary for linux amd64
 build_linux_amd64:
