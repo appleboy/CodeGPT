@@ -74,6 +74,7 @@ func (c *Client) CompletionStream(
 	w io.Writer,
 ) (*core.Response, error) {
 	var sb strings.Builder
+	var writeErr error
 	resp, err := c.client.CreateMessagesStream(ctx, anthropic.MessagesStreamRequest{
 		MessagesRequest: anthropic.MessagesRequest{
 			Model: c.model,
@@ -85,9 +86,11 @@ func (c *Client) CompletionStream(
 			TopP:        convert.ToPtr(c.topP),
 		},
 		OnContentBlockDelta: func(data anthropic.MessagesEventContentBlockDeltaData) {
-			if data.Delta.Text != nil {
+			if data.Delta.Text != nil && writeErr == nil {
 				sb.WriteString(*data.Delta.Text)
-				_, _ = io.WriteString(w, *data.Delta.Text)
+				if _, err := io.WriteString(w, *data.Delta.Text); err != nil {
+					writeErr = err
+				}
 			}
 		},
 	})
@@ -99,6 +102,10 @@ func (c *Client) CompletionStream(
 			fmt.Printf("Messages error: %v\n", err)
 		}
 		return nil, err
+	}
+
+	if writeErr != nil {
+		return nil, fmt.Errorf("failed to write streaming response: %w", writeErr)
 	}
 
 	usage := core.Usage{

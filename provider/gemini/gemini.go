@@ -91,6 +91,7 @@ func (c *Client) CompletionStream(
 	}
 
 	var sb strings.Builder
+	var writeErr error
 	usage := core.Usage{}
 	for resp, err := range c.client.Models.GenerateContentStream(ctx, c.model, data, cfg) {
 		if err != nil {
@@ -112,10 +113,18 @@ func (c *Client) CompletionStream(
 			for _, part := range resp.Candidates[0].Content.Parts {
 				if part.Text != "" {
 					sb.WriteString(part.Text)
-					_, _ = io.WriteString(w, part.Text)
+					if writeErr == nil {
+						if _, err := io.WriteString(w, part.Text); err != nil {
+							writeErr = err
+						}
+					}
 				}
 			}
 		}
+	}
+
+	if writeErr != nil {
+		return nil, fmt.Errorf("failed to write streaming response: %w", writeErr)
 	}
 
 	return &core.Response{
