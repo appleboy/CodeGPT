@@ -71,6 +71,7 @@
 - 將提交訊息翻譯為其他語言（支援 `en`、`zh-tw`、`zh-cn`）。
 - 支援 SOCKS 代理或自訂 HTTP 網路代理。
 - 生成簡潔的程式碼審查摘要。
+- 支援串流輸出，即時顯示生成的 token。
 - 允許自訂提示模板及變數。
   ![code review](./images/code_review.png)
 
@@ -216,7 +217,8 @@ codegpt config set openai.api_key sk-xxxxxxx
 | **output.lang**                            | 默認語言是 `en`，可用語言有 `zh-tw`、`zh-cn`、`ja`。                                                                                                                      |
 | **openai.top_p**                           | 默認 top_p 為 `1.0`。請參閱參考 [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p)。                                     |
 | **openai.frequency_penalty**               | 默認 frequency_penalty 為 `0.0`。請參閱參考 [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty)。 |
-| **openai.presence_penalty**                | 默認 presence_penalty 炭 `0.0`。請參閱參考 [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty)。    |
+| **openai.presence_penalty**                | 默認 presence_penalty 為 `0.0`。請參閱參考 [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty)。    |
+| **openai.stream**                          | 啟用串流輸出以即時顯示生成的 token，預設為 `false`。                                                                                                                      |
 | **prompt.folder**                          | 默認提示文件夾是 `$HOME/.config/codegpt/prompt`。                                                                                                                         |
 
 ### 使用 API Key Helper 動態獲取憑證
@@ -555,6 +557,24 @@ codegpt commit --lang zh-tw --preview
 
 ```sh
 codegpt commit --amend
+```
+
+啟用串流輸出，即時顯示生成的 token，無需等待完整回應：
+
+```sh
+codegpt commit --stream
+```
+
+或透過全域設定啟用：
+
+```sh
+codegpt config set openai.stream true
+```
+
+`--stream` 參數同樣適用於 `review` 命令：
+
+```sh
+codegpt review --stream
 ```
 
 ## Claude Code 整合

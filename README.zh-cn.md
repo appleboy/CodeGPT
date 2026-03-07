@@ -67,6 +67,7 @@
 - 可将提交信息翻译为其他语言（支持 `en`、`zh-tw`、`zh-cn`）。
 - 支持 SOCKS 代理或自定义网络 HTTP 代理。
 - 生成简洁的代码审查摘要。
+- 支持流式输出，实时显示生成的 token。
 - 支持自定义提示模板和变量。
   ![code review](./images/code_review.png)
 
@@ -215,6 +216,7 @@ codegpt config set openai.api_key sk-xxxxxxx
 | **openai.top_p**                           | 默认 top_p 是 `1.0`。参见参考 [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p)。                                     |
 | **openai.frequency_penalty**               | 默认 frequency_penalty 是 `0.0`。参见参考 [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty)。 |
 | **openai.presence_penalty**                | 默认 presence_penalty 是 `0.0`。参见参考 [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty)。    |
+| **openai.stream**                          | 启用流式输出以实时显示生成的 token，默认为 `false`。                                                                                                                     |
 | **prompt.folder**                          | 默认提示文件夹是 `$HOME/.config/codegpt/prompt`。                                                                                                                       |
 
 ### 使用 API Key Helper 动态获取凭证
@@ -553,6 +555,24 @@ codegpt commit --lang zh-tw --preview
 
 ```sh
 codegpt commit --amend
+```
+
+启用流式输出，实时显示生成的 token，无需等待完整响应：
+
+```sh
+codegpt commit --stream
+```
+
+或通过全局配置启用：
+
+```sh
+codegpt config set openai.stream true
+```
+
+`--stream` 参数同样适用于 `review` 命令：
+
+```sh
+codegpt review --stream
 ```
 
 ## Claude Code 集成

@@ -71,6 +71,7 @@ A CLI tool written in [Go](https://go.dev) that generates git commit messages or
 - Translates commit messages into other languages (supports `en`, `zh-tw`, or `zh-cn`).
 - Supports SOCKS proxy or custom network HTTP proxy.
 - Generates brief code reviews.
+- Supports streaming output for real-time token display.
 - Allows customization of prompt templates and variables.
 
 ![code review](./images/code_review.png)
@@ -218,6 +219,7 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 | **openai.top_p**                           | Default top_p is `1.0`. See reference [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p).                                     |
 | **openai.frequency_penalty**               | Default frequency_penalty is `0.0`. See reference [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty). |
 | **openai.presence_penalty**                | Default presence_penalty is `0.0`. See reference [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty).    |
+| **openai.stream**                          | Enable streaming output for real-time token display, default is `false`.                                                                                                       |
 | **prompt.folder**                          | Default prompt folder is `$HOME/.config/codegpt/prompt`.                                                                                                                       |
 
 ### Using API Key Helper for Dynamic Credentials
@@ -556,6 +558,24 @@ You can replace the tip of the current branch by creating a new commit. Just use
 
 ```sh
 codegpt commit --amend
+```
+
+Enable streaming output to see tokens as they arrive in real-time, rather than waiting for the full response:
+
+```sh
+codegpt commit --stream
+```
+
+Or enable it globally via config:
+
+```sh
+codegpt config set openai.stream true
+```
+
+The `--stream` flag also works with the `review` command:
+
+```sh
+codegpt review --stream
 ```
 
 ## Claude Code Integration
