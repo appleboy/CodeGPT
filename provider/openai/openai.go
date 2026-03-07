@@ -98,7 +98,7 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 
 	args := GetSummaryPrefixArgs(msg.ToolCalls[len(msg.ToolCalls)-1].Function.Arguments)
 	return &core.Response{
-		Content: args.Prefix,
+		Content: fmt.Sprintf("%s(%s)", args.Prefix, args.Scope),
 		Usage:   usage,
 	}, nil
 }

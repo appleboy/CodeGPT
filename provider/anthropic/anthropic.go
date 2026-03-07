@@ -111,7 +111,7 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 	}
 
 	return &core.Response{
-		Content: result.Prefix,
+		Content: fmt.Sprintf("%s(%s)", result.Prefix, result.Scope),
 		Usage:   usage,
 	}, nil
 }

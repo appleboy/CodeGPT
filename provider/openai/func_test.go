@@ -6,12 +6,13 @@ import (
 )
 
 func TestGetSummaryPrefixArgs(t *testing.T) {
-	data := `{"prefix": "feat", "param2": "value2"}`
+	data := `{"prefix": "feat", "scope": "model", "param2": "value2"}`
 
 	result := GetSummaryPrefixArgs(data)
 
 	expected := SummaryPrefixParams{
 		Prefix: "feat",
+		Scope:  "model",
 	}
 
 	if !reflect.DeepEqual(result, expected) {

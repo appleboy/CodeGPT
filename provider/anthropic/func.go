@@ -9,6 +9,7 @@ import (
 // Prefix is a string that is serialized to JSON with the key "prefix".
 type tool struct {
 	Prefix string `json:"prefix"`
+	Scope  string `json:"scope"`
 }
 
 // tools is a slice of ToolDefinition that contains the definition for various tools.
@@ -38,8 +39,12 @@ var tools = []anthropic.ToolDefinition{
 					},
 					Description: "The prefix to use for the summary",
 				},
+				"scope": {
+					Type:        jsonschema.String,
+					Description: "A short lowercase word identifying the module, package, or component most central to the change",
+				},
 			},
-			Required: []string{"prefix"},
+			Required: []string{"prefix", "scope"},
 		},
 	},
 }

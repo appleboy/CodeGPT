@@ -3,6 +3,7 @@ package gemini
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/appleboy/CodeGPT/core"
@@ -128,12 +129,14 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 		return nil, errors.New("no prefix found")
 	}
 
+	scope, _ := part.FunctionCall.Args["scope"].(string)
+
 	if c.debug {
 		_ = godump.Dump(resp.Candidates)
 	}
 
 	r := &core.Response{
-		Content: prefix,
+		Content: fmt.Sprintf("%s(%s)", prefix, scope),
 		Usage:   usage,
 	}
 

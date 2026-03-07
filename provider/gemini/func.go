@@ -19,8 +19,12 @@ var summaryPrefixFunc = &genai.Tool{
 						"test",
 					},
 				},
+				"scope": {
+					Type:        genai.TypeString,
+					Description: "A short lowercase word identifying the module, package, or component most central to the change",
+				},
 			},
-			Required: []string{"prefix"},
+			Required: []string{"prefix", "scope"},
 		},
 	}},
 }

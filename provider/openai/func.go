@@ -23,14 +23,19 @@ var SummaryPrefixFunc = openai.FunctionDefinition{
 					"test",
 				},
 			},
+			"scope": {
+				Type:        jsonschema.String,
+				Description: "A short lowercase word identifying the module, package, or component most central to the change",
+			},
 		},
-		Required: []string{"prefix"},
+		Required: []string{"prefix", "scope"},
 	},
 }
 
 // SummaryPrefixParams is a struct that stores configuration options for the get_summary_prefix function.
 type SummaryPrefixParams struct {
 	Prefix string `json:"prefix"`
+	Scope  string `json:"scope"`
 }
 
 // GetSummaryPrefixArgs returns the SummaryPrefixParams struct corresponding to the given JSON data.
