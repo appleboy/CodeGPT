@@ -33,7 +33,7 @@ jobs:
           go-version: ${{ matrix.go }}
 
       - name: Run golangci-lint
-        run: go tool golangci-lint run --verbose
+        run: make lint
 
   test:
     strategy:

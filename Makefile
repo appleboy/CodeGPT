@@ -39,11 +39,11 @@ test:
 
 ## fmt: format go files using golangci-lint
 fmt:
-	$(GO) tool golangci-lint fmt
+	$(GO) tool -modfile=tools.go.mod golangci-lint fmt
 
 ## lint: run golangci-lint to check for issues
 lint:
-	$(GO) tool golangci-lint run
+	$(GO) tool -modfile=tools.go.mod golangci-lint run
 
 ## build_linux_amd64: build the codegpt binary for linux amd64
 build_linux_amd64:
