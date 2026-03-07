@@ -101,7 +101,7 @@ jobs:
           # list of files that changed across commits
           fetch-depth: 0
       - name: "Super-linter"
-        uses: super-linter/super-linter/slim@v8.0.0
+        uses: super-linter/super-linter/slim@v8.5.0
         env:
           # To report GitHub Actions status checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
