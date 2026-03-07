@@ -136,14 +136,8 @@ func initConfig() {
 			log.Fatalf("prompt folder %s is a file", promptFolder)
 		}
 		// If the prompt folder does not exist, create it.
-		isDir, err := file.IsDir(promptFolder)
-		if err != nil {
-			log.Fatalf("failed to check if prompt folder %s is a directory: %v", promptFolder, err)
-		}
-		if !isDir {
-			if err := os.MkdirAll(promptFolder, os.ModePerm); err != nil {
-				log.Fatal(err)
-			}
+		if err := os.MkdirAll(promptFolder, os.ModePerm); err != nil {
+			log.Fatalf("failed to create prompt folder %s: %v", promptFolder, err)
 		}
 		// Set the prompt folder in the configuration.
 		viper.Set("prompt.folder", promptFolder)
@@ -159,14 +153,8 @@ func initConfig() {
 			log.Fatalf("prompt folder %s is a file", promptFolder)
 		}
 		// If the prompt folder does not exist, create it.
-		isDir, err := file.IsDir(promptFolder)
-		if err != nil {
-			log.Fatalf("failed to check if prompt folder %s is a directory: %v", promptFolder, err)
-		}
-		if !isDir {
-			if err := os.MkdirAll(promptFolder, os.ModePerm); err != nil {
-				log.Fatal(err)
-			}
+		if err := os.MkdirAll(promptFolder, os.ModePerm); err != nil {
+			log.Fatalf("failed to create prompt folder %s: %v", promptFolder, err)
 		}
 	default:
 		// If no prompt folder is specified, use the default prompt folder
@@ -174,14 +162,8 @@ func initConfig() {
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 		targetFolder := path.Join(home, ".config", "codegpt", "prompt")
-		isDir, err := file.IsDir(targetFolder)
-		if err != nil {
-			log.Fatalf("failed to check if target folder %s is a directory: %v", targetFolder, err)
-		}
-		if !isDir {
-			if err := os.MkdirAll(targetFolder, os.ModePerm); err != nil {
-				log.Fatal(err)
-			}
+		if err := os.MkdirAll(targetFolder, os.ModePerm); err != nil {
+			log.Fatalf("failed to create prompt folder %s: %v", targetFolder, err)
 		}
 		// Set the prompt folder in the configuration.
 		viper.Set("prompt.folder", targetFolder)
