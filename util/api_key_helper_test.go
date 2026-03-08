@@ -271,7 +271,7 @@ func TestGetAPIKeyFromHelperWithCache_CacheExpiration(t *testing.T) {
 
 	// Create a counter file that we'll update manually
 	counterFile := filepath.Join(tmpDir, "counter2.txt")
-	command := "cat " + counterFile
+	command := fmt.Sprintf("cat %q", counterFile)
 
 	// Write initial value
 	if err := os.WriteFile(counterFile, []byte("value1"), 0o600); err != nil {
