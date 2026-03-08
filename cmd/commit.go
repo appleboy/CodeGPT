@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html"
 	"io"
+	"maps"
 	"os"
 	"path"
 	"strings"
@@ -136,9 +137,7 @@ var commitCmd = &cobra.Command{
 		data := util.Data{}
 		// Add template variables
 		if vars := util.ConvertToMap(templateVars); len(vars) > 0 {
-			for k, v := range vars {
-				data[k] = v
-			}
+			maps.Copy(data, vars)
 		}
 
 		// Add template variables from file

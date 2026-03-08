@@ -10,7 +10,7 @@ import (
 )
 
 // Data defines a custom type for the template data.
-type Data map[string]interface{}
+type Data map[string]any
 
 var (
 	templates    = make(map[string]*template.Template)
@@ -19,7 +19,7 @@ var (
 
 // NewTemplateByString parses a template from a string and executes it with the provided data.
 // It returns the resulting string or an error if the template parsing or execution fails.
-func NewTemplateByString(format string, data map[string]interface{}) (string, error) {
+func NewTemplateByString(format string, data map[string]any) (string, error) {
 	t, err := template.New("message").Parse(format)
 	if err != nil {
 		return "", err
@@ -36,7 +36,7 @@ func NewTemplateByString(format string, data map[string]interface{}) (string, er
 
 // processTemplate processes the template with the given name and data.
 // It returns the resulting bytes.Buffer or an error if the template execution fails.
-func processTemplate(name string, data map[string]interface{}) (*bytes.Buffer, error) {
+func processTemplate(name string, data map[string]any) (*bytes.Buffer, error) {
 	t, ok := templates[name]
 	if !ok {
 		return nil, fmt.Errorf("template %s not found", name)
@@ -53,14 +53,14 @@ func processTemplate(name string, data map[string]interface{}) (*bytes.Buffer, e
 
 // GetTemplateByString returns the parsed template as a string.
 // It returns an error if the template processing fails.
-func GetTemplateByString(name string, data map[string]interface{}) (string, error) {
+func GetTemplateByString(name string, data map[string]any) (string, error) {
 	tpl, err := processTemplate(name, data)
 	return tpl.String(), err
 }
 
 // GetTemplateByBytes returns the parsed template as a byte slice.
 // It returns an error if the template processing fails.
-func GetTemplateByBytes(name string, data map[string]interface{}) ([]byte, error) {
+func GetTemplateByBytes(name string, data map[string]any) ([]byte, error) {
 	tpl, err := processTemplate(name, data)
 	return tpl.Bytes(), err
 }

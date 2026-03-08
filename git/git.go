@@ -3,7 +3,6 @@ package git
 import (
 	"context"
 	"errors"
-	"fmt"
 	"os"
 	"os/exec"
 	"path"
@@ -138,7 +137,7 @@ func (c *Command) commit(ctx context.Context, val string) *exec.Cmd {
 		"commit",
 		"--no-verify",
 		"--signoff",
-		fmt.Sprintf("--message=%s", val),
+		"--message=" + val,
 	}
 
 	if c.isAmend {
@@ -234,7 +233,11 @@ func (c *Command) InstallHook(ctx context.Context) error {
 	}
 
 	// Write the hook file with executable permissions (0o755)
-	return os.WriteFile(target, content, 0o755) //nolint:gosec
+	return os.WriteFile(
+		target,
+		content,
+		0o755,
+	) //nolint:gosec // hook file needs executable permissions
 }
 
 // UninstallHook removes the prepare-commit-msg hook if it exists.

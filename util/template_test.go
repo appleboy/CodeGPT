@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"embed"
 	"html/template"
+	"maps"
 	"os"
 	"testing"
 )
 
 func TestNewTemplateByString(t *testing.T) {
-	data := map[string]interface{}{
+	data := map[string]any{
 		"Name": "John Doe",
 	}
 
@@ -26,11 +27,9 @@ func TestNewTemplateByString(t *testing.T) {
 }
 
 func TestNewTemplateByStringWithCustomVars(t *testing.T) {
-	data := map[string]interface{}{}
+	data := map[string]any{}
 	vars := ConvertToMap([]string{"Name=John Doe", "Message=Hello"})
-	for k, v := range vars {
-		data[k] = v
-	}
+	maps.Copy(data, vars)
 
 	expected := "Hello, John Doe! Hello"
 

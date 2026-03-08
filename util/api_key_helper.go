@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -63,7 +64,7 @@ func readCache(helperCmd string) (*apiKeyCache, error) {
 	data, err := os.ReadFile(cachePath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return nil, nil // Cache doesn't exist yet
+			return nil, nil //nolint:nilnil // nil cache indicates cache miss, not an error
 		}
 		return nil, fmt.Errorf("failed to read cache file: %w", err)
 	}
@@ -75,7 +76,7 @@ func readCache(helperCmd string) (*apiKeyCache, error) {
 
 	// Verify the helper command matches
 	if cache.HelperCmd != helperCmd {
-		return nil, nil // Cache is for a different command
+		return nil, nil //nolint:nilnil // nil cache indicates cache miss, not an error
 	}
 
 	return &cache, nil
@@ -156,7 +157,7 @@ func GetAPIKeyFromHelperWithCache(
 	refreshInterval time.Duration,
 ) (string, error) {
 	if helperCmd == "" {
-		return "", fmt.Errorf("api_key_helper command is empty")
+		return "", errors.New("api_key_helper command is empty")
 	}
 
 	// Try to read from cache

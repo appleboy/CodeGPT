@@ -42,11 +42,9 @@ func (c *Client) Completion(ctx context.Context, content string) (*core.Response
 	if err != nil {
 		var e *anthropic.APIError
 		if errors.As(err, &e) {
-			fmt.Printf("Messages error, type: %s, message: %s", e.Type, e.Message)
-		} else {
-			fmt.Printf("Messages error: %v\n", err)
+			return nil, fmt.Errorf("messages error, type: %s, message: %s", e.Type, e.Message)
 		}
-		return nil, err
+		return nil, fmt.Errorf("messages error: %w", err)
 	}
 
 	usage := core.Usage{
@@ -97,11 +95,9 @@ func (c *Client) CompletionStream(
 	if err != nil {
 		var e *anthropic.APIError
 		if errors.As(err, &e) {
-			fmt.Printf("Messages error, type: %s, message: %s", e.Type, e.Message)
-		} else {
-			fmt.Printf("Messages error: %v\n", err)
+			return nil, fmt.Errorf("messages error, type: %s, message: %s", e.Type, e.Message)
 		}
-		return nil, err
+		return nil, fmt.Errorf("messages error: %w", err)
 	}
 
 	if writeErr != nil {

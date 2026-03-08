@@ -233,9 +233,7 @@ func TestGetAPIKeyFromHelperWithCache_WithCaching(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	// Override home directory for testing
-	originalHome := os.Getenv("HOME")
-	os.Setenv("HOME", tmpDir)
-	defer os.Setenv("HOME", originalHome)
+	t.Setenv("HOME", tmpDir)
 
 	// Use a counter file to generate different values each time the command runs
 	counterFile := filepath.Join(tmpDir, "counter.txt")
@@ -269,13 +267,11 @@ func TestGetAPIKeyFromHelperWithCache_CacheExpiration(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	// Override home directory for testing
-	originalHome := os.Getenv("HOME")
-	os.Setenv("HOME", tmpDir)
-	defer os.Setenv("HOME", originalHome)
+	t.Setenv("HOME", tmpDir)
 
 	// Create a counter file that we'll update manually
 	counterFile := filepath.Join(tmpDir, "counter2.txt")
-	command := fmt.Sprintf("cat %s", counterFile)
+	command := "cat " + counterFile
 
 	// Write initial value
 	if err := os.WriteFile(counterFile, []byte("value1"), 0o600); err != nil {
@@ -319,9 +315,7 @@ func TestGetAPIKeyFromHelperWithCache_DifferentCommands(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	// Override home directory for testing
-	originalHome := os.Getenv("HOME")
-	os.Setenv("HOME", tmpDir)
-	defer os.Setenv("HOME", originalHome)
+	t.Setenv("HOME", tmpDir)
 
 	cmd1 := "echo 'key-one'"
 	cmd2 := "echo 'key-two'"
@@ -355,9 +349,7 @@ func TestGetAPIKeyFromHelperWithCache_CacheFilePermissions(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	// Override home directory for testing
-	originalHome := os.Getenv("HOME")
-	os.Setenv("HOME", tmpDir)
-	defer os.Setenv("HOME", originalHome)
+	t.Setenv("HOME", tmpDir)
 
 	command := "echo 'test-permissions'"
 
