@@ -25,24 +25,12 @@ func TestCanExecuteGitDiff(t *testing.T) {
 		tmpDir := t.TempDir()
 
 		// Change to the temporary directory
-		originalDir, err := os.Getwd()
-		if err != nil {
-			t.Fatalf("Failed to get current directory: %v", err)
-		}
-		defer func() {
-			if err := os.Chdir(originalDir); err != nil {
-				t.Logf("Failed to restore directory: %v", err)
-			}
-		}()
-
-		if err := os.Chdir(tmpDir); err != nil {
-			t.Fatalf("Failed to change directory: %v", err)
-		}
+		t.Chdir(tmpDir)
 
 		cmd := New()
 		ctx := context.Background()
 
-		err = cmd.CanExecuteGitDiff(ctx)
+		err := cmd.CanExecuteGitDiff(ctx)
 		if err == nil {
 			t.Error("CanExecuteGitDiff() should fail in a non-git directory")
 		}
@@ -63,24 +51,12 @@ func TestCanExecuteGitDiff(t *testing.T) {
 		defer os.RemoveAll(tmpDir)
 
 		// Change to the subdirectory
-		originalDir, err := os.Getwd()
-		if err != nil {
-			t.Fatalf("Failed to get current directory: %v", err)
-		}
-		defer func() {
-			if err := os.Chdir(originalDir); err != nil {
-				t.Logf("Failed to restore directory: %v", err)
-			}
-		}()
-
-		if err := os.Chdir(tmpDir); err != nil {
-			t.Fatalf("Failed to change directory: %v", err)
-		}
+		t.Chdir(tmpDir)
 
 		cmd := New()
 		ctx := context.Background()
 
-		err = cmd.CanExecuteGitDiff(ctx)
+		err := cmd.CanExecuteGitDiff(ctx)
 		if err != nil {
 			t.Errorf(
 				"CanExecuteGitDiff() should succeed in a git repository subdirectory, got error: %v",

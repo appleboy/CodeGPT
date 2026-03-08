@@ -32,7 +32,7 @@ func initialPrompt(value string) model {
 	ti.InsertString(value)
 
 	maxWidth := 0
-	for _, line := range strings.Split(value, "\n") {
+	for line := range strings.SplitSeq(value, "\n") {
 		if len(line) > maxWidth {
 			maxWidth = len(line)
 		}
@@ -57,7 +57,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		switch msg.Type { //nolint:exhaustive
+		switch msg.Type { //nolint:exhaustive // only handling specific key types
 		case tea.KeyEsc:
 			if m.textarea.Focused() {
 				m.textarea.Blur()

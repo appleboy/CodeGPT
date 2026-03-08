@@ -11,7 +11,7 @@ func TestIsCommandAvailable(t *testing.T) {
 		name  string
 		cmd   string
 		want  bool
-		setup func() error
+		setup func(t *testing.T)
 	}{
 		{
 			name: "command exists",
@@ -27,9 +27,10 @@ func TestIsCommandAvailable(t *testing.T) {
 			name: "command exists in path",
 			cmd:  "git",
 			want: true,
-			setup: func() error {
+			setup: func(t *testing.T) {
+				t.Helper()
 				// Add /usr/local/bin to PATH for this test case
-				return os.Setenv("PATH", "/usr/local/bin:"+os.Getenv("PATH"))
+				t.Setenv("PATH", "/usr/local/bin:"+os.Getenv("PATH"))
 			},
 		},
 	}
@@ -37,9 +38,7 @@ func TestIsCommandAvailable(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			if tc.setup != nil {
-				if err := tc.setup(); err != nil {
-					t.Fatalf("failed to set up test case: %v", err)
-				}
+				tc.setup(t)
 			}
 
 			got := IsCommandAvailable(tc.cmd)

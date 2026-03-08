@@ -5,6 +5,7 @@ package util
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"os/exec"
 	"strings"
@@ -70,7 +71,7 @@ func assignProcessToJob(job windows.Handle, pid int) (windows.Handle, error) {
 // Security note: The returned API key is sensitive and should not be logged.
 func GetAPIKeyFromHelper(ctx context.Context, helperCmd string) (string, error) {
 	if helperCmd == "" {
-		return "", fmt.Errorf("api_key_helper command is empty")
+		return "", errors.New("api_key_helper command is empty")
 	}
 
 	// Create context with timeout if not already set
@@ -135,7 +136,7 @@ func GetAPIKeyFromHelper(ctx context.Context, helperCmd string) (string, error) 
 		}
 		apiKey := strings.TrimSpace(stdout.String())
 		if apiKey == "" {
-			return "", fmt.Errorf("api_key_helper command returned empty output")
+			return "", errors.New("api_key_helper command returned empty output")
 		}
 		return apiKey, nil
 

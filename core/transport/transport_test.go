@@ -20,7 +20,7 @@ func (m *mockRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) 
 	if m.resp != nil || m.err != nil {
 		return m.resp, m.err
 	}
-	return &http.Response{StatusCode: 200, Body: http.NoBody, Request: req}, nil
+	return &http.Response{StatusCode: http.StatusOK, Body: http.NoBody, Request: req}, nil
 }
 
 func TestDefaultHeaderTransport_CustomHeaders(t *testing.T) {
@@ -34,7 +34,12 @@ func TestDefaultHeaderTransport_CustomHeaders(t *testing.T) {
 		AppName:    "myapp",
 		AppVersion: "1.2.3",
 	}
-	req, _ := http.NewRequestWithContext(context.Background(), "GET", "http://example.com", nil)
+	req, _ := http.NewRequestWithContext(
+		context.Background(),
+		http.MethodGet,
+		"http://example.com",
+		nil,
+	)
 	resp, err := tr.RoundTrip(req)
 	if err != nil {
 		t.Fatalf("RoundTrip error: %v", err)
@@ -65,7 +70,12 @@ func TestDefaultHeaderTransport_EmptyHeadersAndAppInfo(t *testing.T) {
 		AppName:    "",
 		AppVersion: "",
 	}
-	req, _ := http.NewRequestWithContext(context.Background(), "GET", "http://example.com", nil)
+	req, _ := http.NewRequestWithContext(
+		context.Background(),
+		http.MethodGet,
+		"http://example.com",
+		nil,
+	)
 	resp, err := tr.RoundTrip(req)
 	if err != nil {
 		t.Fatalf("RoundTrip error: %v", err)
@@ -91,7 +101,12 @@ func TestDefaultHeaderTransport_OriginErrorPropagation(t *testing.T) {
 		AppName:    "",
 		AppVersion: "",
 	}
-	req, _ := http.NewRequestWithContext(context.Background(), "GET", "http://example.com", nil)
+	req, _ := http.NewRequestWithContext(
+		context.Background(),
+		http.MethodGet,
+		"http://example.com",
+		nil,
+	)
 	resp, err := tr.RoundTrip(req)
 	if resp != nil && resp.Body != nil {
 		resp.Body.Close()
@@ -111,7 +126,12 @@ func TestDefaultHeaderTransport_MultipleHeaderValues(t *testing.T) {
 		AppName:    "app",
 		AppVersion: "v",
 	}
-	req, _ := http.NewRequestWithContext(context.Background(), "GET", "http://example.com", nil)
+	req, _ := http.NewRequestWithContext(
+		context.Background(),
+		http.MethodGet,
+		"http://example.com",
+		nil,
+	)
 	resp, err := tr.RoundTrip(req)
 	if err != nil {
 		t.Fatalf("RoundTrip error: %v", err)

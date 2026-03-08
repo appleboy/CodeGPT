@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -58,7 +59,7 @@ type defaultHeaderTransport struct {
 // delegating the actual round-trip to the original transport.
 func (t *defaultHeaderTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	if t.origin == nil {
-		return nil, fmt.Errorf("origin RoundTripper is nil")
+		return nil, errors.New("origin RoundTripper is nil")
 	}
 	for key, values := range t.header {
 		for _, value := range values {
@@ -82,12 +83,14 @@ func (t *defaultHeaderTransport) RoundTrip(req *http.Request) (*http.Response, e
 func New(opts ...Option) (*http.Client, error) {
 	cfg := newConfig(opts...)
 	if cfg == nil {
-		return nil, fmt.Errorf("configuration is nil")
+		return nil, errors.New("configuration is nil")
 	}
 
 	// Create a new HTTP transport with optional TLS configuration.
 	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: cfg.insecure}, //nolint:gosec
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: cfg.insecure,
+		}, //nolint:gosec // user-configured skip verify option
 	}
 
 	// Create a new HTTP client with the specified timeout.

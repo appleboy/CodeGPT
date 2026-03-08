@@ -89,7 +89,7 @@ func printVersion(format string, v VersionInfo) error {
 		// Print each row with colored label and default value color
 		for _, row := range rows {
 			blue.Print(row[0])
-			fmt.Printf(" %s\n", row[1])
+			color.White(" %s\n", row[1])
 		}
 		return nil
 	}

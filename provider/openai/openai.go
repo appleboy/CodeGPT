@@ -223,7 +223,7 @@ func (c *Client) completion(
 		return nil, err
 	}
 	if len(r.Choices) == 0 {
-		return nil, fmt.Errorf("no choices returned from API")
+		return nil, errors.New("no choices returned from API")
 	}
 	// Support reasoning models: prefer Content, fallback to ReasoningContent if empty
 	resp.Content = r.Choices[0].Message.Content

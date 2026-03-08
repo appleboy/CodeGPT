@@ -1,7 +1,7 @@
 package version
 
 var (
-	App       string = "CodeGPT"
+	App       = "CodeGPT"
 	Version   string
 	GitCommit string
 	BuildTime string

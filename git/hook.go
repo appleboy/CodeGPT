@@ -26,7 +26,7 @@ const (
 
 // init initializes the Git hook templates by loading them from embedded files.
 // If there's an error loading the templates, the function logs a fatal error and terminates the program.
-func init() { //nolint:gochecknoinits
+func init() { //nolint:gochecknoinits // required to load embedded templates at startup
 	if err := util.LoadTemplates(files); err != nil {
 		log.Fatal(err)
 	}

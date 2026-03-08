@@ -334,7 +334,7 @@ func TestGetAPIKeyFromHelper_Windows_MultipleInvocations(t *testing.T) {
 	results := make(chan string, 3)
 	errors := make(chan error, 3)
 
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		go func(n int) {
 			result, err := GetAPIKeyFromHelper(
 				context.Background(),
@@ -350,7 +350,7 @@ func TestGetAPIKeyFromHelper_Windows_MultipleInvocations(t *testing.T) {
 
 	// Collect results
 	successCount := 0
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		select {
 		case result := <-results:
 			if !strings.HasPrefix(result, "test-key-") {
