@@ -11,14 +11,14 @@ import (
 	"time"
 )
 
-// cleanupHelperCache removes helper cache entries from credstore for the given commands.
-func cleanupHelperCache(t *testing.T, cmds ...string) {
+// overrideCredStore replaces the global credStore with an isolated file-backed
+// store backed by a temp directory, then restores the original on cleanup.
+// This prevents tests from touching the OS keyring or real credential files.
+func overrideCredStore(t *testing.T) {
 	t.Helper()
-	for _, cmd := range cmds {
-		if err := DeleteCredential(helperCacheKey(cmd)); err != nil {
-			t.Logf("cleanupHelperCache: failed to delete key for %q: %v", cmd, err)
-		}
-	}
+	original := credStore
+	t.Cleanup(func() { credStore = original })
+	credStore = newTestCredStore(t)
 }
 
 func TestGetAPIKeyFromHelper_Success(t *testing.T) {
@@ -218,6 +218,7 @@ func TestGetAPIKeyFromHelper_SecurityStderr(t *testing.T) {
 }
 
 func TestGetAPIKeyFromHelperWithCache_NoCaching(t *testing.T) {
+	overrideCredStore(t)
 	// Test with refreshInterval = 0 (no caching)
 	command := "echo 'test-key-no-cache'"
 
@@ -240,15 +241,14 @@ func TestGetAPIKeyFromHelperWithCache_NoCaching(t *testing.T) {
 }
 
 func TestGetAPIKeyFromHelperWithCache_WithCaching(t *testing.T) {
+	overrideCredStore(t)
 	// Use a counter file to generate different values each time the command runs.
-	// The tmpDir path is included in the command, making the credstore key unique per run.
 	tmpDir := t.TempDir()
 	counterFile := filepath.Join(tmpDir, "counter.txt")
 	command := fmt.Sprintf(
 		"f=%s; echo $(($(cat $f 2>/dev/null || echo 0) + 1)) | tee $f",
 		counterFile,
 	)
-	t.Cleanup(func() { cleanupHelperCache(t, command) })
 
 	// First call should execute and cache
 	key1, err := GetAPIKeyFromHelperWithCache(context.Background(), command, 5*time.Second)
@@ -271,12 +271,11 @@ func TestGetAPIKeyFromHelperWithCache_WithCaching(t *testing.T) {
 }
 
 func TestGetAPIKeyFromHelperWithCache_CacheExpiration(t *testing.T) {
+	overrideCredStore(t)
 	// Create a counter file that we'll update manually.
-	// The tmpDir path is included in the command, making the credstore key unique per run.
 	tmpDir := t.TempDir()
 	counterFile := filepath.Join(tmpDir, "counter2.txt")
 	command := fmt.Sprintf("cat %q", counterFile)
-	t.Cleanup(func() { cleanupHelperCache(t, command) })
 
 	// Write initial value
 	if err := os.WriteFile(counterFile, []byte("value1"), 0o600); err != nil {
@@ -316,9 +315,9 @@ func TestGetAPIKeyFromHelperWithCache_CacheExpiration(t *testing.T) {
 }
 
 func TestGetAPIKeyFromHelperWithCache_DifferentCommands(t *testing.T) {
+	overrideCredStore(t)
 	cmd1 := "echo 'key-one'"
 	cmd2 := "echo 'key-two'"
-	t.Cleanup(func() { cleanupHelperCache(t, cmd1, cmd2) })
 
 	// Get keys from different commands
 	key1, err := GetAPIKeyFromHelperWithCache(context.Background(), cmd1, 5*time.Second)
@@ -345,8 +344,8 @@ func TestGetAPIKeyFromHelperWithCache_DifferentCommands(t *testing.T) {
 }
 
 func TestGetAPIKeyFromHelperWithCache_StoresInCredstore(t *testing.T) {
+	overrideCredStore(t)
 	command := "echo 'test-credstore-storage'"
-	t.Cleanup(func() { cleanupHelperCache(t, command) })
 
 	// Execute command to populate credstore cache
 	_, err := GetAPIKeyFromHelperWithCache(context.Background(), command, 5*time.Second)

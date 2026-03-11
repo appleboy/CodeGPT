@@ -19,11 +19,13 @@ const (
 	helperKeyPrefix = "helper:"
 )
 
-// apiKeyCache stores cached API keys with their metadata
+// apiKeyCache stores cached API keys with their metadata.
+// HelperCmd is intentionally omitted: the credstore key already encodes the
+// command via SHA-256, so storing the raw command string here would
+// unnecessarily persist potentially sensitive command-line arguments.
 type apiKeyCache struct {
 	APIKey        string    `json:"apiKey"`
 	LastFetchTime time.Time `json:"lastFetchTime"`
-	HelperCmd     string    `json:"helperCmd"`
 }
 
 // helperCacheKey returns the credstore key for a given helper command.
@@ -48,11 +50,6 @@ func readCache(helperCmd string) (*apiKeyCache, error) {
 		return nil, err
 	}
 
-	// Verify the helper command matches
-	if cache.HelperCmd != helperCmd {
-		return nil, nil //nolint:nilnil // nil cache indicates cache miss, not an error
-	}
-
 	return &cache, nil
 }
 
@@ -62,7 +59,6 @@ func writeCache(helperCmd, apiKey string) error {
 	cache := apiKeyCache{
 		APIKey:        apiKey,
 		LastFetchTime: time.Now(),
-		HelperCmd:     helperCmd,
 	}
 
 	data, err := json.Marshal(cache)
