@@ -2,6 +2,7 @@ package util
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -9,6 +10,16 @@ import (
 	"testing"
 	"time"
 )
+
+// cleanupHelperCache removes helper cache entries from credstore for the given commands.
+func cleanupHelperCache(t *testing.T, cmds ...string) {
+	t.Helper()
+	for _, cmd := range cmds {
+		if err := DeleteCredential(helperCacheKey(cmd)); err != nil {
+			t.Logf("cleanupHelperCache: failed to delete key for %q: %v", cmd, err)
+		}
+	}
+}
 
 func TestGetAPIKeyFromHelper_Success(t *testing.T) {
 	tests := []struct {
@@ -229,18 +240,15 @@ func TestGetAPIKeyFromHelperWithCache_NoCaching(t *testing.T) {
 }
 
 func TestGetAPIKeyFromHelperWithCache_WithCaching(t *testing.T) {
-	// Create a temporary directory for testing
+	// Use a counter file to generate different values each time the command runs.
+	// The tmpDir path is included in the command, making the credstore key unique per run.
 	tmpDir := t.TempDir()
-
-	// Override home directory for testing
-	t.Setenv("HOME", tmpDir)
-
-	// Use a counter file to generate different values each time the command runs
 	counterFile := filepath.Join(tmpDir, "counter.txt")
 	command := fmt.Sprintf(
 		"f=%s; echo $(($(cat $f 2>/dev/null || echo 0) + 1)) | tee $f",
 		counterFile,
 	)
+	t.Cleanup(func() { cleanupHelperCache(t, command) })
 
 	// First call should execute and cache
 	key1, err := GetAPIKeyFromHelperWithCache(context.Background(), command, 5*time.Second)
@@ -263,15 +271,12 @@ func TestGetAPIKeyFromHelperWithCache_WithCaching(t *testing.T) {
 }
 
 func TestGetAPIKeyFromHelperWithCache_CacheExpiration(t *testing.T) {
-	// Create a temporary directory for testing
+	// Create a counter file that we'll update manually.
+	// The tmpDir path is included in the command, making the credstore key unique per run.
 	tmpDir := t.TempDir()
-
-	// Override home directory for testing
-	t.Setenv("HOME", tmpDir)
-
-	// Create a counter file that we'll update manually
 	counterFile := filepath.Join(tmpDir, "counter2.txt")
 	command := fmt.Sprintf("cat %q", counterFile)
+	t.Cleanup(func() { cleanupHelperCache(t, command) })
 
 	// Write initial value
 	if err := os.WriteFile(counterFile, []byte("value1"), 0o600); err != nil {
@@ -311,14 +316,9 @@ func TestGetAPIKeyFromHelperWithCache_CacheExpiration(t *testing.T) {
 }
 
 func TestGetAPIKeyFromHelperWithCache_DifferentCommands(t *testing.T) {
-	// Create a temporary directory for testing
-	tmpDir := t.TempDir()
-
-	// Override home directory for testing
-	t.Setenv("HOME", tmpDir)
-
 	cmd1 := "echo 'key-one'"
 	cmd2 := "echo 'key-two'"
+	t.Cleanup(func() { cleanupHelperCache(t, cmd1, cmd2) })
 
 	// Get keys from different commands
 	key1, err := GetAPIKeyFromHelperWithCache(context.Background(), cmd1, 5*time.Second)
@@ -344,35 +344,31 @@ func TestGetAPIKeyFromHelperWithCache_DifferentCommands(t *testing.T) {
 	}
 }
 
-func TestGetAPIKeyFromHelperWithCache_CacheFilePermissions(t *testing.T) {
-	// Create a temporary directory for testing
-	tmpDir := t.TempDir()
+func TestGetAPIKeyFromHelperWithCache_StoresInCredstore(t *testing.T) {
+	command := "echo 'test-credstore-storage'"
+	t.Cleanup(func() { cleanupHelperCache(t, command) })
 
-	// Override home directory for testing
-	t.Setenv("HOME", tmpDir)
-
-	command := "echo 'test-permissions'"
-
-	// Execute command to create cache file
+	// Execute command to populate credstore cache
 	_, err := GetAPIKeyFromHelperWithCache(context.Background(), command, 5*time.Second)
 	if err != nil {
 		t.Fatalf("GetAPIKeyFromHelperWithCache() error = %v", err)
 	}
 
-	// Check cache file permissions
-	cachePath, err := getCacheFilePath(command)
+	// Verify the value was stored in credstore under the expected key
+	val, err := GetCredential(helperCacheKey(command))
 	if err != nil {
-		t.Fatalf("getCacheFilePath() error = %v", err)
+		t.Fatalf("GetCredential() error = %v", err)
+	}
+	if val == "" {
+		t.Fatal("Expected credstore to contain cached entry, got empty string")
 	}
 
-	info, err := os.Stat(cachePath)
-	if err != nil {
-		t.Fatalf("os.Stat() error = %v", err)
+	// Verify the stored JSON contains the expected API key
+	var stored apiKeyCache
+	if err := json.Unmarshal([]byte(val), &stored); err != nil {
+		t.Fatalf("Failed to unmarshal stored credstore value: %v", err)
 	}
-
-	// Check that file has restrictive permissions (0600)
-	perm := info.Mode().Perm()
-	if perm != 0o600 {
-		t.Errorf("Cache file should have 0600 permissions, got %o", perm)
+	if stored.APIKey != "test-credstore-storage" {
+		t.Errorf("Stored APIKey = %q, want %q", stored.APIKey, "test-credstore-storage")
 	}
 }
