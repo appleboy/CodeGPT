@@ -14,6 +14,20 @@ import (
 	"github.com/spf13/viper"
 )
 
+// getAPIKey retrieves an API key from the secure credential store first,
+// then falls back to viper (env vars or legacy YAML).
+func getAPIKey(viperKey string) (string, error) {
+	val, err := util.GetCredential(viperKey)
+	if err != nil {
+		return "", err
+	}
+	if val != "" {
+		return val, nil
+	}
+	// Fallback: env var or legacy YAML (not yet migrated).
+	return viper.GetString(viperKey), nil
+}
+
 func NewOpenAI(ctx context.Context) (*openai.Client, error) {
 	var apiKey string
 
@@ -35,7 +49,11 @@ func NewOpenAI(ctx context.Context) (*openai.Client, error) {
 		}
 		apiKey = key
 	} else {
-		apiKey = viper.GetString("openai.api_key")
+		key, err := getAPIKey("openai.api_key")
+		if err != nil {
+			return nil, err
+		}
+		apiKey = key
 	}
 
 	return openai.New(
@@ -81,7 +99,11 @@ func NewGemini(ctx context.Context) (*gemini.Client, error) {
 		apiKey = key
 	} else {
 		// Fallback to static config: gemini.api_key -> openai.api_key
-		apiKey = viper.GetString("gemini.api_key")
+		key, err := getAPIKey("gemini.api_key")
+		if err != nil {
+			return nil, err
+		}
+		apiKey = key
 		if apiKey == "" {
 			// Try openai.api_key_helper as fallback
 			if helper := viper.GetString("openai.api_key_helper"); helper != "" {
@@ -95,13 +117,17 @@ func NewGemini(ctx context.Context) (*gemini.Client, error) {
 					// Not set, use default
 					refreshInterval = util.DefaultRefreshInterval
 				}
-				key, err := util.GetAPIKeyFromHelperWithCache(ctx, helper, refreshInterval)
+				helperKey, err := util.GetAPIKeyFromHelperWithCache(ctx, helper, refreshInterval)
 				if err != nil {
 					return nil, err
 				}
-				apiKey = key
+				apiKey = helperKey
 			} else {
-				apiKey = viper.GetString("openai.api_key")
+				openaiKey, err := getAPIKey("openai.api_key")
+				if err != nil {
+					return nil, err
+				}
+				apiKey = openaiKey
 			}
 		}
 	}
@@ -150,7 +176,11 @@ func NewAnthropic(ctx context.Context) (*anthropic.Client, error) {
 		}
 		apiKey = key
 	} else {
-		apiKey = viper.GetString("openai.api_key")
+		key, err := getAPIKey("openai.api_key")
+		if err != nil {
+			return nil, err
+		}
+		apiKey = key
 	}
 
 	return anthropic.New(
