@@ -6,9 +6,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"fmt"
-	"os"
-	"path/filepath"
 	"time"
 )
 
@@ -17,96 +14,59 @@ const (
 	HelperTimeout = 10 * time.Second
 	// DefaultRefreshInterval is the default interval for refreshing API keys
 	DefaultRefreshInterval = 900 * time.Second // 15 minutes
+
+	// helperKeyPrefix is the credstore key namespace for helper command cache entries.
+	helperKeyPrefix = "helper:"
 )
 
-// apiKeyCache stores cached API keys with their metadata
+// apiKeyCache stores cached API keys with their metadata.
+// HelperCmd is intentionally omitted: the credstore key already encodes the
+// command via SHA-256, so storing the raw command string here would
+// unnecessarily persist potentially sensitive command-line arguments.
 type apiKeyCache struct {
 	APIKey        string    `json:"apiKey"`
 	LastFetchTime time.Time `json:"lastFetchTime"`
-	HelperCmd     string    `json:"helperCmd"`
 }
 
-// getCacheDir returns the cache directory path
-func getCacheDir() (string, error) {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return "", fmt.Errorf("failed to get home directory: %w", err)
-	}
-	cacheDir := filepath.Join(home, ".config", "codegpt", ".cache")
-	return cacheDir, nil
-}
-
-// getCacheFilePath returns the cache file path for a given helper command
-func getCacheFilePath(helperCmd string) (string, error) {
-	cacheDir, err := getCacheDir()
-	if err != nil {
-		return "", err
-	}
-
-	// Create cache directory if it doesn't exist
-	if err := os.MkdirAll(cacheDir, 0o700); err != nil {
-		return "", fmt.Errorf("failed to create cache directory: %w", err)
-	}
-
-	// Use hash of helper command as filename
+// helperCacheKey returns the credstore key for a given helper command.
+func helperCacheKey(helperCmd string) string {
 	hash := sha256.Sum256([]byte(helperCmd))
-	filename := hex.EncodeToString(hash[:]) + ".json"
-	return filepath.Join(cacheDir, filename), nil
+	return helperKeyPrefix + hex.EncodeToString(hash[:])
 }
 
-// readCache reads the cached API key from file
+// readCache reads the cached API key from credstore.
 func readCache(helperCmd string) (*apiKeyCache, error) {
-	cachePath, err := getCacheFilePath(helperCmd)
+	key := helperCacheKey(helperCmd)
+	val, err := GetCredential(key)
 	if err != nil {
 		return nil, err
 	}
-
-	data, err := os.ReadFile(cachePath)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return nil, nil //nolint:nilnil // nil cache indicates cache miss, not an error
-		}
-		return nil, fmt.Errorf("failed to read cache file: %w", err)
+	if val == "" {
+		return nil, nil //nolint:nilnil // nil cache indicates cache miss, not an error
 	}
 
 	var cache apiKeyCache
-	if err := json.Unmarshal(data, &cache); err != nil {
-		return nil, fmt.Errorf("failed to parse cache file: %w", err)
-	}
-
-	// Verify the helper command matches
-	if cache.HelperCmd != helperCmd {
-		return nil, nil //nolint:nilnil // nil cache indicates cache miss, not an error
+	if err := json.Unmarshal([]byte(val), &cache); err != nil {
+		return nil, err
 	}
 
 	return &cache, nil
 }
 
-// writeCache writes the API key cache to file
+// writeCache writes the API key cache to credstore.
 func writeCache(helperCmd, apiKey string) error {
-	cachePath, err := getCacheFilePath(helperCmd)
+	key := helperCacheKey(helperCmd)
+	cache := apiKeyCache{
+		APIKey:        apiKey,
+		LastFetchTime: time.Now(),
+	}
+
+	data, err := json.Marshal(cache)
 	if err != nil {
 		return err
 	}
 
-	cache := apiKeyCache{
-		APIKey:        apiKey,
-		LastFetchTime: time.Now(),
-		HelperCmd:     helperCmd,
-	}
-
-	//nolint:gosec // G117: intentional API key cache with 0600 perms
-	data, err := json.MarshalIndent(cache, "", "  ")
-	if err != nil {
-		return fmt.Errorf("failed to marshal cache: %w", err)
-	}
-
-	// Write with restrictive permissions (only owner can read/write)
-	if err := os.WriteFile(cachePath, data, 0o600); err != nil {
-		return fmt.Errorf("failed to write cache file: %w", err)
-	}
-
-	return nil
+	return SetCredential(key, string(data))
 }
 
 // needsRefresh checks if the cached key needs to be refreshed
@@ -137,10 +97,11 @@ func needsRefresh(cache *apiKeyCache, refreshInterval time.Duration) bool {
 // Security note: The returned API key is sensitive and should not be logged.
 
 // GetAPIKeyFromHelperWithCache executes a shell command to dynamically generate an API key,
-// with file-based caching support. The API key is cached for the specified refresh interval.
+// with credstore-backed caching support. The API key is cached for the specified refresh interval.
 // If refreshInterval is 0, the cache is disabled and the command is executed every time.
 //
-// The cache is stored in ~/.config/codegpt/.cache/ directory with restrictive permissions (0600).
+// The cache is stored in the OS keyring (macOS Keychain / Linux Secret Service /
+// Windows Credential Manager) with a file-based fallback.
 //
 // Parameters:
 //   - ctx: Context for controlling execution and timeouts
@@ -150,7 +111,6 @@ func needsRefresh(cache *apiKeyCache, refreshInterval time.Duration) bool {
 // Returns the API key from cache if still valid, otherwise executes the helper command.
 //
 // Security note: The returned API key is sensitive and should not be logged.
-// Cache files are stored with 0600 permissions but contain the API key in JSON format.
 func GetAPIKeyFromHelperWithCache(
 	ctx context.Context,
 	helperCmd string,
