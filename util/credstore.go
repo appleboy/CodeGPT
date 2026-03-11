@@ -14,8 +14,18 @@ const credServiceName = "codegpt"
 var credStore *credstore.SecureStore[string]
 
 func init() {
-	home, _ := os.UserHomeDir()
-	fallbackPath := filepath.Join(home, ".config", "codegpt", ".cache", "credentials.json")
+	home, err := os.UserHomeDir()
+	var fallbackPath string
+	if err != nil || home == "" {
+		fallbackPath = filepath.Join(os.TempDir(), "codegpt", "credentials.json")
+	} else {
+		fallbackPath = filepath.Join(home, ".config", "codegpt", ".cache", "credentials.json")
+	}
+
+	// Ensure the directory for the fallback credential file exists.
+	dir := filepath.Dir(fallbackPath)
+	_ = os.MkdirAll(dir, 0o700)
+
 	keyring := credstore.NewStringKeyringStore(credServiceName)
 	file := credstore.NewStringFileStore(fallbackPath)
 	credStore = credstore.NewSecureStore(keyring, file)

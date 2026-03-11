@@ -41,6 +41,12 @@ var sensitiveConfigKeys = []string{"openai.api_key", "gemini.api_key"}
 // config into the secure credential store and clears them from the config file.
 func migrateCredentialsToStore() {
 	for _, key := range sensitiveConfigKeys {
+		// Only migrate values that actually exist in the config file.
+		// This prevents env vars (e.g. OPENAI_API_KEY) from being silently
+		// persisted into the credential store.
+		if !viper.InConfig(key) {
+			continue
+		}
 		val := viper.GetString(key)
 		if val == "" {
 			continue

@@ -1,6 +1,7 @@
 package util
 
 import (
+	"path/filepath"
 	"testing"
 
 	"github.com/go-authgate/sdk-go/credstore"
@@ -10,7 +11,7 @@ import (
 // This avoids touching the OS keyring in CI/CD environments.
 func newTestCredStore(t *testing.T) *credstore.SecureStore[string] {
 	t.Helper()
-	path := t.TempDir() + "/creds.json"
+	path := filepath.Join(t.TempDir(), "creds.json")
 	file := credstore.NewStringFileStore(path)
 	// Pass file as both primary and fallback so NewSecureStore always picks file.
 	return credstore.NewSecureStore[string](file, file)
@@ -63,7 +64,7 @@ func TestGetCredential_Missing(t *testing.T) {
 	original := credStore
 	defer func() { credStore = original }()
 
-	path := t.TempDir() + "/creds.json"
+	path := filepath.Join(t.TempDir(), "creds.json")
 	file := credstore.NewStringFileStore(path)
 	credStore = credstore.NewSecureStore[string](file, file)
 
@@ -81,7 +82,7 @@ func TestSetAndGetCredential(t *testing.T) {
 	original := credStore
 	defer func() { credStore = original }()
 
-	path := t.TempDir() + "/creds.json"
+	path := filepath.Join(t.TempDir(), "creds.json")
 	file := credstore.NewStringFileStore(path)
 	credStore = credstore.NewSecureStore[string](file, file)
 
@@ -103,7 +104,7 @@ func TestDeleteCredential(t *testing.T) {
 	original := credStore
 	defer func() { credStore = original }()
 
-	path := t.TempDir() + "/creds.json"
+	path := filepath.Join(t.TempDir(), "creds.json")
 	file := credstore.NewStringFileStore(path)
 	credStore = credstore.NewSecureStore[string](file, file)
 

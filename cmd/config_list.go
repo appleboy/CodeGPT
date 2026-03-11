@@ -77,7 +77,11 @@ var configListCmd = &cobra.Command{
 		// Add the key and value to the table
 		for _, v := range keys {
 			if slices.Contains(sensitiveConfigKeys, v) {
-				cred, _ := util.GetCredential(v)
+				cred, err := util.GetCredential(v)
+				if err != nil {
+					tbl.AddRow(v, "(error reading secure store)")
+					continue
+				}
 				switch {
 				case cred != "":
 					if util.CredStoreIsKeyring() {
@@ -85,7 +89,7 @@ var configListCmd = &cobra.Command{
 					} else {
 						tbl.AddRow(v, "(stored in secure file)")
 					}
-				case viper.GetString(v) != "":
+				case viper.InConfig(v):
 					tbl.AddRow(v, "**************** (YAML — run config set to migrate)")
 				default:
 					tbl.AddRow(v, "(not set)")
