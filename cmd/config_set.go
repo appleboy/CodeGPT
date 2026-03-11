@@ -2,7 +2,10 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"strings"
+
+	"github.com/appleboy/CodeGPT/util"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -101,6 +104,22 @@ var configSetCmd = &cobra.Command{
 			return errors.New(
 				"config key is not available, please use `codegpt config list` to see the available keys",
 			)
+		}
+
+		// Sensitive keys go to secure store, not YAML.
+		for _, sensitiveKey := range sensitiveConfigKeys {
+			if args[0] == sensitiveKey {
+				if err := util.SetCredential(args[0], args[1]); err != nil {
+					return fmt.Errorf("failed to store credential in secure store: %w", err)
+				}
+				// Ensure the key is cleared from YAML.
+				viper.Set(args[0], "")
+				if err := viper.WriteConfig(); err != nil {
+					return err
+				}
+				color.Green("you can see the config file: %s", viper.ConfigFileUsed())
+				return nil
+			}
 		}
 
 		// Set config value in viper

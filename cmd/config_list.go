@@ -1,7 +1,10 @@
 package cmd
 
 import (
+	"slices"
 	"sort"
+
+	"github.com/appleboy/CodeGPT/util"
 
 	"github.com/fatih/color"
 	"github.com/rodaine/table"
@@ -73,9 +76,20 @@ var configListCmd = &cobra.Command{
 
 		// Add the key and value to the table
 		for _, v := range keys {
-			// Hide the api key
-			if v == "openai.api_key" || v == "gemini.api_key" {
-				tbl.AddRow(v, "****************")
+			if slices.Contains(sensitiveConfigKeys, v) {
+				cred, _ := util.GetCredential(v)
+				switch {
+				case cred != "":
+					if util.CredStoreIsKeyring() {
+						tbl.AddRow(v, "(stored in keyring)")
+					} else {
+						tbl.AddRow(v, "(stored in secure file)")
+					}
+				case viper.GetString(v) != "":
+					tbl.AddRow(v, "**************** (YAML — run config set to migrate)")
+				default:
+					tbl.AddRow(v, "(not set)")
+				}
 				continue
 			}
 			tbl.AddRow(v, viper.Get(v))

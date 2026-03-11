@@ -8,6 +8,8 @@ import (
 	"path"
 	"strings"
 
+	"github.com/appleboy/CodeGPT/util"
+
 	"github.com/appleboy/com/file"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -30,6 +32,40 @@ const (
 	GITHUB = "github"
 	DRONE  = "drone"
 )
+
+// sensitiveConfigKeys lists the config keys that should be stored in the
+// secure credential store rather than in the plaintext YAML config file.
+var sensitiveConfigKeys = []string{"openai.api_key", "gemini.api_key"}
+
+// migrateCredentialsToStore moves any plaintext API keys found in the YAML
+// config into the secure credential store and clears them from the config file.
+func migrateCredentialsToStore() {
+	for _, key := range sensitiveConfigKeys {
+		val := viper.GetString(key)
+		if val == "" {
+			continue
+		}
+		// Check if already in credstore; skip if already migrated.
+		existing, err := util.GetCredential(key)
+		if err != nil || existing != "" {
+			continue
+		}
+		if err := util.SetCredential(key, val); err != nil {
+			fmt.Fprintf(os.Stderr, "warning: could not migrate %s to secure store: %v\n", key, err)
+			continue
+		}
+		// Remove from YAML.
+		viper.Set(key, "")
+		if err := viper.WriteConfig(); err != nil {
+			fmt.Fprintf(
+				os.Stderr,
+				"warning: could not update config after migrating %s: %v\n",
+				key,
+				err,
+			)
+		}
+	}
+}
 
 func init() {
 	cobra.OnInitialize(initConfig)
@@ -123,6 +159,9 @@ func initConfig() {
 			fmt.Fprintln(os.Stderr, err)
 		}
 	}
+
+	// Auto-migrate plaintext API keys to secure store.
+	migrateCredentialsToStore()
 
 	switch {
 	case promptFolder != "":
