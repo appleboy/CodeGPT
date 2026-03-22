@@ -577,9 +577,9 @@ codegpt config set openai.stream true
 codegpt review --stream
 ```
 
-## Claude Code 整合
+## Agent 技能整合
 
-如果你使用 [Claude Code](https://docs.anthropic.com/en/docs/claude-code)，CodeGPT 提供了 `/commit-message` 技能，可從暫存的變更自動產生符合慣例的提交訊息。只需在 Claude Code 中輸入 `/commit-message`，即可分析暫存的差異並產生包含適當前綴、範圍和摘要的提交訊息。
+CodeGPT 提供了 Agent 技能，例如 `/commit-message`，可從暫存的變更自動產生符合慣例的提交訊息。在 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) 中輸入 `/commit-message`，即可分析暫存的差異並產生包含適當前綴、範圍和摘要的提交訊息。
 
 技能定義維護於獨立的儲存庫：[appleboy/skills](https://github.com/appleboy/skills)。
 

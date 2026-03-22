@@ -578,9 +578,9 @@ The `--stream` flag also works with the `review` command:
 codegpt review --stream
 ```
 
-## Claude Code Integration
+## Agent Skill Integration
 
-If you use [Claude Code](https://docs.anthropic.com/en/docs/claude-code), CodeGPT provides a `/commit-message` skill that generates conventional commit messages from your staged changes. Simply type `/commit-message` in Claude Code to analyze your staged diff and produce a well-formatted commit message with the appropriate prefix, scope, and summary.
+CodeGPT provides agent skills such as `/commit-message` that generate conventional commit messages from your staged changes. In [Claude Code](https://docs.anthropic.com/en/docs/claude-code), simply type `/commit-message` to analyze your staged diff and produce a well-formatted commit message with the appropriate prefix, scope, and summary.
 
 The skill definitions are maintained in a separate repository: [appleboy/skills](https://github.com/appleboy/skills).
 
