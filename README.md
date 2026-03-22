@@ -580,9 +580,9 @@ codegpt review --stream
 
 ## Claude Code Integration
 
-If you use [Claude Code](https://docs.anthropic.com/en/docs/claude-code), CodeGPT includes a built-in `/commit-message` skill that generates conventional commit messages from your staged changes. Simply type `/commit-message` in Claude Code to analyze your staged diff and produce a well-formatted commit message with the appropriate prefix, scope, and summary.
+If you use [Claude Code](https://docs.anthropic.com/en/docs/claude-code), CodeGPT provides a `/commit-message` skill that generates conventional commit messages from your staged changes. Simply type `/commit-message` in Claude Code to analyze your staged diff and produce a well-formatted commit message with the appropriate prefix, scope, and summary.
 
-The skill definition is located in [`skills/commit-message/SKILL.md`](skills/commit-message/SKILL.md).
+The skill definitions are maintained in a separate repository: [appleboy/skills](https://github.com/appleboy/skills).
 
 ## Change Commit Message Template
 

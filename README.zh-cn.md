@@ -577,9 +577,9 @@ codegpt review --stream
 
 ## Claude Code 集成
 
-如果你使用 [Claude Code](https://docs.anthropic.com/en/docs/claude-code)，CodeGPT 内置了 `/commit-message` 技能，可从暂存的更改自动生成符合约定的提交信息。只需在 Claude Code 中输入 `/commit-message`，即可分析暂存的差异并生成包含适当前缀、范围和摘要的提交信息。
+如果你使用 [Claude Code](https://docs.anthropic.com/en/docs/claude-code)，CodeGPT 提供了 `/commit-message` 技能，可从暂存的更改自动生成符合约定的提交信息。只需在 Claude Code 中输入 `/commit-message`，即可分析暂存的差异并生成包含适当前缀、范围和摘要的提交信息。
 
-技能定义位于 [`skills/commit-message/SKILL.md`](skills/commit-message/SKILL.md)。
+技能定义维护于独立的仓库：[appleboy/skills](https://github.com/appleboy/skills)。
 
 ## 更改提交信息模板
 
