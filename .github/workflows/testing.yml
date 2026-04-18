@@ -39,7 +39,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        go: [1.25, 1.26, stable]
+        go: [1.25, 1.26]
         include:
           - os: ubuntu-latest
             go-build: ~/.cache/go-build
