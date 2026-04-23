@@ -141,8 +141,7 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 	var err error
 
 	// For known models that don't support function calls, use regular completion directly
-	if checkOSeriesModels.MatchString(c.model) ||
-		strings.Contains(strings.ToLower(c.model), "deepseek") {
+	if checkOSeriesModels.MatchString(c.model) {
 		resp, err = c.CreateChatCompletion(ctx, content)
 		if err != nil || len(resp.Choices) != 1 {
 			return nil, err
