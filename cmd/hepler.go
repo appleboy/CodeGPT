@@ -5,12 +5,13 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/spf13/viper"
+
 	"github.com/appleboy/CodeGPT/git"
 	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/provider/openai"
 	"github.com/appleboy/CodeGPT/util"
 	"github.com/appleboy/com/file"
-	"github.com/spf13/viper"
 )
 
 func check(ctx context.Context) error {
@@ -69,7 +70,7 @@ func check(ctx context.Context) error {
 	if cfgTemplateFile != "" {
 		exists, err := file.IsFile(cfgTemplateFile)
 		if err != nil {
-			return fmt.Errorf("failed to check template file: %v", err)
+			return fmt.Errorf("failed to check template file: %w", err)
 		}
 		if !exists {
 			return fmt.Errorf("template file not found at: %s", cfgTemplateFile)
@@ -79,7 +80,7 @@ func check(ctx context.Context) error {
 	if templateVarsFile != "" {
 		exists, err := file.IsFile(templateVarsFile)
 		if err != nil {
-			return fmt.Errorf("failed to check template variables file: %v", err)
+			return fmt.Errorf("failed to check template variables file: %w", err)
 		}
 		if !exists {
 			return fmt.Errorf("template variables file not found at: %s", templateVarsFile)
@@ -90,7 +91,7 @@ func check(ctx context.Context) error {
 	promptFolder := viper.GetString("prompt.folder")
 	if promptFolder != "" {
 		if err := util.LoadTemplatesFromDir(promptFolder); err != nil {
-			return fmt.Errorf("failed to load custom prompt templates: %s", err)
+			return fmt.Errorf("failed to load custom prompt templates: %w", err)
 		}
 	}
 

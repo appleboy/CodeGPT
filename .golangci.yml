@@ -1,10 +1,16 @@
 version: "2"
+
+run:
+  timeout: 10m
+
 output:
   sort-order:
     - file
+
 linters:
   default: none
   enable:
+    # === Existing linters ===
     - bidichk
     - bodyclose
     - depguard
@@ -29,6 +35,33 @@ linters:
     - usestdlibvars
     - usetesting
     - wastedassign
+
+    # === Error handling (Google: Error handling section) ===
+    - errorlint            # %w vs %v, errors.Is/As checks
+    - nilerr               # return nil when err != nil pitfall
+
+    # === Context ("Contexts are never included in option structs") ===
+    - containedctx         # no context in struct fields
+    - contextcheck         # correct context propagation
+    - noctx                # HTTP/DB calls missing context
+
+    # === Tests (Google: Tests section, especially t.Helper) ===
+    - thelper              # helpers must call t.Helper()
+
+    # === Shadowing / naming (Google: Shadowing section) ===
+    - predeclared          # avoid shadowing len/error/url etc.
+
+    # === Global state (Google: Global state section) ===
+    - reassign             # forbid reassigning package-level variables
+
+    # === Modern Go idioms ===
+    - copyloopvar          # Go 1.22+ loop variable semantics (replaces exportloopref)
+    - intrange             # Go 1.22+ `for i := range n`
+
+    # === Documentation / performance ===
+    - misspell             # English spelling
+    - prealloc             # aligned with "size hints" guidance
+
   settings:
     depguard:
       rules:
@@ -40,22 +73,45 @@ linters:
               desc: it's experimental and unreliable
             - pkg: github.com/pkg/errors
               desc: use builtin errors package instead
-    nolintlint:
-      allow-unused: false
-      require-explanation: true
-      require-specific: true
+            - pkg: math/rand$
+              desc: use math/rand/v2 (Go 1.22+) for better API and distribution
+
+    errorlint:
+      errorf: true          # require %w when wrapping with fmt.Errorf
+      errorf-multi: true    # allow Go 1.20+ multiple %w verbs
+      asserts: true         # use errors.As rather than type assertion
+      comparison: true      # use errors.Is rather than ==
+
+    govet:
+      enable:
+        - nilness
+        - unusedwrite
+        - shadow            # Google explicitly warns about shadowing
+
     gocritic:
       enabled-checks:
         - equalFold
+        - boolExprSimplify
+        - builtinShadow
+        - commentedOutCode
+        - emptyStringTest
+        - hugeParam          # avoid passing large value types by value
+        - nestingReduce      # encourages early return
+        - rangeValCopy       # range copying large objects
+        - stringXbytes
+        - truncateCmp
       disabled-checks: []
+
     revive:
       severity: error
       rules:
         - name: blank-imports
+        - name: bool-literal-in-expr         # new: avoid `x == true`
         - name: constant-logical-expr
         - name: context-as-argument
         - name: context-keys-type
         - name: dot-imports
+        - name: early-return                 # new: Google prefers early returns
         - name: empty-lines
         - name: error-return
         - name: error-strings
@@ -63,27 +119,62 @@ linters:
         - name: identical-branches
         - name: if-return
         - name: increment-decrement
+        - name: indent-error-flow            # new: no else after err != nil return
         - name: modifies-value-receiver
         - name: package-comments
+        - name: range-val-in-closure         # new: loop variable capture in closures
+        - name: receiver-naming              # new: consistent receiver names
         - name: redefines-builtin-id
+        - name: string-of-int                # new: unsafe string(int) conversion
+        - name: struct-tag                   # new: struct tag validity
         - name: superfluous-else
         - name: time-naming
         - name: unexported-return
+        - name: unnecessary-stmt             # new: redundant statements
+        - name: use-any                      # new: Google examples consistently use `any`
+        - name: useless-break                # new: redundant break in switch/select
         - name: var-declaration
         - name: var-naming
           disabled: true
+
     staticcheck:
       checks:
         - all
+
     testifylint: {}
+
+    thelper:
+      test:
+        first: true
+        name: true
+        begin: true
+      benchmark:
+        first: true
+        name: true
+        begin: true
+      tb:
+        first: true
+        name: true
+        begin: true
+      fuzz:
+        first: true
+        name: true
+        begin: true
+
     usetesting:
       os-temp-dir: true
+
     perfsprint:
       concat-loop: false
-    govet:
-      enable:
-        - nilness
-        - unusedwrite
+
+    misspell:
+      locale: US
+
+    nolintlint:
+      allow-unused: false
+      require-explanation: true
+      require-specific: true
+
   exclusions:
     generated: lax
     presets:
@@ -96,19 +187,29 @@ linters:
           - errcheck
           - staticcheck
           - unparam
+          - containedctx
+          - contextcheck
+          - noctx
+          - prealloc
         path: _test\.go
+
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0
+
 formatters:
   enable:
     - gofmt
     - gofumpt
+    - goimports            # Google Decisions specifies import grouping
     - golines
   settings:
     gofumpt:
       extra-rules: true
+    goimports:
+      local-prefixes:
+        - github.com/appleboy   # replace with your actual module path
+    golines:
+      max-len: 120
   exclusions:
     generated: lax
-run:
-  timeout: 10m

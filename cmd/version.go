@@ -39,7 +39,7 @@ var versionCmd = &cobra.Command{
 			BuildArch: version.BuildArch,
 			Platform:  fmt.Sprintf("%s/%s", version.BuildOS, version.BuildArch),
 		}
-		return printVersion(outputFormat, v)
+		return printVersion(outputFormat, &v)
 	},
 }
 
@@ -63,9 +63,9 @@ printVersion prints version information in the specified format.
 format: "text" for colored CLI output, "json" for JSON output.
 v:      VersionInfo struct containing version data.
 */
-func printVersion(format string, v VersionInfo) error {
+func printVersion(format string, v *VersionInfo) error {
 	// Use short SHA for Git commit
-	shortV := v
+	shortV := *v
 	shortV.GitCommit = shortCommit(v.GitCommit)
 	switch format {
 	case "json":

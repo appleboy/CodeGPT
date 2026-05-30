@@ -289,8 +289,8 @@ func TestGetAPIKeyFromHelperWithCache_CacheExpiration(t *testing.T) {
 	}
 
 	// Update the file with a different value
-	if err := os.WriteFile(counterFile, []byte("value2"), 0o600); err != nil {
-		t.Fatalf("Failed to update counter file: %v", err)
+	if writeErr := os.WriteFile(counterFile, []byte("value2"), 0o600); writeErr != nil {
+		t.Fatalf("Failed to update counter file: %v", writeErr)
 	}
 
 	// Wait for cache to expire

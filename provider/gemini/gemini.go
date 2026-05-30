@@ -12,10 +12,11 @@ import (
 	"github.com/appleboy/CodeGPT/core/transport"
 	"github.com/appleboy/CodeGPT/version"
 
-	"github.com/appleboy/com/convert"
 	"github.com/sashabaranov/go-openai"
 	"github.com/yassinebenaid/godump"
 	"google.golang.org/genai"
+
+	"github.com/appleboy/com/convert"
 )
 
 type Client struct {
@@ -215,7 +216,7 @@ func New(ctx context.Context, opts ...Option) (c *Client, err error) {
 	cfg := newConfig(opts...)
 
 	// Validate the config object, returning an error if it is invalid.
-	if err := cfg.valid(); err != nil {
+	if err = cfg.valid(); err != nil {
 		return nil, err
 	}
 

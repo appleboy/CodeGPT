@@ -31,7 +31,7 @@ type Command struct {
 // excludeFiles returns a list of files to be excluded from git operations.
 // It prepends each file in the excludeList with the exclude and top options.
 func (c *Command) excludeFiles() []string {
-	var excludedFiles []string
+	excludedFiles := make([]string, 0, len(c.excludeList))
 	for _, f := range c.excludeList {
 		excludedFiles = append(excludedFiles, ":(exclude,top)"+f)
 	}
@@ -198,7 +198,7 @@ func (c *Command) DiffFiles(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if string(output) == "" {
+	if len(output) == 0 {
 		return "", errors.New("please add your staged changes using git add <files...>")
 	}
 
@@ -219,9 +219,9 @@ func (c *Command) InstallHook(ctx context.Context) error {
 	}
 
 	target := path.Join(strings.TrimSpace(string(hookPath)), HookPrepareCommitMessageTemplate)
-	if exists, err := file.IsFile(target); err != nil {
-		if !os.IsNotExist(err) {
-			return err
+	if exists, statErr := file.IsFile(target); statErr != nil {
+		if !os.IsNotExist(statErr) {
+			return statErr
 		}
 	} else if exists {
 		return errors.New("hook file prepare-commit-msg exist")

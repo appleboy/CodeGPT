@@ -1,6 +1,7 @@
 package util
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 
@@ -35,7 +36,7 @@ func init() {
 // Returns ("", nil) if not found.
 func GetCredential(key string) (string, error) {
 	val, err := credStore.Load(key)
-	if err == credstore.ErrNotFound {
+	if errors.Is(err, credstore.ErrNotFound) {
 		return "", nil
 	}
 	return val, err
