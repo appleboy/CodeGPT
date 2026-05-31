@@ -158,9 +158,13 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err != nil {
 		var configFileNotFoundError viper.ConfigFileNotFoundError
 		if errors.As(err, &configFileNotFoundError) {
-			// Config file not found; ignore error if desired
-			if _, createErr := os.Create(cfgFile); createErr != nil {
+			// Config file not found; create an empty one.
+			f, createErr := os.Create(cfgFile)
+			if createErr != nil {
 				log.Fatal(createErr)
+			}
+			if closeErr := f.Close(); closeErr != nil {
+				log.Fatal(closeErr)
 			}
 		} else {
 			// Config file was found but another error was produced

@@ -208,7 +208,7 @@ formatters:
       extra-rules: true
     goimports:
       local-prefixes:
-        - github.com/appleboy   # replace with your actual module path
+        - github.com/appleboy   # group all appleboy org packages (CodeGPT + com/*) as local
     golines:
       max-len: 120
   exclusions:
