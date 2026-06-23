@@ -22,7 +22,7 @@ jobs:
     name: ${{ matrix.os }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -48,7 +48,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.ref }}
 
@@ -58,7 +58,7 @@ jobs:
           go-version-file: go.mod
           check-latest: true
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             ${{ matrix.go-build }}
@@ -78,7 +78,7 @@ jobs:
   commitlint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: wagoid/commitlint-github-action@v5
@@ -92,13 +92,13 @@ jobs:
       # To report GitHub Actions status checks
       statuses: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           # super-linter needs the full git history to get the
           # list of files that changed across commits
           fetch-depth: 0
       - name: "Super-linter"
-        uses: super-linter/super-linter/slim@v8.5.0
+        uses: super-linter/super-linter/slim@v8.7.0
         env:
           # To report GitHub Actions status checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
