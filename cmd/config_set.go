@@ -50,6 +50,14 @@ func init() {
 	configSetCmd.Flags().String("gemini.api_key_helper", "", availableKeys["gemini.api_key_helper"])
 	configSetCmd.Flags().
 		Int("gemini.api_key_helper_refresh_interval", 900, availableKeys["gemini.api_key_helper_refresh_interval"])
+	// LiteLLM flags
+	configSetCmd.Flags().String("litellm.api_key", "", availableKeys["litellm.api_key"])
+	configSetCmd.Flags().
+		String("litellm.api_key_helper", "", availableKeys["litellm.api_key_helper"])
+	configSetCmd.Flags().
+		Int("litellm.api_key_helper_refresh_interval", 900, availableKeys["litellm.api_key_helper_refresh_interval"])
+	configSetCmd.Flags().
+		String("litellm.base_url", "http://localhost:4000/v1", availableKeys["litellm.base_url"])
 
 	_ = viper.BindPFlag("openai.base_url", configSetCmd.Flags().Lookup("base_url"))
 	_ = viper.BindPFlag("openai.org_id", configSetCmd.Flags().Lookup("org_id"))
@@ -87,6 +95,16 @@ func init() {
 		"gemini.api_key_helper_refresh_interval",
 		configSetCmd.Flags().Lookup("gemini.api_key_helper_refresh_interval"),
 	)
+	_ = viper.BindPFlag("litellm.api_key", configSetCmd.Flags().Lookup("litellm.api_key"))
+	_ = viper.BindPFlag(
+		"litellm.api_key_helper",
+		configSetCmd.Flags().Lookup("litellm.api_key_helper"),
+	)
+	_ = viper.BindPFlag(
+		"litellm.api_key_helper_refresh_interval",
+		configSetCmd.Flags().Lookup("litellm.api_key_helper_refresh_interval"),
+	)
+	_ = viper.BindPFlag("litellm.base_url", configSetCmd.Flags().Lookup("litellm.base_url"))
 }
 
 // configSetCmd updates the config value.
