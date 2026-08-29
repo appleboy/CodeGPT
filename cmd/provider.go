@@ -8,6 +8,7 @@ import (
 	"github.com/appleboy/CodeGPT/core"
 	"github.com/appleboy/CodeGPT/provider/anthropic"
 	"github.com/appleboy/CodeGPT/provider/gemini"
+	"github.com/appleboy/CodeGPT/provider/litellm"
 	"github.com/appleboy/CodeGPT/provider/openai"
 	"github.com/appleboy/CodeGPT/util"
 
@@ -205,6 +206,63 @@ func GetClient(ctx context.Context, p core.Platform) (core.Generative, error) {
 		return NewOpenAI(ctx)
 	case core.Anthropic:
 		return NewAnthropic(ctx)
+	case core.LiteLLM:
+		return NewLiteLLM(ctx)
 	}
 	return nil, errors.New("invalid provider")
+}
+
+// NewLiteLLM creates a new LiteLLM client that connects to a LiteLLM proxy server,
+// providing access to 100+ LLM providers through a unified OpenAI-compatible API.
+func NewLiteLLM(ctx context.Context) (*litellm.Client, error) {
+	_ = ctx
+
+	var apiKey string
+
+	// Try litellm-specific key helper first
+	if helper := viper.GetString("litellm.api_key_helper"); helper != "" {
+		var refreshInterval time.Duration
+		if viper.IsSet("litellm.api_key_helper_refresh_interval") {
+			refreshInterval = time.Duration(
+				viper.GetInt("litellm.api_key_helper_refresh_interval"),
+			) * time.Second
+		} else {
+			refreshInterval = util.DefaultRefreshInterval
+		}
+		key, err := util.GetAPIKeyFromHelperWithCache(ctx, helper, refreshInterval)
+		if err != nil {
+			return nil, err
+		}
+		apiKey = key
+	} else {
+		// Try litellm.api_key first, fall back to openai.api_key
+		key, err := getAPIKey("litellm.api_key")
+		if err != nil {
+			return nil, err
+		}
+		apiKey = key
+		if apiKey == "" {
+			openaiKey, err := getAPIKey("openai.api_key")
+			if err != nil {
+				return nil, err
+			}
+			apiKey = openaiKey
+		}
+	}
+
+	return litellm.New(
+		litellm.WithToken(apiKey),
+		litellm.WithModel(viper.GetString("openai.model")),
+		litellm.WithBaseURL(viper.GetString("litellm.base_url")),
+		litellm.WithProxyURL(viper.GetString("openai.proxy")),
+		litellm.WithSocksURL(viper.GetString("openai.socks")),
+		litellm.WithTimeout(viper.GetDuration("openai.timeout")),
+		litellm.WithMaxTokens(viper.GetInt("openai.max_tokens")),
+		litellm.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
+		litellm.WithTopP(float32(viper.GetFloat64("openai.top_p"))),
+		litellm.WithFrequencyPenalty(float32(viper.GetFloat64("openai.frequency_penalty"))),
+		litellm.WithPresencePenalty(float32(viper.GetFloat64("openai.presence_penalty"))),
+		litellm.WithSkipVerify(viper.GetBool("openai.skip_verify")),
+		litellm.WithHeaders(viper.GetStringSlice("openai.headers")),
+	)
 }
