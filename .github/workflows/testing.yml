@@ -39,6 +39,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
+        go: ["1.26", "1.27"]
         include:
           - os: ubuntu-latest
             go-build: ~/.cache/go-build
@@ -55,7 +56,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v7
         with:
-          go-version-file: go.mod
+          go-version: ${{ matrix.go }}
           check-latest: true
 
       - uses: actions/cache@v6
@@ -63,7 +64,7 @@ jobs:
           path: |
             ${{ matrix.go-build }}
             ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Run Tests
