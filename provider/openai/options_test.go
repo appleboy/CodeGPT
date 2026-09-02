@@ -1,10 +1,12 @@
 package openai
 
 import (
+	"errors"
 	"testing"
 
-	"github.com/appleboy/CodeGPT/core"
 	openai "github.com/sashabaranov/go-openai"
+
+	"github.com/appleboy/CodeGPT/core"
 )
 
 func Test_config_valid(t *testing.T) {
@@ -49,7 +51,7 @@ func Test_config_valid(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg := tt.cfg
-			if err := cfg.valid(); err != tt.wantErr {
+			if err := cfg.valid(); !errors.Is(err, tt.wantErr) {
 				t.Errorf("config.valid() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

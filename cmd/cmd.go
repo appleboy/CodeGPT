@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -10,9 +11,10 @@ import (
 
 	"github.com/appleboy/CodeGPT/util"
 
-	"github.com/appleboy/com/file"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/appleboy/com/file"
 )
 
 var rootCmd = &cobra.Command{
@@ -154,11 +156,15 @@ func initConfig() {
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			// Config file not found; ignore error if desired
-			_, err := os.Create(cfgFile)
-			if err != nil {
-				log.Fatal(err)
+		var configFileNotFoundError viper.ConfigFileNotFoundError
+		if errors.As(err, &configFileNotFoundError) {
+			// Config file not found; create an empty one.
+			f, createErr := os.Create(cfgFile)
+			if createErr != nil {
+				log.Fatal(createErr)
+			}
+			if closeErr := f.Close(); closeErr != nil {
+				log.Fatal(closeErr)
 			}
 		} else {
 			// Config file was found but another error was produced

@@ -1,6 +1,7 @@
 package util
 
 import (
+	"errors"
 	"path/filepath"
 	"testing"
 
@@ -37,7 +38,7 @@ func TestCredStore_GetMissing(t *testing.T) {
 	store := newTestCredStore(t)
 
 	_, err := store.Load("nonexistent.key")
-	if err != credstore.ErrNotFound {
+	if !errors.Is(err, credstore.ErrNotFound) {
 		t.Errorf("expected ErrNotFound, got %v", err)
 	}
 }
@@ -54,7 +55,7 @@ func TestCredStore_Delete(t *testing.T) {
 	}
 
 	_, err := store.Load("gemini.api_key")
-	if err != credstore.ErrNotFound {
+	if !errors.Is(err, credstore.ErrNotFound) {
 		t.Errorf("expected ErrNotFound after delete, got %v", err)
 	}
 }

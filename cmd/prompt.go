@@ -4,11 +4,12 @@ import (
 	"os"
 	"path"
 
-	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/erikgeiser/promptkit/confirmation"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/appleboy/CodeGPT/prompt"
 )
 
 var loadPromptData bool

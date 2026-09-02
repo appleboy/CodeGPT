@@ -13,9 +13,10 @@ import (
 	"github.com/appleboy/CodeGPT/proxy"
 	"github.com/appleboy/CodeGPT/version"
 
-	"github.com/appleboy/com/convert"
 	"github.com/liushuangls/go-anthropic/v2"
 	"github.com/sashabaranov/go-openai"
+
+	"github.com/appleboy/com/convert"
 )
 
 var _ core.Generative = (*Client)(nil)
@@ -150,9 +151,10 @@ func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Re
 
 	var toolUse *anthropic.MessageContentToolUse
 
-	for _, c := range resp.Content {
-		if c.Type == anthropic.MessagesContentTypeToolUse {
-			toolUse = c.MessageContentToolUse
+	for i := range resp.Content {
+		block := &resp.Content[i]
+		if block.Type == anthropic.MessagesContentTypeToolUse {
+			toolUse = block.MessageContentToolUse
 		}
 	}
 
@@ -189,7 +191,7 @@ func New(opts ...Option) (c *Client, err error) {
 	cfg := newConfig(opts...)
 
 	// Validate the config object, returning an error if it is invalid.
-	if err := cfg.valid(); err != nil {
+	if err = cfg.valid(); err != nil {
 		return nil, err
 	}
 

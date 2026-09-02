@@ -3,9 +3,10 @@ package openai
 import (
 	"encoding/json"
 
-	"github.com/appleboy/com/bytesconv"
 	openai "github.com/sashabaranov/go-openai"
 	"github.com/sashabaranov/go-openai/jsonschema"
+
+	"github.com/appleboy/com/bytesconv"
 )
 
 // SummaryPrefixFunc is a openai function definition.

@@ -142,9 +142,9 @@ var commitCmd = &cobra.Command{
 
 		// Add template variables from file
 		if templateVarsFile != "" {
-			allENV, err := godotenv.Read(templateVarsFile)
-			if err != nil {
-				return err
+			allENV, readEnvErr := godotenv.Read(templateVarsFile)
+			if readEnvErr != nil {
+				return readEnvErr
 			}
 			for k, v := range allENV {
 				data[k] = v
@@ -153,14 +153,14 @@ var commitCmd = &cobra.Command{
 
 		// Get code review message from diff data
 		if _, ok := data[prompt.SummarizeMessageKey]; !ok {
-			out, err := util.GetTemplateByString(
+			out, summErr := util.GetTemplateByString(
 				prompt.SummarizeFileDiffTemplate,
 				util.Data{
 					"file_diffs": diff,
 				},
 			)
-			if err != nil {
-				return err
+			if summErr != nil {
+				return summErr
 			}
 
 			// Determine if the user wants to use the prompt only
@@ -173,9 +173,9 @@ var commitCmd = &cobra.Command{
 
 			// Get summarized comment from diff data
 			color.Cyan("Summarizing git diff...")
-			resp, err := callCompletion(cmd.Context(), client, out, os.Stdout)
-			if err != nil {
-				return err
+			resp, summErr := callCompletion(cmd.Context(), client, out, os.Stdout)
+			if summErr != nil {
+				return summErr
 			}
 			data[prompt.SummarizeMessageKey] = strings.TrimSpace(resp.Content)
 			color.Magenta(resp.Usage.String())
@@ -183,14 +183,14 @@ var commitCmd = &cobra.Command{
 
 		// Get summarized title from diff data
 		if _, ok := data[prompt.SummarizeTitleKey]; !ok {
-			out, err := util.GetTemplateByString(
+			out, titleErr := util.GetTemplateByString(
 				prompt.SummarizeTitleTemplate,
 				util.Data{
 					"summary_points": data[prompt.SummarizeMessageKey],
 				},
 			)
-			if err != nil {
-				return err
+			if titleErr != nil {
+				return titleErr
 			}
 
 			// Generate title for pull request with retry if empty
@@ -202,15 +202,15 @@ var commitCmd = &cobra.Command{
 			var resp *core.Response
 
 			for attempt := 1; attempt <= maxRetries; attempt++ {
-				resp, err = client.Completion(cmd.Context(), out)
-				if err != nil {
-					return err
+				resp, titleErr = client.Completion(cmd.Context(), out)
+				if titleErr != nil {
+					return titleErr
 				}
 
 				summarizeTitle = strings.TrimSpace(resp.Content)
 				color.Magenta(resp.Usage.String())
 
-				if len(summarizeTitle) > 0 {
+				if summarizeTitle != "" {
 					break
 				}
 
@@ -220,7 +220,7 @@ var commitCmd = &cobra.Command{
 				}
 			}
 
-			if len(summarizeTitle) == 0 {
+			if summarizeTitle == "" {
 				return fmt.Errorf("failed to get valid title after %d attempts", maxRetries)
 			}
 
@@ -233,21 +233,21 @@ var commitCmd = &cobra.Command{
 		}
 
 		if _, ok := data[prompt.SummarizePrefixKey]; !ok {
-			out, err := util.GetTemplateByString(
+			out, prefixErr := util.GetTemplateByString(
 				prompt.ConventionalCommitTemplate,
 				util.Data{
 					"summary_points": data[prompt.SummarizeMessageKey],
 				},
 			)
-			if err != nil {
-				return err
+			if prefixErr != nil {
+				return prefixErr
 			}
 			message := "Generating conventional commit prefix"
 			summaryPrix := ""
 			color.Cyan(message + " (Tools)")
-			resp, err := client.GetSummaryPrefix(cmd.Context(), out)
-			if err != nil {
-				return err
+			resp, prefixErr := client.GetSummaryPrefix(cmd.Context(), out)
+			if prefixErr != nil {
+				return prefixErr
 			}
 			summaryPrix = resp.Content
 
@@ -258,9 +258,9 @@ var commitCmd = &cobra.Command{
 
 		var commitMessage string
 		if viper.GetString("git.template_file") != "" {
-			format, err := os.ReadFile(viper.GetString("git.template_file"))
-			if err != nil {
-				return err
+			format, readErr := os.ReadFile(viper.GetString("git.template_file"))
+			if readErr != nil {
+				return readErr
 			}
 			commitMessage, err = util.NewTemplateByString(
 				string(format),
@@ -288,15 +288,15 @@ var commitCmd = &cobra.Command{
 		}
 
 		if prompt.GetLanguage(viper.GetString("output.lang")) != prompt.DefaultLanguage {
-			out, err := util.GetTemplateByString(
+			out, transErr := util.GetTemplateByString(
 				prompt.TranslationTemplate,
 				util.Data{
 					"output_language": prompt.GetLanguage(viper.GetString("output.lang")),
 					"output_message":  commitMessage,
 				},
 			)
-			if err != nil {
-				return err
+			if transErr != nil {
+				return transErr
 			}
 
 			// Translate git commit message
@@ -305,9 +305,9 @@ var commitCmd = &cobra.Command{
 					viper.GetString("output.lang"),
 				),
 			)
-			resp, err := callCompletion(cmd.Context(), client, out, os.Stdout)
-			if err != nil {
-				return err
+			resp, transErr := callCompletion(cmd.Context(), client, out, os.Stdout)
+			if transErr != nil {
+				return transErr
 			}
 			color.Magenta(resp.Usage.String())
 			commitMessage = resp.Content
@@ -324,9 +324,9 @@ var commitCmd = &cobra.Command{
 
 		outputFile := viper.GetString("output.file")
 		if outputFile == "" {
-			out, err := g.GitDir(cmd.Context())
-			if err != nil {
-				return err
+			out, dirErr := g.GitDir(cmd.Context())
+			if dirErr != nil {
+				return dirErr
 			}
 			outputFile = path.Join(strings.TrimSpace(out), "COMMIT_EDITMSG")
 		}
@@ -342,11 +342,11 @@ var commitCmd = &cobra.Command{
 			if noConfirm {
 				return nil
 			}
-			if ready, err := confirmation.New("Commit this preview summary?", confirmation.Yes).
-				RunPrompt(); err != nil ||
+			if ready, confirmErr := confirmation.New("Commit this preview summary?", confirmation.Yes).
+				RunPrompt(); confirmErr != nil ||
 				!ready {
-				if err != nil {
-					return err
+				if confirmErr != nil {
+					return confirmErr
 				}
 				return nil
 			}
@@ -354,14 +354,14 @@ var commitCmd = &cobra.Command{
 
 		// Handle commit message change prompt when confirmation is enabled
 		if !noConfirm {
-			if change, err := confirmation.New("Do you want to modify the commit message?", confirmation.No).
-				RunPrompt(); err != nil {
-				return err
+			if change, confirmErr := confirmation.New("Do you want to modify the commit message?", confirmation.No).
+				RunPrompt(); confirmErr != nil {
+				return confirmErr
 			} else if change {
 				m := initialPrompt(commitMessage)
 				p := tea.NewProgram(m, tea.WithContext(cmd.Context()))
-				if _, err := p.Run(); err != nil {
-					return err
+				if _, runErr := p.Run(); runErr != nil {
+					return runErr
 				}
 				p.Wait()
 				commitMessage = m.textarea.Value()

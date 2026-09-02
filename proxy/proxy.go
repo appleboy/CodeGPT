@@ -103,13 +103,13 @@ func New(opts ...Option) (*http.Client, error) {
 	if cfg.proxyURL != "" {
 		proxyURL, err := url.Parse(cfg.proxyURL)
 		if err != nil {
-			return nil, fmt.Errorf("invalid proxy URL: %s", err)
+			return nil, fmt.Errorf("invalid proxy URL: %w", err)
 		}
 		tr.Proxy = http.ProxyURL(proxyURL)
 	} else if cfg.socksURL != "" {
 		dialer, err := proxy.SOCKS5("tcp", cfg.socksURL, nil, proxy.Direct)
 		if err != nil {
-			return nil, fmt.Errorf("can't connect to the SOCKS5 proxy: %s", err)
+			return nil, fmt.Errorf("can't connect to the SOCKS5 proxy: %w", err)
 		}
 		tr.DialContext = dialer.(proxy.ContextDialer).DialContext
 	}
