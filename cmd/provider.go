@@ -215,8 +215,6 @@ func GetClient(ctx context.Context, p core.Platform) (core.Generative, error) {
 // NewLiteLLM creates a new LiteLLM client that connects to a LiteLLM proxy server,
 // providing access to 100+ LLM providers through a unified OpenAI-compatible API.
 func NewLiteLLM(ctx context.Context) (*litellm.Client, error) {
-	_ = ctx
-
 	var apiKey string
 
 	// Try litellm-specific key helper first
@@ -235,18 +233,32 @@ func NewLiteLLM(ctx context.Context) (*litellm.Client, error) {
 		}
 		apiKey = key
 	} else {
-		// Try litellm.api_key first, fall back to openai.api_key
+		// Try litellm.api_key first, then the shared helper or static key.
 		key, err := getAPIKey("litellm.api_key")
 		if err != nil {
 			return nil, err
 		}
 		apiKey = key
 		if apiKey == "" {
-			openaiKey, err := getAPIKey("openai.api_key")
-			if err != nil {
-				return nil, err
+			if helper := viper.GetString("openai.api_key_helper"); helper != "" {
+				refreshInterval := util.DefaultRefreshInterval
+				if viper.IsSet("openai.api_key_helper_refresh_interval") {
+					refreshInterval = time.Duration(
+						viper.GetInt("openai.api_key_helper_refresh_interval"),
+					) * time.Second
+				}
+				helperKey, err := util.GetAPIKeyFromHelperWithCache(ctx, helper, refreshInterval)
+				if err != nil {
+					return nil, err
+				}
+				apiKey = helperKey
+			} else {
+				openaiKey, err := getAPIKey("openai.api_key")
+				if err != nil {
+					return nil, err
+				}
+				apiKey = openaiKey
 			}
-			apiKey = openaiKey
 		}
 	}
 
