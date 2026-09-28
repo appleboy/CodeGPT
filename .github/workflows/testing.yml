@@ -29,7 +29,10 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v7
         with:
-          go-version-file: go.mod
+          go-version-file: go.tools.mod
+          cache-dependency-path: |
+            go.sum
+            go.tools.sum
           check-latest: true
 
       - name: Run golangci-lint
