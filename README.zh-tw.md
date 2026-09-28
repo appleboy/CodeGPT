@@ -772,7 +772,7 @@ make test
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=appleboy/codegpt&type=Date)](https://star-history.com/#appleboy/codegpt&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=appleboy/codegpt&type=Date)](https://star-history.dera.page/#appleboy/codegpt&Date)
 
 ## 參考資料（Reference）
 

@@ -12,7 +12,6 @@ import (
 	"github.com/appleboy/CodeGPT/core/transport"
 	"github.com/appleboy/CodeGPT/version"
 
-	"github.com/appleboy/com/convert"
 	"github.com/sashabaranov/go-openai"
 	"github.com/yassinebenaid/godump"
 	"google.golang.org/genai"
@@ -30,8 +29,8 @@ type Client struct {
 // Completion is a method on the Client struct that takes a context.Context and a string argument
 func (c *Client) Completion(ctx context.Context, content string) (*core.Response, error) {
 	cfg := &genai.GenerateContentConfig{
-		TopP:            convert.ToPtr(c.topP),
-		Temperature:     convert.ToPtr(c.temperature),
+		TopP:            new(c.topP),
+		Temperature:     new(c.temperature),
 		MaxOutputTokens: c.maxTokens,
 	}
 	data := []*genai.Content{
@@ -75,8 +74,8 @@ func (c *Client) CompletionStream(
 	w io.Writer,
 ) (*core.Response, error) {
 	cfg := &genai.GenerateContentConfig{
-		TopP:            convert.ToPtr(c.topP),
-		Temperature:     convert.ToPtr(c.temperature),
+		TopP:            new(c.topP),
+		Temperature:     new(c.temperature),
 		MaxOutputTokens: c.maxTokens,
 	}
 	data := []*genai.Content{
@@ -137,8 +136,8 @@ func (c *Client) CompletionStream(
 func (c *Client) GetSummaryPrefix(ctx context.Context, content string) (*core.Response, error) {
 	cfg := &genai.GenerateContentConfig{
 		MaxOutputTokens: c.maxTokens,
-		TopP:            convert.ToPtr(c.topP),
-		Temperature:     convert.ToPtr(c.temperature),
+		TopP:            new(c.topP),
+		Temperature:     new(c.temperature),
 		Tools:           []*genai.Tool{summaryPrefixFunc},
 		ToolConfig: &genai.ToolConfig{
 			FunctionCallingConfig: &genai.FunctionCallingConfig{

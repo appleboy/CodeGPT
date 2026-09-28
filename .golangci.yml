@@ -102,12 +102,22 @@ issues:
   max-same-issues: 0
 formatters:
   enable:
+    - gci
     - gofmt
     - gofumpt
     - golines
   settings:
+    gci:
+      custom-order: true
+      sections:
+        - standard
+        - prefix(github.com/appleboy/CodeGPT)
+        - default
     gofumpt:
-      extra-rules: true
+      extra:
+        group-params: true
+        clothe-returns: true
+        balance-calls: true
   exclusions:
     generated: lax
 run:

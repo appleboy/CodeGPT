@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/appleboy/CodeGPT/core"
+
 	openai "github.com/sashabaranov/go-openai"
 )
 
