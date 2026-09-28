@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 
 	"github.com/appleboy/com/bytesconv"
-	"github.com/sashabaranov/go-openai/jsonschema"
-
 	openai "github.com/sashabaranov/go-openai"
+	"github.com/sashabaranov/go-openai/jsonschema"
 )
 
 // summaryPrefixFunc defines the OpenAI function-calling schema for extracting
