@@ -1,4 +1,5 @@
 GO ?= go
+TOOLS_MOD := -modfile=go.tools.mod
 EXECUTABLE := codegpt
 GOFILES := $(shell find . -type f -name "*.go")
 TAGS ?=
@@ -39,11 +40,11 @@ test:
 
 ## fmt: format go files using golangci-lint
 fmt:
-	$(GO) tool -modfile=tools.go.mod golangci-lint fmt
+	$(GO) tool $(TOOLS_MOD) golangci-lint fmt
 
 ## lint: run golangci-lint to check for issues
 lint:
-	$(GO) tool -modfile=tools.go.mod golangci-lint run
+	$(GO) tool $(TOOLS_MOD) golangci-lint run
 
 ## build_linux_amd64: build the codegpt binary for linux amd64
 build_linux_amd64:
@@ -77,3 +78,7 @@ clean:
 help:
 	@echo 'Usage:'
 	@sed -n 's/^##//p' ${MAKEFILE_LIST} | column -t -s ':' | sed -e 's/^/ /'
+
+.PHONY: install-tools fmt lint
+install-tools: ## Download pinned Go tools
+	$(GO) mod download $(TOOLS_MOD)
