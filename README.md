@@ -44,6 +44,7 @@ A CLI tool written in [Go](https://go.dev) that generates git commit messages or
     - [How to Change to Groq API Service](#how-to-change-to-groq-api-service)
     - [How to Change to Ollama API Service](#how-to-change-to-ollama-api-service)
     - [How to Change to OpenRouter API Service](#how-to-change-to-openrouter-api-service)
+    - [Support for LiteLLM Proxy](#support-for-litellm-proxy)
   - [Usage](#usage)
     - [CLI Mode](#cli-mode)
   - [Change Commit Message Template](#change-commit-message-template)
@@ -62,7 +63,7 @@ A CLI tool written in [Go](https://go.dev) that generates git commit messages or
 
 ## Features
 
-- Supports [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service), [OpenAI API](https://platform.openai.com/docs/api-reference), [Gemini][60], [Anthropic][100], [Ollama][41], [Groq][30], and [OpenRouter][50].
+- Supports [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service), [OpenAI API](https://platform.openai.com/docs/api-reference), [Gemini][60], [Anthropic][100], [Ollama][41], [Groq][30], [OpenRouter][50], and LiteLLM proxy.
 - Adheres to the [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
 - Integrates with Git prepare-commit-msg Hook, see the [Git Hooks documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
 - Allows customization of generated diffs by specifying the number of context lines (default: 3).
@@ -179,7 +180,7 @@ Add the [feature](https://github.com/kvokka/features/tree/main/src/codegpt) to y
 
 ## Configuration
 
-First, create your OpenAI API Key. The [OpenAI Platform](https://platform.openai.com/account/api-keys) allows you to generate a new API Key.
+For the default OpenAI provider, first create your OpenAI API key. The [OpenAI Platform](https://platform.openai.com/account/api-keys) allows you to generate a new API Key.
 
 ![register](./images/register.png)
 
@@ -189,13 +190,13 @@ Set the environment variable `OPENAI_API_KEY`:
 export OPENAI_API_KEY=sk-xxxxxxx
 ```
 
-Alternatively, store your API key in a custom config file:
+Alternatively, save your API key in the credential store:
 
 ```sh
 codegpt config set openai.api_key sk-xxxxxxx
 ```
 
-This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/codegpt/.codegpt.yaml). The following options are available:
+General settings are stored in `$HOME/.config/codegpt/.codegpt.yaml`. API keys saved with `codegpt config set` use the OS keyring, with a file-based fallback at `$HOME/.config/codegpt/.cache/credentials.json`. The following options are available:
 
 | Option                                     | Description                                                                                                                                                                    |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -204,7 +205,7 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 | **openai.api_key_helper**                  | Shell command to dynamically generate API key (e.g., from password manager or secret service).                                                                                 |
 | **openai.api_key_helper_refresh_interval** | Interval in seconds to refresh credentials from `api_key_helper` (default: `900` seconds / 15 minutes). Set to `0` to disable caching.                                         |
 | **openai.org_id**                          | Identifier for this organization sometimes used in API requests. See [organization settings](https://platform.openai.com/account/org-settings). Only for `openai` service.     |
-| **openai.model**                           | Default model is `gpt-4o`, you can change to other custom model (Groq or OpenRouter provider).                                                                                 |
+| **openai.model**                           | Default model is `gpt-4o`, you can change to another model, including a model name configured on your LiteLLM proxy.                                                                                 |
 | **openai.proxy**                           | HTTP/HTTPS client proxy.                                                                                                                                                       |
 | **openai.socks**                           | SOCKS client proxy.                                                                                                                                                            |
 | **openai.timeout**                         | Default HTTP timeout is `10s` (ten seconds).                                                                                                                                   |
@@ -213,12 +214,16 @@ This will create a `.codegpt.yaml` file in your home directory ($HOME/.config/co
 | **openai.temperature**                     | Default temperature is `1`. See reference [temperature](https://platform.openai.com/docs/api-reference/completions/create#completions/create-temperature).                     |
 | **git.diff_unified**                       | Generate diffs with `<n>` lines of context, default is `3`.                                                                                                                    |
 | **git.exclude_list**                       | Exclude file from `git diff` command.                                                                                                                                          |
-| **openai.provider**                        | Default service provider is `openai`, you can change to `azure`.                                                                                                               |
+| **openai.provider**                        | Default provider is `openai`; also accepts `azure`, `gemini`, `anthropic`, and `litellm`.                                                                                                               |
 | **output.lang**                            | Default language is `en` and available languages `zh-tw`, `zh-cn`, `ja`.                                                                                                       |
 | **openai.top_p**                           | Default top_p is `1.0`. See reference [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p).                                     |
 | **openai.frequency_penalty**               | Default frequency_penalty is `0.0`. See reference [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty). |
 | **openai.presence_penalty**                | Default presence_penalty is `0.0`. See reference [presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty).    |
 | **openai.stream**                          | Enable streaming output for real-time token display, default is `false`.                                                                                                       |
+| **litellm.base_url**                      | LiteLLM proxy API base URL (default: `http://localhost:4000/v1`). Used instead of `openai.base_url` for LiteLLM.                                                             |
+| **litellm.api_key**                       | LiteLLM proxy API key (master key or virtual key); also available through `LITELLM_API_KEY`.                                                                                 |
+| **litellm.api_key_helper**                | Shell command to retrieve a LiteLLM proxy API key dynamically.                                                                                                               |
+| **litellm.api_key_helper_refresh_interval** | LiteLLM helper cache interval in seconds (default: `900`). Set to `0` to fetch a key every time.                                                                             |
 | **prompt.folder**                          | Default prompt folder is `$HOME/.config/codegpt/prompt`.                                                                                                                       |
 
 ### Using API Key Helper for Dynamic Credentials
@@ -277,18 +282,21 @@ codegpt config set gemini.api_key_helper_refresh_interval 600
 
 #### How It Works
 
-1. **First execution**: CodeGPT runs your helper command and caches the API key in `~/.config/codegpt/.cache/` with restrictive permissions (0600)
+1. **First execution**: CodeGPT runs your helper command and caches the API key in the credential store (OS keyring with a file-based fallback)
 2. **Subsequent executions**: Within the refresh interval, CodeGPT uses the cached key
 3. **After expiration**: CodeGPT automatically re-runs the helper command and updates the cache
-4. **Security**: Cache files are stored with owner-only read/write permissions
+4. **File fallback**: Credentials and helper cache entries use `~/.config/codegpt/.cache/credentials.json` with owner-only read/write permissions (0600)
 
 #### Priority Order
 
-When multiple API key sources are configured, CodeGPT uses this priority:
+For the shared OpenAI credentials, CodeGPT uses this priority:
 
 1. `openai.api_key_helper` (if configured)
-2. `openai.api_key` (static config)
+2. `openai.api_key` in the credential store
 3. `OPENAI_API_KEY` environment variable
+4. `openai.api_key` in the configuration file
+
+Gemini and LiteLLM check their provider-specific credentials before falling back to shared credentials. See [LiteLLM proxy configuration](#support-for-litellm-proxy) for its full lookup order.
 
 ### How to Customize the Default Prompt Folder
 
@@ -498,6 +506,37 @@ codegpt config set openai.headers "HTTP-Referer=https://github.com/appleboy/Code
 
 - **HTTP-Referer**: Optional, for including your app in openrouter.ai rankings.
 - **X-Title**: Optional, for showing in rankings on openrouter.ai.
+
+### Support for LiteLLM Proxy
+
+Connect CodeGPT to a running LiteLLM proxy using its OpenAI-compatible API. Set `openai.model` to a model name configured on that proxy.
+
+```sh
+codegpt config set openai.provider litellm
+codegpt config set litellm.base_url http://localhost:4000/v1
+codegpt config set litellm.api_key sk-your-proxy-key
+codegpt config set openai.model your-model-name
+```
+
+Use `litellm.base_url` for the proxy API endpoint, including the `/v1` path; `openai.base_url` does not configure this provider. The default endpoint is `http://localhost:4000/v1`. CodeGPT requires a non-empty API key. You can use `LITELLM_API_KEY` instead of saving a key with `codegpt config set`.
+
+LiteLLM reuses shared settings such as `openai.model`, `openai.timeout`, `openai.max_tokens`, `openai.temperature`, `openai.stream`, `openai.headers`, `openai.proxy`, and `openai.socks`.
+
+To retrieve the proxy key dynamically:
+
+```sh
+codegpt config set litellm.api_key_helper "/path/to/get-litellm-key.sh"
+codegpt config set litellm.api_key_helper_refresh_interval 600
+```
+
+LiteLLM resolves credentials in this order:
+
+1. `litellm.api_key_helper`
+2. `litellm.api_key` (credential store, then `LITELLM_API_KEY`, then configuration file)
+3. `openai.api_key_helper`
+4. `openai.api_key` (credential store, then `OPENAI_API_KEY`, then configuration file)
+
+Each helper uses its own refresh interval: `litellm.api_key_helper_refresh_interval` for the LiteLLM helper, or `openai.api_key_helper_refresh_interval` for the shared helper. Both default to 900 seconds; set the relevant interval to `0` to fetch a key on every call. If the selected helper fails, CodeGPT returns the error instead of using a static key.
 
 ## Usage
 

@@ -35,7 +35,7 @@ const (
 
 // sensitiveConfigKeys lists the config keys that should be stored in the
 // secure credential store rather than in the plaintext YAML config file.
-var sensitiveConfigKeys = []string{"openai.api_key", "gemini.api_key"}
+var sensitiveConfigKeys = []string{"openai.api_key", "gemini.api_key", "litellm.api_key"}
 
 // migrateCredentialsToStore moves any plaintext API keys found in the YAML
 // config into the secure credential store and clears them from the config file.
