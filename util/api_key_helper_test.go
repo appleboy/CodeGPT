@@ -9,6 +9,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/go-signet/sdk-go/credstore"
 )
 
 // overrideCredStore replaces the global credStore with an isolated file-backed
@@ -18,7 +20,8 @@ func overrideCredStore(t *testing.T) {
 	t.Helper()
 	original := credStore
 	t.Cleanup(func() { credStore = original })
-	credStore = newTestCredStore(t)
+	store := newTestCredStore(t)
+	credStore = func() *credstore.SecureStore[string] { return store }
 }
 
 func TestGetAPIKeyFromHelper_Success(t *testing.T) {

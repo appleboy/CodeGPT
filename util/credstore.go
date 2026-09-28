@@ -3,17 +3,18 @@ package util
 import (
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/go-signet/sdk-go/credstore"
 )
 
 const credServiceName = "codegpt"
 
-// credStore is the singleton SecureStore[string] instance.
-// Initialized once; uses OS keyring with file-based fallback.
-var credStore *credstore.SecureStore[string]
+// credStore initializes the credential backend once, on first use.
+// Importing util must not probe the OS keyring.
+var credStore = sync.OnceValue(newCredStore)
 
-func init() {
+func newCredStore() *credstore.SecureStore[string] {
 	home, err := os.UserHomeDir()
 	var fallbackPath string
 	if err != nil || home == "" {
@@ -28,13 +29,13 @@ func init() {
 
 	keyring := credstore.NewStringKeyringStore(credServiceName)
 	file := credstore.NewStringFileStore(fallbackPath)
-	credStore = credstore.NewSecureStore(keyring, file)
+	return credstore.NewSecureStore(keyring, file)
 }
 
 // GetCredential retrieves a stored credential by key.
 // Returns ("", nil) if not found.
 func GetCredential(key string) (string, error) {
-	val, err := credStore.Load(key)
+	val, err := credStore().Load(key)
 	if err == credstore.ErrNotFound {
 		return "", nil
 	}
@@ -43,15 +44,15 @@ func GetCredential(key string) (string, error) {
 
 // SetCredential stores a credential by key.
 func SetCredential(key, value string) error {
-	return credStore.Save(key, value)
+	return credStore().Save(key, value)
 }
 
 // DeleteCredential removes a credential by key.
 func DeleteCredential(key string) error {
-	return credStore.Delete(key)
+	return credStore().Delete(key)
 }
 
 // CredStoreIsKeyring reports whether the active backend is the OS keyring.
 func CredStoreIsKeyring() bool {
-	return credStore.UseKeyring()
+	return credStore().UseKeyring()
 }

@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"os"
-	"os/exec"
 	"strings"
 	"testing"
 	"time"
@@ -19,22 +17,9 @@ import (
 )
 
 func TestNewLiteLLMCredentials(t *testing.T) {
-	// Isolate the file fallback before util initializes its credential store.
-	if os.Getenv("CODEGPT_CREDENTIAL_TEST") != "1" {
-		command := exec.Command(os.Args[0], "-test.run=^TestNewLiteLLMCredentials$", "-test.v")
-		home := t.TempDir()
-		command.Env = append(
-			os.Environ(),
-			"CODEGPT_CREDENTIAL_TEST=1",
-			"HOME="+home,
-			"USERPROFILE="+home,
-		)
-		output, err := command.CombinedOutput()
-		if err != nil {
-			t.Fatalf("credential tests failed: %v\n%s", err, output)
-		}
-		return
-	}
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	t.Setenv("USERPROFILE", home)
 	// Replace the OS keyring so tests never read or write real credentials.
 	keyring.MockInit()
 	zero, minute := 0, 60
