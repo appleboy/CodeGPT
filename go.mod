@@ -9,7 +9,7 @@ require (
 	github.com/charmbracelet/bubbletea v1.3.10
 	github.com/erikgeiser/promptkit v0.11.0
 	github.com/fatih/color v1.19.0
-	github.com/go-authgate/sdk-go v0.11.0
+	github.com/go-signet/sdk-go v1.1.0
 	github.com/joho/godotenv v1.5.1
 	github.com/liushuangls/go-anthropic/v2 v2.20.1
 	github.com/rodaine/table v1.3.1

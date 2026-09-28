@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/go-authgate/sdk-go/credstore"
+	"github.com/go-signet/sdk-go/credstore"
 )
 
 const credServiceName = "codegpt"

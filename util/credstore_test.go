@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/go-authgate/sdk-go/credstore"
+	"github.com/go-signet/sdk-go/credstore"
 )
 
 // newTestCredStore returns a file-backed SecureStore using a temp directory.
