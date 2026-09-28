@@ -13,7 +13,6 @@ import (
 	"github.com/appleboy/CodeGPT/proxy"
 	"github.com/appleboy/CodeGPT/version"
 
-	"github.com/appleboy/com/convert"
 	"github.com/liushuangls/go-anthropic/v2"
 	"github.com/sashabaranov/go-openai"
 )
@@ -36,12 +35,11 @@ func (c *Client) Completion(ctx context.Context, content string) (*core.Response
 			anthropic.NewUserTextMessage(content),
 		},
 		MaxTokens:   c.maxTokens,
-		Temperature: convert.ToPtr(c.temperature),
-		TopP:        convert.ToPtr(c.topP),
+		Temperature: new(c.temperature),
+		TopP:        new(c.topP),
 	})
 	if err != nil {
-		var e *anthropic.APIError
-		if errors.As(err, &e) {
+		if e, ok := errors.AsType[*anthropic.APIError](err); ok {
 			return nil, fmt.Errorf(
 				"messages error, type: %s, message: %s: %w",
 				e.Type,
@@ -85,8 +83,8 @@ func (c *Client) CompletionStream(
 				anthropic.NewUserTextMessage(content),
 			},
 			MaxTokens:   c.maxTokens,
-			Temperature: convert.ToPtr(c.temperature),
-			TopP:        convert.ToPtr(c.topP),
+			Temperature: new(c.temperature),
+			TopP:        new(c.topP),
 		},
 		OnContentBlockDelta: func(data anthropic.MessagesEventContentBlockDeltaData) {
 			if data.Delta.Text != nil && writeErr == nil {
@@ -98,8 +96,7 @@ func (c *Client) CompletionStream(
 		},
 	})
 	if err != nil {
-		var e *anthropic.APIError
-		if errors.As(err, &e) {
+		if e, ok := errors.AsType[*anthropic.APIError](err); ok {
 			return nil, fmt.Errorf(
 				"messages error, type: %s, message: %s: %w",
 				e.Type,
