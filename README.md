@@ -2,9 +2,8 @@
 
 [![Lint and Testing](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml/badge.svg?branch=main)](https://github.com/appleboy/CodeGPT/actions/workflows/testing.yml)
 [![Security Scanning](https://github.com/appleboy/CodeGPT/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/appleboy/CodeGPT/actions/workflows/security.yml)
-[![Trivy Security Scan](https://github.com/appleboy/CodeGPT/actions/workflows/trivy.yml/badge.svg)](https://github.com/appleboy/CodeGPT/actions/workflows/trivy.yml)
+[![Trivy Security Scan](https://github.com/appleboy/CodeGPT/actions/workflows/trivy.yml/badge.svg?branch=main)](https://github.com/appleboy/CodeGPT/actions/workflows/trivy.yml)
 [![codecov](https://codecov.io/gh/appleboy/CodeGPT/branch/main/graph/badge.svg)](https://codecov.io/gh/appleboy/CodeGPT)
-[![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/CodeGPT)](https://goreportcard.com/report/github.com/appleboy/CodeGPT)
 
 A CLI tool written in [Go](https://go.dev) that generates git commit messages or provides code review summaries using ChatGPT AI (gpt-5, gpt-4o, gpt-4 model). It also automatically installs a [git prepare-commit-msg hook](https://git-scm.com/docs/githooks).
 
