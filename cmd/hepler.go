@@ -9,6 +9,7 @@ import (
 	"github.com/appleboy/CodeGPT/prompt"
 	"github.com/appleboy/CodeGPT/provider/openai"
 	"github.com/appleboy/CodeGPT/util"
+
 	"github.com/appleboy/com/file"
 	"github.com/spf13/viper"
 )

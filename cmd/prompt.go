@@ -5,6 +5,7 @@ import (
 	"path"
 
 	"github.com/appleboy/CodeGPT/prompt"
+
 	"github.com/erikgeiser/promptkit/confirmation"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
