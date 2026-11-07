@@ -45,6 +45,7 @@ A CLI tool written in [Go](https://go.dev) that generates git commit messages or
     - [How to Change to Ollama API Service](#how-to-change-to-ollama-api-service)
     - [How to Change to OpenRouter API Service](#how-to-change-to-openrouter-api-service)
     - [Support for LiteLLM Proxy](#support-for-litellm-proxy)
+    - [Support for OpenLLM](#support-for-openllm)
   - [Usage](#usage)
     - [CLI Mode](#cli-mode)
   - [Change Commit Message Template](#change-commit-message-template)
@@ -63,7 +64,7 @@ A CLI tool written in [Go](https://go.dev) that generates git commit messages or
 
 ## Features
 
-- Supports [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service), [OpenAI API](https://platform.openai.com/docs/api-reference), [Gemini][60], [Anthropic][100], [Ollama][41], [Groq][30], [OpenRouter][50], and LiteLLM proxy.
+- Supports [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/cognitive-services/openai-service), [OpenAI API](https://platform.openai.com/docs/api-reference), [Gemini][60], [Anthropic][100], [Ollama][41], [Groq][30], [OpenRouter][50], LiteLLM proxy, and [OpenLLM](https://www.openllm.sh).
 - Adheres to the [conventional commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
 - Integrates with Git prepare-commit-msg Hook, see the [Git Hooks documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
 - Allows customization of generated diffs by specifying the number of context lines (default: 3).
@@ -214,7 +215,7 @@ General settings are stored in `$HOME/.config/codegpt/.codegpt.yaml`. API keys s
 | **openai.temperature**                     | Default temperature is `1`. See reference [temperature](https://platform.openai.com/docs/api-reference/completions/create#completions/create-temperature).                     |
 | **git.diff_unified**                       | Generate diffs with `<n>` lines of context, default is `3`.                                                                                                                    |
 | **git.exclude_list**                       | Exclude file from `git diff` command.                                                                                                                                          |
-| **openai.provider**                        | Default provider is `openai`; also accepts `azure`, `gemini`, `anthropic`, and `litellm`.                                                                                                               |
+| **openai.provider**                        | Default provider is `openai`; also accepts `azure`, `gemini`, `anthropic`, `litellm`, and `openllm`.                                                                                                     |
 | **output.lang**                            | Default language is `en` and available languages `zh-tw`, `zh-cn`, `ja`.                                                                                                       |
 | **openai.top_p**                           | Default top_p is `1.0`. See reference [top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p).                                     |
 | **openai.frequency_penalty**               | Default frequency_penalty is `0.0`. See reference [frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty). |
@@ -224,6 +225,8 @@ General settings are stored in `$HOME/.config/codegpt/.codegpt.yaml`. API keys s
 | **litellm.api_key**                       | LiteLLM proxy API key (master key or virtual key); also available through `LITELLM_API_KEY`.                                                                                 |
 | **litellm.api_key_helper**                | Shell command to retrieve a LiteLLM proxy API key dynamically.                                                                                                               |
 | **litellm.api_key_helper_refresh_interval** | LiteLLM helper cache interval in seconds (default: `900`). Set to `0` to fetch a key every time.                                                                             |
+| **openllm.base_url**                       | OpenLLM API base URL, defaulting to the local daemon at `http://127.0.0.1:8787/v1`. Set `https://www.openllm.sh/v1` to use the cloud gateway.                                  |
+| **openllm.api_key**                        | OpenLLM API key. Optional for the local daemon, which uses the saved login. Required when using the cloud gateway.                                                               |
 | **prompt.folder**                          | Default prompt folder is `$HOME/.config/codegpt/prompt`.                                                                                                                       |
 
 ### Using API Key Helper for Dynamic Credentials
@@ -537,6 +540,27 @@ LiteLLM resolves credentials in this order:
 4. `openai.api_key` (credential store, then `OPENAI_API_KEY`, then configuration file)
 
 Each helper uses its own refresh interval: `litellm.api_key_helper_refresh_interval` for the LiteLLM helper, or `openai.api_key_helper_refresh_interval` for the shared helper. Both default to 900 seconds; set the relevant interval to `0` to fetch a key on every call. If the selected helper fails, CodeGPT returns the error instead of using a static key.
+
+### Support for OpenLLM
+
+[OpenLLM](https://www.openllm.sh) routes API keys, OAuth subscription accounts, and local models through one format-agnostic endpoint. CodeGPT uses its Chat Completions API for commit messages and code reviews.
+
+For local development, [install OpenLLM](https://www.openllm.sh/install), sign in with `openllm login`, and start the daemon. CodeGPT defaults to the local daemon and needs no API key:
+
+```sh
+codegpt config set openai.provider openllm
+codegpt config set openai.model lite
+```
+
+To run CodeGPT in CI or use the cloud gateway, configure the cloud base URL and provide `OPENLLM_API_KEY` through the CI secret mechanism:
+
+```sh
+codegpt config set openai.provider openllm
+codegpt config set openllm.base_url https://www.openllm.sh/v1
+codegpt config set openai.model lite
+```
+
+The local daemon uses its saved login when `openllm.api_key` is empty. The cloud gateway requires `OPENLLM_API_KEY` or `openllm.api_key`. OpenLLM supports the full `/v1/` API surface and provides an MCP server as a second integration layer. See the [OpenLLM documentation](https://docs.openllm.sh).
 
 ## Usage
 

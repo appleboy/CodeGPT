@@ -53,6 +53,8 @@ var availableKeys = map[string]string{
 	"litellm.api_key_helper":                  "Shell command to dynamically generate LiteLLM API key",
 	"litellm.api_key_helper_refresh_interval": "Interval in seconds to refresh LiteLLM credentials from apiKeyHelper (default: 900)",
 	"litellm.base_url":                        "LiteLLM proxy base URL (default: http://localhost:4000/v1)",
+	"openllm.api_key":                         "API key for OpenLLM (optional for the local daemon, required for cloud)",
+	"openllm.base_url":                        "OpenLLM base URL (default: http://127.0.0.1:8787/v1, cloud: https://www.openllm.sh/v1)",
 }
 
 // configListCmd represents the command to list the configuration values.

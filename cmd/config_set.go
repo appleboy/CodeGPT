@@ -58,6 +58,10 @@ func init() {
 		Int("litellm.api_key_helper_refresh_interval", 900, availableKeys["litellm.api_key_helper_refresh_interval"])
 	configSetCmd.Flags().
 		String("litellm.base_url", "http://localhost:4000/v1", availableKeys["litellm.base_url"])
+	// OpenLLM flags
+	configSetCmd.Flags().String("openllm.api_key", "", availableKeys["openllm.api_key"])
+	configSetCmd.Flags().
+		String("openllm.base_url", "http://127.0.0.1:8787/v1", availableKeys["openllm.base_url"])
 
 	_ = viper.BindPFlag("openai.base_url", configSetCmd.Flags().Lookup("base_url"))
 	_ = viper.BindPFlag("openai.org_id", configSetCmd.Flags().Lookup("org_id"))
@@ -105,6 +109,8 @@ func init() {
 		configSetCmd.Flags().Lookup("litellm.api_key_helper_refresh_interval"),
 	)
 	_ = viper.BindPFlag("litellm.base_url", configSetCmd.Flags().Lookup("litellm.base_url"))
+	_ = viper.BindPFlag("openllm.api_key", configSetCmd.Flags().Lookup("openllm.api_key"))
+	_ = viper.BindPFlag("openllm.base_url", configSetCmd.Flags().Lookup("openllm.base_url"))
 }
 
 // configSetCmd updates the config value.
