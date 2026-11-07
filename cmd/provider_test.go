@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/appleboy/CodeGPT/core"
 	"github.com/appleboy/CodeGPT/util"
 
 	"github.com/spf13/viper"
@@ -132,5 +133,66 @@ func TestNewLiteLLMCredentials(t *testing.T) {
 				t.Fatal(err)
 			}
 		})
+	}
+}
+
+func TestNewOpenLLM(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	t.Setenv("USERPROFILE", home)
+	// Replace the OS keyring so tests never read or write real credentials.
+	keyring.MockInit()
+	tests := []struct {
+		name       string
+		key        string
+		sharedKey  string
+		wantBearer string
+	}{
+		{name: "openllm key", key: "sk-llm-a.b", sharedKey: "sk-openai", wantBearer: "sk-llm-a.b"},
+		{name: "shared openai key is not used", sharedKey: "sk-openai", wantBearer: ""},
+		{name: "keyless local", wantBearer: ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			viper.Reset()
+			t.Cleanup(viper.Reset)
+			viper.Set("openllm.api_key", tt.key)
+			viper.Set("openai.api_key", tt.sharedKey)
+			viper.Set("openai.model", "lite")
+			server := httptest.NewServer(
+				http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					got := strings.TrimSpace(
+						strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer"),
+					)
+					if got != tt.wantBearer {
+						t.Errorf("bearer = %q, want %q", got, tt.wantBearer)
+					}
+					w.Header().Set("Content-Type", "application/json")
+					fmt.Fprint(w, `{"choices":[{"message":{"content":"ok"}}]}`)
+				}),
+			)
+			defer server.Close()
+			viper.Set("openllm.base_url", server.URL)
+			client, err := NewOpenLLM(t.Context())
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err := client.Completion(t.Context(), "test"); err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
+}
+
+func TestGetClientOpenLLM(t *testing.T) {
+	viper.Reset()
+	t.Cleanup(viper.Reset)
+	viper.Set("openai.model", "lite")
+	client, err := GetClient(t.Context(), core.OpenLLM)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if client == nil {
+		t.Fatal("expected a client")
 	}
 }

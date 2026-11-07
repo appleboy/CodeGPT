@@ -10,6 +10,7 @@ import (
 	"github.com/appleboy/CodeGPT/provider/gemini"
 	"github.com/appleboy/CodeGPT/provider/litellm"
 	"github.com/appleboy/CodeGPT/provider/openai"
+	"github.com/appleboy/CodeGPT/provider/openllm"
 	"github.com/appleboy/CodeGPT/util"
 
 	"github.com/spf13/viper"
@@ -208,6 +209,8 @@ func GetClient(ctx context.Context, p core.Platform) (core.Generative, error) {
 		return NewAnthropic(ctx)
 	case core.LiteLLM:
 		return NewLiteLLM(ctx)
+	case core.OpenLLM:
+		return NewOpenLLM(ctx)
 	}
 	return nil, errors.New("invalid provider")
 }
@@ -276,5 +279,35 @@ func NewLiteLLM(ctx context.Context) (*litellm.Client, error) {
 		litellm.WithPresencePenalty(float32(viper.GetFloat64("openai.presence_penalty"))),
 		litellm.WithSkipVerify(viper.GetBool("openai.skip_verify")),
 		litellm.WithHeaders(viper.GetStringSlice("openai.headers")),
+	)
+}
+
+// NewOpenLLM creates a new OpenLLM client that connects to the OpenLLM gateway.
+// The base URL defaults to the local daemon endpoint; set openllm.base_url to
+// https://www.openllm.sh/v1 and provide a key to use the cloud gateway instead.
+// The API key is optional for the local daemon, which authenticates with the
+// saved OpenLLM login.
+func NewOpenLLM(_ context.Context) (*openllm.Client, error) {
+	// Only openllm.api_key (or OPENLLM_API_KEY) is used. The shared OpenAI key
+	// is deliberately not a fallback, so it is never sent to an OpenLLM endpoint.
+	apiKey, err := getAPIKey("openllm.api_key")
+	if err != nil {
+		return nil, err
+	}
+
+	return openllm.New(
+		openllm.WithToken(apiKey),
+		openllm.WithModel(viper.GetString("openai.model")),
+		openllm.WithBaseURL(viper.GetString("openllm.base_url")),
+		openllm.WithProxyURL(viper.GetString("openai.proxy")),
+		openllm.WithSocksURL(viper.GetString("openai.socks")),
+		openllm.WithTimeout(viper.GetDuration("openai.timeout")),
+		openllm.WithMaxTokens(viper.GetInt("openai.max_tokens")),
+		openllm.WithTemperature(float32(viper.GetFloat64("openai.temperature"))),
+		openllm.WithTopP(float32(viper.GetFloat64("openai.top_p"))),
+		openllm.WithFrequencyPenalty(float32(viper.GetFloat64("openai.frequency_penalty"))),
+		openllm.WithPresencePenalty(float32(viper.GetFloat64("openai.presence_penalty"))),
+		openllm.WithSkipVerify(viper.GetBool("openai.skip_verify")),
+		openllm.WithHeaders(viper.GetStringSlice("openai.headers")),
 	)
 }
